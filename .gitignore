@@ -1,0 +1,31 @@
+# Laravel specific files/directories
+.env
+vendor/
+node_modules/
+public/storage
+public/hot
+storage/*.key
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+
+# IDE/Editor specific files/directories
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Build files
+public/css/
+public/js/
+public/mix-manifest.json
+public/web.config
+
+# Testing files
+phpunit.xml
+tests/
+
+# Miscellaneous
+.DS_Store
+Thumbs.db

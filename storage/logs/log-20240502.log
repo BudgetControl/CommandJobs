@@ -1,0 +1,19 @@
+<11>1 2024-05-02T12:50:05.426794+00:00 43f249bb03f8 - 1055 MS-STATS - ERROR: Wallet not found for entry: 35  
+<11>1 2024-05-02T12:50:21.908089+00:00 43f249bb03f8 - 1057 MS-STATS - ERROR: Wallet not found for entry: 35  
+<11>1 2024-05-02T12:51:12.987050+00:00 43f249bb03f8 - 1059 MS-STATS - ERROR: Wallet not found for entry: 36  
+<11>1 2024-05-02T12:51:12.995055+00:00 43f249bb03f8 - 1059 MS-STATS - ERROR: Wallet not found for entry: 37  
+<11>1 2024-05-02T12:52:37.792092+00:00 43f249bb03f8 - 1063 MS-STATS - ERROR: Error adding planned entry: A facade root has not been set.  
+<11>1 2024-05-02T12:52:37.797329+00:00 43f249bb03f8 - 1063 MS-STATS - ERROR: Job failed  
+<11>1 2024-05-02T13:03:04.782711+00:00 43f249bb03f8 - 1075 MS-STATS - ERROR: Error adding planned entry: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'pe_tags.deleted_at' in 'where clause' (Connection: default, SQL: select tags.*, pe_tags.planned_entry_id as entry_id from labels as tags
+        right join planned_entry_labels as pe_tags on tags.id = pe_tags.labels_id
+        where pe_tags.planned_entry_id = 2 AND pe_tags.deleted_at IS NULL;)  
+<11>1 2024-05-02T13:03:04.793095+00:00 43f249bb03f8 - 1075 MS-STATS - ERROR: Job failed  
+<11>1 2024-05-02T13:09:59.229270+00:00 43f249bb03f8 - 1081 MS-STATS - ERROR: Error adding planned entry: Add [workspace_id] to fillable property to allow mass assignment on [Budgetcontrol\jobs\Domain\Model\Entry].  
+<11>1 2024-05-02T13:09:59.234576+00:00 43f249bb03f8 - 1081 MS-STATS - ERROR: Job failed  
+<11>1 2024-05-02T13:10:20.793321+00:00 43f249bb03f8 - 1083 MS-STATS - ERROR: Error adding planned entry: Add [workspace_id] to fillable property to allow mass assignment on [Budgetcontrol\jobs\Domain\Model\Entry].  
+<11>1 2024-05-02T13:10:20.957421+00:00 43f249bb03f8 - 1083 MS-STATS - ERROR: Job failed  
+<11>1 2024-05-02T13:18:48.140954+00:00 43f249bb03f8 - 1095 MS-STATS - ERROR: Error adding planned entry: Budgetcontrol\jobs\Cli\AddPlannedEntry::updatePlanningEntry(): Argument #1 ($data) must be of type Illuminate\Database\Eloquent\Collection, array given, called in /var/www/workdir/src/Cli/AddPlannedEntry.php on line 111  
+<11>1 2024-05-02T13:18:48.145874+00:00 43f249bb03f8 - 1095 MS-STATS - ERROR: Job failed  
+<12>1 2024-05-02T13:25:17.735567+00:00 43f249bb03f8 - 1103 MS-STATS - WARNING: No entries found to save  
+<12>1 2024-05-02T13:26:35.856852+00:00 43f249bb03f8 - 1105 MS-STATS - WARNING: No entries found to save  
+<12>1 2024-05-02T13:26:43.571917+00:00 43f249bb03f8 - 1107 MS-STATS - WARNING: No entries found to save  
