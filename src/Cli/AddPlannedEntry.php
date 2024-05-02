@@ -101,6 +101,9 @@ class AddPlannedEntry extends JobCommand
                 $entryToInsert->note = $entry->note;
                 $entryToInsert->currency_id = $entry->currency_id;
                 $entryToInsert->uuid = \Ramsey\Uuid\Uuid::uuid4()->toString();
+                $entryToInsert->created_at = Carbon::now()->toAtomString();
+                $entryToInsert->updated_at = Carbon::now()->toAtomString();
+                $entryToInsert->workspace_id = $entry->workspace_id;
                 $entryToInsert->save();
 
                 //save tags
