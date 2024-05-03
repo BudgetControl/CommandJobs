@@ -3,6 +3,12 @@
     "description": "Jobs microservice",
     "type": "none",
     "license": "MIT",
+    "repositories": {
+        "budgetcontrol/libs-connector": {
+            "type": "vcs",
+            "url": "https://github.com/BudgetControl/Libs_BcConnector.git"
+        }
+    },
     "require": {
         "php": "^8.1",
         "slim/slim": "^4.13",
@@ -23,7 +29,8 @@
         "illuminate/filesystem": "^11.0",
         "nesbot/carbon": "^3.2",
         "symfony/console": "7.1.x-dev",
-        "webit/bcmath": "^1.0"
+        "webit/bcmath": "^1.0",
+        "budgetcontrol/libs-connector": "v0.0.2"
     },
     "require-dev": {
         "nikic/php-parser": "^5.0",

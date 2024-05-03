@@ -11,6 +11,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Budgetcontrol\jobs\Domain\Repository\PlannedEntryRepository;
+use Ramsey\Uuid\Uuid;
 use Throwable;
 
 /**
@@ -44,16 +45,15 @@ class AddPlannedEntry extends JobCommand
     {
         Log::info('Adding planned entries');
         try {
-            foreach (self::TIME as $time) {
-                $entries = $this->getPlannedEntry($time);
-                if ($entries === false) {
-                    return Command::INVALID;
-                }
-    
-                $this->insertEntry(
-                    $entries
-                );
+
+            $entries = $this->getPlannedEntry();
+            if ($entries === false) {
+                return Command::INVALID;
             }
+
+            $this->insertEntry(
+                $entries
+            );
     
             return Command::SUCCESS;
         } catch(Throwable $e) {
@@ -63,19 +63,91 @@ class AddPlannedEntry extends JobCommand
         }
     }
 
-    /**
-     * Get planned entry based on time
-     * @param string $time
-     * @return mixed
-     */
-    private function getPlannedEntry(string $time)
+    private function getPlannedEntry()
     {
-        $entries = PlannedEntryRepository::plannedEntriesFromDateTime(Carbon::now()->format('Y-m-d'));
+        $entries = PlannedEntryRepository::plannedEntryOfTheMonth();
 
         if (is_null($entries)) {
             Log::warning('No entries found to save');
             return false;
         }
+
+        $totalEntries = [];
+        foreach ($entries as $entry) {
+            
+            switch ($entry->planning) {
+                case 'daily':
+                    $duplicateItems = $this->buildEntriesDays($entry);
+                    break;
+                case 'weekly':
+                    $duplicateItems = $this->buildEntriesWeeks($entry);
+                    break;
+                case 'monthly':
+                    $duplicateItems = [$entry];
+                    break;
+                case 'yearly':
+                    $duplicateItems = [$entry];
+                    break;
+                default:
+                    $duplicateItems = [$entry];
+                    break;
+            }
+
+            $totalEntries = array_merge($totalEntries, $duplicateItems);
+        }
+
+        $this->updatePlanningEntry($entries);
+        return $totalEntries;
+    }
+
+    private function buildEntriesDays($entry)
+    {
+        $count = 0;
+        $duplicateItems = date('t'); //count current days of the month
+        
+        $entries = [];
+        // first day of the month
+        $firstDay = Carbon::now()->startOfMonth()->minute(0)->second(0)->hour(0);
+        while($count < $duplicateItems) {
+            $day = 1;
+            if($count == 0) {
+                $day = 0;
+            }
+            $newEntry = clone $entry;
+            $newEntry->uuid = Uuid::uuid4()->toString();
+
+            $newDate = $firstDay->addDays($day);
+            if ($newDate->month > Carbon::now()->month) {
+                unset($newEntry);
+            } else {
+                $newEntry->date_time = $newDate->toAtomString();
+                $entries[] = $newEntry;
+            }
+            $count++;
+        }
+
+        return $entries;
+    }
+
+    private function buildEntriesWeeks($entry)
+    {
+        $count = 0;
+        $duplicateItems = ceil(date('t') / 7); //count weeks in the month
+
+        while($count < $duplicateItems) {
+            $newEntry = clone $entry;
+            $newEntry->uuid = Uuid::uuid4()->toString();
+            $newDate = Carbon::createFromFormat('Y-m-d', date('Y-m-d',strtotime($entry->date_time)))->addWeeks($count);
+            //if date_time is nex month swith
+            if ($newDate->month > Carbon::now()->month) {
+                unset($newEntry);
+            } else {
+                $newEntry->date_time = $newDate->toAtomString();
+                $entries[] = $newEntry;
+            }
+            $count++;
+        }
+
         return $entries;
     }
 
@@ -88,6 +160,8 @@ class AddPlannedEntry extends JobCommand
             /** @var EntryModel $request  */
             foreach ($data as $entry) {
 
+                $dateTime = Carbon::createFromFormat('Y-m-d', date('Y-m-d',strtotime($entry->date_time)))->toAtomString();
+
                 $entryToInsert = new Entry(['workspace_id' => $entry->workspace_id]);
                 $entryToInsert->transfer = 0;
                 $entryToInsert->amount = $entry->amount;
@@ -97,7 +171,7 @@ class AddPlannedEntry extends JobCommand
                 $entryToInsert->waranty = 0;
                 $entryToInsert->confirmed = 1;
                 $entryToInsert->planned = 1;
-                $entryToInsert->date_time = Carbon::rawCreateFromFormat('Y-m-d h:i:s', $entry->date_time)->toAtomString();
+                $entryToInsert->date_time = $dateTime;
                 $entryToInsert->note = $entry->note;
                 $entryToInsert->currency_id = $entry->currency_id;
                 $entryToInsert->uuid = \Ramsey\Uuid\Uuid::uuid4()->toString();
@@ -111,53 +185,24 @@ class AddPlannedEntry extends JobCommand
                     $entryToInsert->tags()->attach($tag->id);
                 }
             }
-
-            $this->updatePlanningEntry($data);
     }
 
     /**
-     * Update planning entry to the next date
+     * Updates a planning entry.
+     *
+     * @param array $entries The entries to update.
+     * @return void
      */
-    private function updatePlanningEntry(array $data)
+    private function updatePlanningEntry($entries)
     {
-        foreach ($data as $e) {
-            $date = $this->getTimeValue($e->planning);
+        foreach ($entries as $e) {
             PlannedEntry::find($e->id)->update(
                 [
-                    'date_time' => $date->toAtomString(),
+                    'date_time' => Carbon::createFromFormat('Y-m-d', date('Y-m-d',strtotime($e->date_time)))->addMonth()->toAtomString(),
                     'updated_at' => Carbon::now()->toAtomString()
                 ]
             );
         }
     }
-
-    /**
-     * Get the time value based on timing
-     * @param string $timing
-     * @return Carbon
-     */
-    private function getTimeValue(string $timing): Carbon
-    {
-        $date = Carbon::now();
-
-        switch ($timing) {
-            case "daily":
-                $newDate = $date->modify('+1 day');
-                break;
-            case "monthly":
-                $newDate = $date->modify('+1 month');
-                break;
-            case "weekly":
-                $newDate = $date->modify('+7 days');
-                break;
-            case "yearly":
-                $newDate = $date->modify('+1 year');
-                break;
-            default:
-                $newDate = $date;
-                break;
-        }
-
-        return $newDate;
-    }
+    
 }

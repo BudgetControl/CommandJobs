@@ -21,11 +21,10 @@ final class FailedJobsTable extends AbstractMigration
     {
         if($this->hasTable('failed_jobs')) {
             $this->table('failed_jobs')->drop()->save();
-            return;
         }
         
         $table = $this->table('failed_jobs', ['id' => false, 'primary_key' => 'uuid']);
-        $table->addColumn('uuid', 'string', ['limit' => 36])
+        $table->addColumn('uuid', 'string', ['limit' => 36, 'null' => false])
             ->addColumn('command', 'string')
             ->addColumn('exception', 'text')
             ->addColumn('failed_at', 'timestamp')
