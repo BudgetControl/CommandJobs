@@ -7,6 +7,7 @@ use Brick\Math\BigNumber;
 use Illuminate\Support\Facades\Log;
 use Budgetcontrol\jobs\Domain\Model\Entry;
 use Budgetcontrol\jobs\Domain\Model\Wallet;
+use Budgetcontrol\jobs\Domain\Repository\EntryRepository;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -38,8 +39,9 @@ class ActivatePlannedEntry extends JobCommand
     {
         Log::info('Activating planned entries');
         try {
-            $entries = Entry::where('planned', true)->get();
-            foreach ($entries as $entry) {
+            $entries = EntryRepository::entryOfCurrentTime();
+            foreach ($entries as $currentEntry) {
+                $entry = Entry::find($currentEntry->id);
                 //for each entry, update wallet balance
                 $walletId = $entry->account_id;
                 $wallet = Wallet::find($walletId);
