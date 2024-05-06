@@ -13,8 +13,7 @@ class EntryRepository {
      */
     public static function entryOfCurrentTime()
     {
-        $date = Carbon::now()->toAtomString();
-        $query = "SELECT id FROM entries WHERE DATE(date_time) = '$date' AND deleted_at IS NULL";
+        $query = "SELECT id FROM entries WHERE DATE(date_time) = CURDATE() AND deleted_at IS NULL and planned = 1 ;";
         $results = DB::select($query);
 
         if(empty($results)) {
