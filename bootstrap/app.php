@@ -1,6 +1,7 @@
 <?php
 // Autoload Composer dependencies
 
+use Budgetcontrol\jobs\Facade\Mail;
 use Monolog\Level;
 use Illuminate\Support\Facades\Facade;
 use \Illuminate\Support\Carbon as Date;
@@ -60,8 +61,12 @@ $formatter = new \Monolog\Formatter\SyslogFormatter();
 $streamHandler->setFormatter($formatter);
 $logger->pushHandler($streamHandler);
 
+/** mail configuration */
+require_once __DIR__ . '/../config/mail.php';
+
 // Set up the Facade application
 Facade::setFacadeApplication([
     'log' => $logger,
     'date' => new Date(),
+    'mail' => $mail
 ]);

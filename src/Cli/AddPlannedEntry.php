@@ -42,7 +42,7 @@ class AddPlannedEntry extends JobCommand
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
-    {
+    {   
         Log::info('Adding planned entries');
         try {
 
@@ -65,7 +65,8 @@ class AddPlannedEntry extends JobCommand
 
     private function getPlannedEntry()
     {
-        $entries = PlannedEntryRepository::plannedEntryOfTheMonth();
+        $repository = new PlannedEntryRepository();
+        $entries = $repository->plannedEntryOfTheMonth();
 
         if (is_null($entries)) {
             Log::warning('No entries found to save');

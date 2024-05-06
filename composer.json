@@ -7,6 +7,10 @@
         "budgetcontrol/libs-connector": {
             "type": "vcs",
             "url": "https://github.com/BudgetControl/Libs_BcConnector.git"
+        },
+        "budgetcontrol/libs-mailer": {
+            "type": "vcs",
+            "url": "https://github.com/BudgetControl/Libs_Mailer.git"
         }
     },
     "require": {
@@ -30,7 +34,8 @@
         "nesbot/carbon": "^3.2",
         "symfony/console": "7.1.x-dev",
         "webit/bcmath": "^1.0",
-        "budgetcontrol/libs-connector": "v0.0.2"
+        "budgetcontrol/libs-connector": "v0.0.1",
+        "budgetcontrol/libs-mailer": "dev-develop"
     },
     "require-dev": {
         "nikic/php-parser": "^5.0",

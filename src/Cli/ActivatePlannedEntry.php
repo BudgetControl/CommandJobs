@@ -37,9 +37,10 @@ class ActivatePlannedEntry extends JobCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $repository = new EntryRepository();
         Log::info('Activating planned entries');
         try {
-            $entries = EntryRepository::entryOfCurrentTime();
+            $entries = $repository->entryOfCurrentTime();
             foreach ($entries as $currentEntry) {
                 $entry = Entry::find($currentEntry->id);
                 //for each entry, update wallet balance
