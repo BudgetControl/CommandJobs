@@ -34,8 +34,8 @@
         "nesbot/carbon": "^3.2",
         "symfony/console": "7.1.x-dev",
         "webit/bcmath": "^1.0",
-        "budgetcontrol/libs-connector": "v0.0.1",
-        "budgetcontrol/libs-mailer": "dev-develop"
+        "budgetcontrol/libs-connector": "v0.1",
+        "budgetcontrol/libs-mailer": "v1.1"
     },
     "require-dev": {
         "nikic/php-parser": "^5.0",
