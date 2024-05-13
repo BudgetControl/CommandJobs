@@ -2,6 +2,7 @@
 
 namespace Budgetcontrol\jobs\Cli;
 
+use Budgetcontrol\Connector\Client\BudgetClient;
 use Budgetcontrol\jobs\Facade\Mail;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\Console\Command\Command;
@@ -9,6 +10,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Budgetcontrol\SdkMailer\Service\MailerClientService;
 use Budgetcontrol\jobs\Domain\Repository\BudgetRepository;
+use Budgetcontrol\jobs\Facade\BudgetControlClient;
 use Budgetcontrol\jobs\MailerViews\BudgetExceededView;
 
 /**
@@ -29,16 +31,24 @@ class AlertBudget extends JobCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $repository = new BudgetRepository();
         Log::info('Alert budget');
-        $budgets = $repository->findExceededBudget();
+        $budgets = BudgetControlClient::budgetStats(1)->getResult();
 
         foreach ($budgets as $budget) {
-            $toNotify = $this->toNotify($budget);
+            $toNotify = $this->toNotify($budget['budget']);
             if (!empty($toNotify)) {
-                $view = new BudgetExceededView();
-                $view->setSimpleMessage($budget->configuration->name);
-                Mail::sendMail($toNotify, "Budget exceeded", $view);
+                if (str_replace('%', '', $budget['totalSpentPercentage']) > 70) {
+                    $view = new BudgetExceededView();
+                    $view->setTemplate('budget.twig');
+                    $view->setMessage($budget['budget']['name']);
+                    $view->setTotalSPent($budget['totalSpent']);
+                    $view->setSpentPercentage($budget['totalSpentPercentage']);
+                    $view->setPercentage($budget['totalSpentPercentage']);
+                    $className = str_replace('%', '', $budget['totalSpentPercentage']) > 80 ? 'bg-red-600' : 'bg-emerald-600';
+                    $view->setClassName($className);
+                    $view->setName("");
+                    Mail::sendMail($toNotify, "Budget exceeded", $view);
+                }
             }
         }
 
@@ -55,8 +65,8 @@ class AlertBudget extends JobCommand
     {
         $toNotify = [];
         // retrive user email
-        if($budget->notification == true) {
-            $toNotify[] = $budget?->emails ?? null;
+        if ($budget['notification'] == true) {
+            $toNotify = $budget['emails'] ?? null;
         }
 
         return $toNotify;

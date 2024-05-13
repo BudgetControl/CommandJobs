@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "522c050b321ed1cc491239592a7c88d5",
+    "content-hash": "4cec72782722a674126306b692c8fabe",
     "packages": [
         {
             "name": "brick/math",
@@ -68,16 +68,16 @@
         },
         {
             "name": "budgetcontrol/libs-connector",
-            "version": "0.0.1",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BudgetControl/Libs_BcConnector.git",
-                "reference": "4629766300c5adf942590ed32d9dae6ce14c61da"
+                "reference": "185e70590afbcef9eac4ea3db034a542cc3e37c0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BudgetControl/Libs_BcConnector/zipball/4629766300c5adf942590ed32d9dae6ce14c61da",
-                "reference": "4629766300c5adf942590ed32d9dae6ce14c61da",
+                "url": "https://api.github.com/repos/BudgetControl/Libs_BcConnector/zipball/185e70590afbcef9eac4ea3db034a542cc3e37c0",
+                "reference": "185e70590afbcef9eac4ea3db034a542cc3e37c0",
                 "shasum": ""
             },
             "require": {
@@ -112,10 +112,10 @@
             ],
             "description": "defines the dependencies required for a PHP library in a Budget control application",
             "support": {
-                "source": "https://github.com/BudgetControl/Libs_BcConnector/tree/v0.0.1",
+                "source": "https://github.com/BudgetControl/Libs_BcConnector/tree/develop",
                 "issues": "https://github.com/BudgetControl/Libs_BcConnector/issues"
             },
-            "time": "2024-04-19T12:46:05+00:00"
+            "time": "2024-05-12T18:08:27+00:00"
         },
         {
             "name": "budgetcontrol/libs-mailer",
@@ -7861,6 +7861,7 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "symfony/console": 20,
+        "budgetcontrol/libs-connector": 20,
         "budgetcontrol/libs-mailer": 20
     },
     "prefer-stable": false,

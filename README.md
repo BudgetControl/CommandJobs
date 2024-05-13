@@ -26,6 +26,11 @@ This repository contains the code of microservice budgetcontrol jobs client appl
 - `task build:dev`: Install and build dev application.
 - `task run:db`: Build and run dev database
 
+### Test with mailhog service
+You can use an fake mailhog server
+- docker run --rm -d --name mailhog -p 8025:8025 -p 1025:1025 mailhog/mailhog
+- docker network connect [network_name] mailhog
+
 ## Contributing
 
 Contributions are welcome! Please read our [Contribution Guidelines](CONTRIBUTING.md) for more information.
