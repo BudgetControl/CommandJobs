@@ -22,10 +22,10 @@ class Budget extends Model
 
     public function setConfigurationAttribute($value)
     {
-        $this->attributes['configuration'] = json_decode($value);
+        $this->attributes['configuration'] = json_encode($value);
     }
 
-    public function setConfigurationNotification($value)
+    public function setNotificationAttribute($value)
     {
         $this->attributes['notification'] = (bool) $value;
     }
