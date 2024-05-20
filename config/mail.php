@@ -1,6 +1,6 @@
 <?php
 
-$mail = new \Budgetcontrol\SdkMailer\Service\Mail();
+$mail = new \MLAB\SdkMailer\Service\Mail();
 $mail->setHost(env('MAIL_HOST', 'mailhog'));
 $mail->setDriver(env('MAIL_DRIVER', 'mailhog'));
 $mail->setPassword(env('MAIL_PASSWORD', ''));

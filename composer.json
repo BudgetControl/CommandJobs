@@ -8,9 +8,9 @@
             "type": "vcs",
             "url": "https://github.com/BudgetControl/Libs_BcConnector.git"
         },
-        "budgetcontrol/libs-mailer": {
+        "mlabfactory/libs-mailer": {
             "type": "vcs",
-            "url": "https://github.com/BudgetControl/Libs_Mailer.git"
+            "url": "https://github.com/mlabfactory/Libs_Mailer.git"
         }
     },
     "require": {
@@ -31,11 +31,11 @@
         "illuminate/events": "^11.0",
         "symfony/property-access": "^7.0",
         "illuminate/filesystem": "^11.0",
-        "nesbot/carbon": "^3.2",
-        "symfony/console": "7.1.x-dev",
+        "nesbot/carbon": "^3.3.1",
+        "symfony/console": "7.0.7",
         "webit/bcmath": "^1.0",
-        "budgetcontrol/libs-connector": "v0.1",
-        "budgetcontrol/libs-mailer": "v1.1"
+        "mlabfactory/libs-mailer": "v1.1.2-RC",
+        "budgetcontrol/libs-connector": "dev-develop"
     },
     "require-dev": {
         "nikic/php-parser": "^5.0",
@@ -45,10 +45,7 @@
     "autoload": {
         "psr-4": {
             "Budgetcontrol\\jobs\\": "src/"
-        },
-        "files": [
-            "config/helpers.php"
-        ]
+        }
     },
     "authors": [
         {
@@ -56,5 +53,5 @@
             "email": "marco.defelice@mlabfactory.it"
         }
     ],
-    "minimum-stability": "dev"
+    "minimum-stability": "RC"
 }

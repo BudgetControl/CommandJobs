@@ -2,7 +2,7 @@
 
 namespace Budgetcontrol\jobs\MailerViews;
 
-use Budgetcontrol\SdkMailer\View\Mail;
+use MLAB\SdkMailer\View\Mail;
 
 /**
  * Class BudgetExceededView
