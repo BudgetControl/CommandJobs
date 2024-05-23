@@ -1,4 +1,6 @@
-<html lang="it"><head>
+<!DOCTYPE html>
+<html lang="it">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -39,8 +41,11 @@
         }
 
         .progress-bar {
-            height: 10px;
+            height: 20px;
             background-color: red;
+            text-align: center;
+            font-weight: bold;
+            color: white;
         }
 
         .budget-label {
@@ -61,6 +66,13 @@
             color: #065F46;
             font-weight: bold;
         }
+
+        .progress-container {
+            margin-top: 10px;
+            background-color: #E5E7EB;
+            border-radius: 5px;
+            overflow: hidden;
+        }
     </style>
 </head>
 <body>
@@ -75,13 +87,13 @@
         </div>
         <div class="row mt-5">
             <div>
-                <div>
-                    <p class="budget-label">{{budgetName}}</span>
-                    <p class="total-spent">Total spent: {{totalSpent}}</span>
-                    <p class="spent-percentage">Spent percentage: {{spentPercentage}}</span>
+                <div style="align-items: center;">
+                    <span class="budget-label">{{budgetName}}</span><br>
+                    <span class="total-spent">Total spent: {{totalSpent}}</span><br>
+                    <span class="spent-percentage">Spent percentage: {{spentPercentage}}</span><br>
                 </div>
-                <div style="/* height: 27px; */margin-top: 10px;background-color: #E5E7EB;border-radius: 5px;overflow: hidden;">
-                    <div class="progress-bar" style="width: {{percentage}};height: 20px;/* font-size: 13px; */padding: 2px;text-align: center;font-weight: bold;"> {{percentage}} </div>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: {{percentage}};">{{percentage}}</div>
                 </div>
             </div>
             <br>
@@ -89,6 +101,5 @@
             <p>The Budget Control Team</p>
         </div>
     </div>
-
-
-</body></html>
+</body>
+</html>
