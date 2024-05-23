@@ -1,0 +1,94 @@
+<html lang="it"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            line-height: 1.5rem;
+            margin: 0;
+            padding: 0;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .row {
+            margin-bottom: 20px;
+        }
+
+        .mt-5 {
+            margin-top: 20px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: red;
+        }
+
+        .budget-label {
+            background-color: #A7F3D0;
+            color: #065F46;
+            padding: 5px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            text-transform: uppercase;
+        }
+
+        .total-spent {
+            color: #065F46;
+            font-weight: bold;
+        }
+
+        .spent-percentage {
+            color: #065F46;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo text-center">
+        <img width="150px" src="//www.budgetcontrol.cloud/assets/images/logo.png" alt="Budget Control">
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <p>Hello {{name}},</p>
+            <p>{{ message }}</p>
+        </div>
+        <div class="row mt-5">
+            <div>
+                <div style="align-items: center;">
+                    <span class="budget-label">{{budgetName}}</span><br>
+                        <span class="total-spent">Total spent: {{totalSpent}}</span> <br>
+                        <span class="spent-percentage">Spent percentage: {{spentPercentage}}</span><br>
+                </div>
+                <div style="/* height: 27px; */margin-top: 10px;background-color: #E5E7EB;border-radius: 5px;overflow: hidden;">
+                    <div class="progress-bar" style="width: {{percentage}};height: 20px;/* font-size: 13px; */padding: 2px;text-align: center;font-weight: bold;"> 70 %</div>
+                </div>
+            </div>
+            <br>
+            <p>Thank you again for choosing Budget Control!</p>
+            <p>The Budget Control Team</p>
+        </div>
+    </div>
+
+
+</body></html>
