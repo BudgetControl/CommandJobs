@@ -41,8 +41,11 @@
         }
 
         .progress-bar {
-            height: 10px;
+            height: 20px;
             background-color: red;
+            text-align: center;
+            font-weight: bold;
+            color: white;
         }
 
         .budget-label {
@@ -51,16 +54,24 @@
             padding: 5px 10px;
             border-radius: 20px;
             display: inline-block;
+            text-transform: uppercase;
         }
 
         .total-spent {
-            margin-left: 10px;
-            color: #374151;
+            color: #065F46;
+            font-weight: bold;
         }
 
         .spent-percentage {
             color: #065F46;
             font-weight: bold;
+        }
+
+        .progress-container {
+            margin-top: 10px;
+            background-color: #E5E7EB;
+            border-radius: 5px;
+            overflow: hidden;
         }
     </style>
 </head>
@@ -76,12 +87,13 @@
         </div>
         <div class="row mt-5">
             <div>
-                <div style="display: flex; justify-content: space-between; align-items: center; text-transform: uppercase;">
-                    <div><span class="budget-label">{{budgetName}}</span></div>
-                    <div class="text-right"><span class="total-spent">{{totalSpent}}</span> <span class="spent-percentage">{{spentPercentage}}</span></div>
+                <div style="align-items: center;">
+                    <span class="budget-label">{{budgetName}}</span><br>
+                    <span class="total-spent">Total spent: {{totalSpent}}</span><br>
+                    <span class="spent-percentage">Spent percentage: {{spentPercentage}}</span><br>
                 </div>
-                <div style="height: 10px; margin-top: 10px; background-color: #E5E7EB; border-radius: 5px; overflow: hidden;">
-                    <div class="progress-bar" style="width: {{percentage}};"></div>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: {{percentage}};">{{percentage}}</div>
                 </div>
             </div>
             <br>
