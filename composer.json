@@ -34,7 +34,7 @@
         "nesbot/carbon": "^3.3.1",
         "symfony/console": "7.0.7",
         "webit/bcmath": "^1.0",
-        "mlabfactory/libs-mailer": "v1.1.2-RC",
+        "mlabfactory/libs-mailer": "v1.1.4",
         "budgetcontrol/libs-connector": "dev-develop"
     },
     "require-dev": {
