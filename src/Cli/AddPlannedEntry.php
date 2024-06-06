@@ -54,7 +54,8 @@ class AddPlannedEntry extends JobCommand
             $this->insertEntry(
                 $entries
             );
-    
+            
+            $this->heartbeats(env('HEARTBEAT_PLANNED_ENTRY'));
             return Command::SUCCESS;
         } catch(Throwable $e) {
             Log::error('Error adding planned entry: ' . $e->getMessage());

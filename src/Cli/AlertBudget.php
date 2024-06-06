@@ -52,6 +52,7 @@ class AlertBudget extends JobCommand
             }
         }
 
+        $this->heartbeats(env('HEARTBEAT_BUDGET_EXCEEDED'));
         return Command::SUCCESS;
     }
 
