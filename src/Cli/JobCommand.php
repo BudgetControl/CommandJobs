@@ -5,6 +5,7 @@ use Carbon\Carbon;
 use Symfony\Component\Console\Command\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Capsule\Manager as DB;
+use Illuminate\Support\Facades\Http;
 use Ramsey\Uuid\Uuid;
 
 abstract class JobCommand extends Command
@@ -18,5 +19,10 @@ abstract class JobCommand extends Command
         $query = "INSERT INTO ".self::JOBS_TABLE." (uuid, command, exception, failed_at) VALUES 
         ('". Uuid::uuid4() ."', '".$this->command."', '".$exception."', '".Carbon::now()->toAtomString()."')";
         Db::insert($query);
+    }
+
+    protected function heartbeats(string $key): void
+    {
+        Http::head('https://uptime.betterstack.com/api/v1/heartbeat/'.$key);
     }
 }
