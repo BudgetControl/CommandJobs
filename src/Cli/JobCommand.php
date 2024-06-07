@@ -23,6 +23,7 @@ abstract class JobCommand extends Command
 
     protected function heartbeats(string $key): void
     {
-        Http::head('https://uptime.betterstack.com/api/v1/heartbeat/'.$key);
+        $http = new \GuzzleHttp\Client();
+        $http->head('https://uptime.betterstack.com/api/v1/heartbeat/'.$key);
     }
 }
