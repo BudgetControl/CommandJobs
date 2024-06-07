@@ -64,6 +64,7 @@ class ActivatePlannedEntry extends JobCommand
                 
             }
 
+            $this->heartbeats(env('HEARTBEAT_ACTIVATE_PLANNED_ENTRY'));
             return Command::SUCCESS;
         } catch (Throwable $e) {
             Log::error('Error activating planned entry: ' . $e->getMessage());

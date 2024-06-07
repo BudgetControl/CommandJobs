@@ -52,6 +52,7 @@ class BudgetPeriodChange extends JobCommand
             $this->fail($e->getMessage());
         }
 
+        $this->heartbeats(env('HEARTBEAT_BUDGET_PERIOD_CHANGE'));
         return Command::SUCCESS;
     }
 }

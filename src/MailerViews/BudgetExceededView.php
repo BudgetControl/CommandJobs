@@ -31,7 +31,7 @@ class BudgetExceededView extends Mail
             'totalSpent' => $this->totalSpent,
             'budgetName' => $this->budgetName,
             'spentPercentage' => $this->spentPercentage,
-            'percentage' => $this->percentage,
+            'percentage' => $this->percentage > 100 ? 100 : $this->percentage,
             'className' => $this->className
         ]);
     }

@@ -10,22 +10,13 @@
             padding: 0;
             -webkit-text-size-adjust: 100%;
             -ms-text-size-adjust: 100%;
-            background: rgb(4, 139, 94);
-
-        }
-
-        .general-container {
-            background: rgb(4, 139, 94);
         }
 
         .container {
+            width: 100%;
             max-width: 600px;
             margin: 0 auto;
             padding: 10px;
-            background-color: white;
-            border-radius: 20px;
-            padding: 20px;
-            margin-top: 20px;
         }
 
         .logo {
@@ -46,18 +37,20 @@
         }
 
         .progress-bar {
+            height: 20px;
             background-color: red;
             text-align: center;
             font-weight: bold;
             color: white;
-            padding: 2px;
         }
 
         .budget-label {
+            background-color: #A7F3D0;
             color: #065F46;
+            padding: 5px 10px;
+            border-radius: 20px;
             display: inline-block;
             text-transform: uppercase;
-            font-weight: bolder;
         }
 
         .total-spent, .spent-percentage {
@@ -68,18 +61,17 @@
         .progress-container {
             margin-top: 10px;
             background-color: #E5E7EB;
+            border-radius: 5px;
             overflow: hidden;
         }
     </style>
 </head>
 <body>
-    <div class="general-container">
+    <div class="logo text-center">
+        <img width="150px" src="https://www.budgetcontrol.cloud/assets/images/logo.png" alt="Budget Control">
+    </div>
 
     <div class="container">
-        <div class="logo text-center">
-            <img height="30px" src="https://www.budgetcontrol.cloud/assets/images/budgetcontrol-logo.png" alt="Budget Control">
-        </div>
-
         <div class="row">
             <p>Hi {{name}},</p>
             <p>Your budget "{{budgetName}}" has exceeded the limit you set.</p>
@@ -88,11 +80,11 @@
             <div>
                 <div style="align-items: center;">
                     <span class="budget-label">{{budgetName}}</span><br>
-                    <span class="total-spent">Totale speso: {{totalSpent}}</span><br>
-                    <span class="spent-percentage">Percentuale spesa: {{spentPercentage}}</span><br>
+                    <span class="total-spent">Total spent: {{totalSpent}}</span><br>
+                    <span class="spent-percentage">Spent percentage:{{spentPercentage}}</span><br>
                 </div>
                 <div class="progress-container">
-                    <div class="progress-bar" style="width: {{percentage}};">{{spentPercentage}}</div>
+                    <div class="progress-bar" style="width: {{percentage}};">{{percentage}}</div>
                 </div>
             </div>
             <br>
@@ -100,6 +92,5 @@
             <p>The Budget Control team</p>
         </div>
     </div>
-</div>
 </body>
 </html>
