@@ -32,7 +32,7 @@ switch(env('APP_LOG_LEVEL','debug')) {
 }
 
 //setup log with BetterStack
-$logger = new \Monolog\Logger('MS-BUDGET');
+$logger = new \Monolog\Logger('CLI-JOBS');
 
 // log on FS
 $logPath = env('APP_LOG_PATH',__DIR__.'/../storage/logs/log-'.date("Ymd").'.log');
