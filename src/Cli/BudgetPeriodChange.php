@@ -30,17 +30,17 @@ class BudgetPeriodChange extends JobCommand
                 $configuration = json_decode($budget->configuration);
                 if ($configuration->period == 'recursively') {
 
-                    $dateStart = Carbon::parse($configuration->start_date);
-                    $dateEnd = Carbon::parse($configuration->end_date);
+                    $dateStart = Carbon::parse($configuration->period_start);
+                    $dateEnd = Carbon::parse($configuration->period_end);
 
                     // count days between start and end
                     $days = $dateStart->diffInDays($dateEnd);
 
                     $now = Carbon::now();
                     if ($now->greaterThan($dateEnd)) {
-                        $configuration->start_date = $now->startOfDay();
-                        $configuration->end_date = clone $now;
-                        $configuration->end_date->addDays($days);
+                        $configuration->period_start = $now->startOfDay();
+                        $configuration->period_end = clone $now;
+                        $configuration->period_end->addDays($days);
 
                         $budget->configuration = $configuration;
                         $budget->save();

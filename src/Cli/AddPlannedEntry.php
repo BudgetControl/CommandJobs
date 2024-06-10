@@ -48,6 +48,7 @@ class AddPlannedEntry extends JobCommand
 
             $entries = $this->getPlannedEntry();
             if ($entries === false) {
+                $this->heartbeats(env('HEARTBEAT_PLANNED_ENTRY'));
                 return Command::INVALID;
             }
 
