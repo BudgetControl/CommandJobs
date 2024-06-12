@@ -47,8 +47,15 @@ class AlertBudget extends JobCommand
                     $className = str_replace('%', '', $budget['totalSpentPercentage']) > 80 ? 'bg-red-600' : 'bg-emerald-600';
                     $view->setClassName($className);
                     $view->setName("");
+
+                    try {
+                        Mail::sendMail($toNotify, "Budget exceeded", $view);
+                    } catch (\Throwable $e) {
+                        $this->fail($e->getMessage());
+                        Log::error($e->getMessage());
+                        return Command::FAILURE;
+                    }
                     
-                    Mail::sendMail($toNotify, "Budget exceeded", $view);
                 }
             }
         }
