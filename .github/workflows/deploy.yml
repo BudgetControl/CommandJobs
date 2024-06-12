@@ -27,7 +27,7 @@ jobs:
               local_path: '.'
               remote_path: '/var/www/budgetcontrol/Core/microservices/CommandJobs'
               sftpArgs: '-o ConnectTimeout=5'
-              
+
         - name: executing composer install
           uses: appleboy/ssh-action@v1.0.3
           with:
