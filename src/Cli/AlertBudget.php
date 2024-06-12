@@ -3,6 +3,7 @@
 namespace Budgetcontrol\jobs\Cli;
 
 use Budgetcontrol\Connector\Client\BudgetClient;
+use Budgetcontrol\jobs\Domain\Model\Workspace;
 use Budgetcontrol\jobs\Facade\Mail;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\Console\Command\Command;
@@ -32,30 +33,34 @@ class AlertBudget extends JobCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         Log::info('Alert budget');
-        $budgets = BudgetControlClient::budgetStats(1)->getResult();
+        $workspaces = Workspace::all();
 
-        foreach ($budgets as $budget) {
-            $toNotify = $this->toNotify($budget['budget']);
-            if (!empty($toNotify)) {
-                if (str_replace('%', '', $budget['totalSpentPercentage']) > 70) {
-                    $view = new BudgetExceededView();
-                    $view->setTemplate('budget.twig');
-                    $view->setMessage($budget['budget']['name']);
-                    $view->setTotalSPent($budget['totalSpent']);
-                    $view->setSpentPercentage($budget['totalSpentPercentage']);
-                    $view->setPercentage($budget['totalSpentPercentage']);
-                    $className = str_replace('%', '', $budget['totalSpentPercentage']) > 80 ? 'bg-red-600' : 'bg-emerald-600';
-                    $view->setClassName($className);
-                    $view->setName("");
+        foreach($workspaces as $workspace) {
+            $budgets = BudgetControlClient::budgetStats($workspace->id)->getResult();
 
-                    try {
-                        Mail::sendMail($toNotify, "Budget exceeded", $view);
-                    } catch (\Throwable $e) {
-                        $this->fail($e->getMessage());
-                        Log::error($e->getMessage());
-                        return Command::FAILURE;
+            foreach ($budgets as $budget) {
+                $toNotify = $this->toNotify($budget['budget']);
+                if (!empty($toNotify)) {
+                    if (str_replace('%', '', $budget['totalSpentPercentage']) > 70) {
+                        $view = new BudgetExceededView();
+                        $view->setTemplate('budget.twig');
+                        $view->setMessage($budget['budget']['name']);
+                        $view->setTotalSPent($budget['totalSpent']);
+                        $view->setSpentPercentage($budget['totalSpentPercentage']);
+                        $view->setPercentage($budget['totalSpentPercentage']);
+                        $className = str_replace('%', '', $budget['totalSpentPercentage']) > 80 ? 'bg-red-600' : 'bg-emerald-600';
+                        $view->setClassName($className);
+                        $view->setName("");
+    
+                        try {
+                            Mail::sendMail($toNotify, "Budget exceeded", $view);
+                        } catch (\Throwable $e) {
+                            $this->fail($e->getMessage());
+                            Log::error($e->getMessage());
+                            return Command::FAILURE;
+                        }
+                        
                     }
-                    
                 }
             }
         }
