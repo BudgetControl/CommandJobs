@@ -3,11 +3,12 @@ namespace Budgetcontrol\jobs\Domain\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Wallet extends Model
+class Workspace extends Model
 {
-    protected $table = 'wallets';
-
     protected $hidden = [
-        'id',
+        'created_at',
+        'updated_at',
+        'id'
     ];
+
 }
