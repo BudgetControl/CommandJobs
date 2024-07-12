@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Wallet extends Model
 {
-    protected $table = 'accounts';
+    protected $table = 'wallets';
 
     protected $hidden = [
         'id',
