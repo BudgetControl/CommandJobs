@@ -26,4 +26,10 @@ $application->add(new \Budgetcontrol\jobs\Cli\AlertBudget());
  * Add the BudgetPeriodChange command to the application.
  */
 $application->add(new \Budgetcontrol\jobs\Cli\BudgetPeriodChange());
+
+/**
+ * Add the ManageCreditCardsWallet command to the application.
+ */
+$application->add(new \Budgetcontrol\jobs\Cli\ManageCreditCardsWallet());
+
 $application->run();

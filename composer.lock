@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dd53316cb615baca2030bf19813200b9",
+    "content-hash": "1f98ef6f654a8a389ec04998eff857a7",
     "packages": [
         {
             "name": "brick/math",
@@ -65,6 +65,30 @@
                 }
             ],
             "time": "2023-11-29T23:19:16+00:00"
+        },
+        {
+            "name": "budgetcontrol/library",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../../../libs/Library",
+                "reference": "2a7a7f3de7059b89a85f779fa2a37a5c81a74373"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Budgetcontrol\\Library\\": "libs/"
+                }
+            },
+            "authors": [
+                {
+                    "name": "Marco De Felice",
+                    "email": "marco.defelice@mlabfactory.it"
+                }
+            ],
+            "transport-options": {
+                "relative": true
+            }
         },
         {
             "name": "budgetcontrol/libs-connector",
@@ -7787,13 +7811,15 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "RC",
-    "stability-flags": [],
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "budgetcontrol/library": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.1"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.3.0"
 }

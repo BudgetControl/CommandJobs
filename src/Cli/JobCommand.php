@@ -21,9 +21,11 @@ abstract class JobCommand extends Command
         Db::insert($query);
     }
 
-    protected function heartbeats(string $key): void
+    protected function heartbeats(string|null $key): void
     {
-        $http = new \GuzzleHttp\Client();
-        $http->head('https://uptime.betterstack.com/api/v1/heartbeat/'.$key);
+        if($key) {
+            $http = new \GuzzleHttp\Client();
+            $http->head('https://uptime.betterstack.com/api/v1/heartbeat/'.$key);
+        }
     }
 }

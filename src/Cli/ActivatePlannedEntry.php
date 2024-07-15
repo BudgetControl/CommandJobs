@@ -41,6 +41,13 @@ class ActivatePlannedEntry extends JobCommand
         Log::info('Activating planned entries');
         try {
             $entries = $repository->entryOfCurrentTime();
+
+            if(is_null($entries)) {
+                Log::info('No planned entries to activate');
+                $this->heartbeats(env('HEARTBEAT_ACTIVATE_PLANNED_ENTRY'));
+                return Command::SUCCESS;
+            }
+            
             foreach ($entries as $currentEntry) {
                 $entry = Entry::find($currentEntry->id);
                 //for each entry, update wallet balance
