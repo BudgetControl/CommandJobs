@@ -11,6 +11,10 @@
         "mlabfactory/libs-mailer": {
             "type": "vcs",
             "url": "https://github.com/mlabfactory/Libs_Mailer.git"
+        },
+        "budgetcontrol/library" : {
+            "type":"vcs",
+            "url":"https://github.com/BudgetControl/Library.git"
         }
     },
     "require": {
@@ -35,7 +39,8 @@
         "webit/bcmath": "^1.0",
         "mlabfactory/libs-mailer": "v1.1.4",
         "logtail/monolog-logtail": "^3.1",
-        "budgetcontrol/libs-connector": "v1.0"
+        "budgetcontrol/libs-connector": "v1.0",
+        "budgetcontrol/library": "dev-main"
     },
     "require-dev": {
         "nikic/php-parser": "^5.0",
@@ -53,5 +58,5 @@
             "email": "marco.defelice@mlabfactory.it"
         }
     ],
-    "minimum-stability": "RC"
+    "minimum-stability": "dev"
 }

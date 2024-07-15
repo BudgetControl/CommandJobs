@@ -1,7 +1,9 @@
 <?php
 namespace Budgetcontrol\jobs\Domain\Model;
 
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Entry extends Model
 {
