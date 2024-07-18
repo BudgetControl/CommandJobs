@@ -10,6 +10,7 @@ use Budgetcontrol\jobs\Domain\Model\Wallet;
 use Budgetcontrol\Library\Definition\Format;
 use Budgetcontrol\Library\Entity\Entry as EntityEntry;
 use Budgetcontrol\Library\Entity\Wallet as EntityWallet;
+use Budgetcontrol\Registry\Schema\Wallets;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -44,7 +45,7 @@ class ManageCreditCardsWallet extends JobCommand
         Log::info('Managing credit cards');
 
         $creditCards = Wallet::whereIn('type', [EntityWallet::creditCard->value, EntityWallet::creditCardRevolving->value])
-        ->where('invoice_date', '<=', Carbon::now())
+        ->where(Wallets::invoice_date, '<=', Carbon::now())
         ->get();
 
         try {
@@ -82,8 +83,11 @@ class ManageCreditCardsWallet extends JobCommand
         $wallet->save();
 
         // move date to next month
-        $newDate = Carbon::parse($creditCard->invoice_date)->addMonth();
-        $creditCard->invoice_date = $newDate->format(Format::date->value . ' 00:00:00');
+        $newInvoiceDate = Carbon::parse($creditCard->invoice_date)->addMonth();
+        $newClosingDate = Carbon::parse($creditCard->closing_date)->addMonth();
+
+        $creditCard->invoice_date = $newInvoiceDate->format(Format::date->value . ' 00:00:00');
+        $creditCard->closing_date = $newClosingDate->format(Format::date->value . ' 00:00:00');
         $creditCard->save();
 
         log::debug('Credit card updated', ['creditCard' => $creditCard->toArray()]);

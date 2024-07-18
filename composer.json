@@ -15,6 +15,10 @@
         "budgetcontrol/library" : {
             "type":"vcs",
             "url":"https://github.com/BudgetControl/Library.git"
+        },
+        "budgetcontrol/schema-registry-service": {
+            "type": "vcs",
+            "url": "git@github.com:BudgetControl/Schema-Registry-Service.git"
         }
     },
     "require": {
@@ -40,7 +44,8 @@
         "mlabfactory/libs-mailer": "v1.1.4",
         "logtail/monolog-logtail": "^3.1",
         "budgetcontrol/libs-connector": "v1.0",
-        "budgetcontrol/library": "dev-main"
+        "budgetcontrol/library": "dev-main",
+        "budgetcontrol/schema-registry-service": "v1.0"
     },
     "require-dev": {
         "nikic/php-parser": "^5.0",

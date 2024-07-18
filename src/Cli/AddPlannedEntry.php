@@ -10,6 +10,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Budgetcontrol\jobs\Domain\Repository\PlannedEntryRepository;
+use Budgetcontrol\Registry\Schema\Entries;
 use Ramsey\Uuid\Uuid;
 use Throwable;
 use Carbon\Carbon;
@@ -165,7 +166,7 @@ class AddPlannedEntry extends JobCommand
 
                 $dateTime = Carbon::createFromFormat('Y-m-d', date('Y-m-d',strtotime($entry->date_time)))->toAtomString();
 
-                $entryToInsert = new Entry(['workspace_id' => $entry->workspace_id]);
+                $entryToInsert = new Entry([Entries::workspace_id => $entry->workspace_id]);
                 $entryToInsert->transfer = 0;
                 $entryToInsert->amount = $entry->amount;
                 $entryToInsert->account_id = $entry->account_id;

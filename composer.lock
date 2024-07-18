@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1f98ef6f654a8a389ec04998eff857a7",
+    "content-hash": "e46b90c4273c4692b024be380569bf13",
     "packages": [
         {
             "name": "brick/math",
@@ -69,11 +69,18 @@
         {
             "name": "budgetcontrol/library",
             "version": "dev-main",
-            "dist": {
-                "type": "path",
-                "url": "../../../libs/Library",
-                "reference": "2a7a7f3de7059b89a85f779fa2a37a5c81a74373"
+            "source": {
+                "type": "git",
+                "url": "https://github.com/BudgetControl/Library.git",
+                "reference": "7e963623aaaf2312aff78b7323200a02ae23a2b5"
             },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/BudgetControl/Library/zipball/7e963623aaaf2312aff78b7323200a02ae23a2b5",
+                "reference": "7e963623aaaf2312aff78b7323200a02ae23a2b5",
+                "shasum": ""
+            },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -86,9 +93,11 @@
                     "email": "marco.defelice@mlabfactory.it"
                 }
             ],
-            "transport-options": {
-                "relative": true
-            }
+            "support": {
+                "source": "https://github.com/BudgetControl/Library/tree/main",
+                "issues": "https://github.com/BudgetControl/Library/issues"
+            },
+            "time": "2024-07-15T16:59:24+00:00"
         },
         {
             "name": "budgetcontrol/libs-connector",
@@ -138,6 +147,39 @@
                 "issues": "https://github.com/BudgetControl/Libs_BcConnector/issues"
             },
             "time": "2024-06-07T11:38:43+00:00"
+        },
+        {
+            "name": "budgetcontrol/schema-registry-service",
+            "version": "v1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/BudgetControl/Schema-Registry-Service.git",
+                "reference": "bd3d4a784cb018cb79ea1073be5c7f023b082b2d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/BudgetControl/Schema-Registry-Service/zipball/bd3d4a784cb018cb79ea1073be5c7f023b082b2d",
+                "reference": "bd3d4a784cb018cb79ea1073be5c7f023b082b2d",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Budgetcontrol\\Registry\\": "libs/"
+                }
+            },
+            "authors": [
+                {
+                    "name": "Marco De Felice",
+                    "email": "marco.defelice@mlabfactory.it"
+                }
+            ],
+            "description": "An API Schema Registry is a centralized service that manages and distributes database schema definitions",
+            "support": {
+                "source": "https://github.com/BudgetControl/Schema-Registry-Service/tree/v1.0",
+                "issues": "https://github.com/BudgetControl/Schema-Registry-Service/issues"
+            },
+            "time": "2024-07-17T17:46:54+00:00"
         },
         {
             "name": "cakephp/chronos",
