@@ -100,14 +100,15 @@ class ManageCreditCardsWallet extends JobCommand
     {
 
         // se installement_value è una percentuale
+        $amount = $creditCard->installement_value;
 
         if($creditCard->type == EntityWallet::creditCard->value) {
-            $creditCard->installement_value = $creditCard->balance;
+            $amount = $creditCard->balance;
         }
 
         if($creditCard->type == EntityWallet::creditCardRevolving->value) {
             if($creditCard->balance < $creditCard->installement_value) {
-                $creditCard->installement_value = $creditCard->balance;
+                $amount = $creditCard->balance;
             }
         }
 
@@ -116,7 +117,7 @@ class ManageCreditCardsWallet extends JobCommand
         $entry->uuid = Uuid::uuid4();
         $entry->date_time = Carbon::now()->format(Format::dateTime->value);
         $entry->account_id = $creditCard->payment_account;
-        $entry->amount = $creditCard->installement_value;
+        $entry->amount = $amount;
         $entry->note = $creditCard->name;
         $entry->planned = false;
         $entry->confirmed = true;
