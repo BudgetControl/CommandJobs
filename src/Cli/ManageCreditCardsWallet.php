@@ -50,7 +50,9 @@ class ManageCreditCardsWallet extends JobCommand
 
         try {
             foreach ($creditCards as $creditCard) {
-                $this->creditCard($creditCard);
+                if($this->conditions($creditCard) === true) {
+                    $this->creditCard($creditCard);
+                }
             }
         } catch (\Throwable $e) {
             $this->fail($e->getMessage());
@@ -75,11 +77,11 @@ class ManageCreditCardsWallet extends JobCommand
 
         //calculate the wallet balance
         $balance = new BcMathNumber($creditCard->balance);
-        $creditCard->balance = $balance->add($creditCard->invoice_amount)->getValue();
+        $creditCard->balance = $balance->add($creditCard->installement_value)->getValue();
 
         $wallet = Wallet::find($creditCard->payment_account);
         $walletBalance = new BcMathNumber($wallet->balance);
-        $wallet->balance = $walletBalance->sub($creditCard->invoice_amount)->getValue();
+        $wallet->balance = $walletBalance->sub($creditCard->installement_value)->getValue();
         $wallet->save();
 
         // move date to next month
@@ -96,6 +98,8 @@ class ManageCreditCardsWallet extends JobCommand
 
     private function saveEntry(Wallet $creditCard): Entry
     {
+
+        // se installement_value è una percentuale
 
         if($creditCard->type == EntityWallet::creditCard->value) {
             $creditCard->installement_value = $creditCard->balance;
@@ -128,6 +132,16 @@ class ManageCreditCardsWallet extends JobCommand
         Log::debug('Entry created', ['entry' => $entry->toArray()]);
 
         return $entry;
+    }
+
+    private function conditions(Wallet $creditCard): bool
+    {
+
+        if($creditCard->balance >= 0) {
+            return false;
+        }
+
+        return true;
     }
 
 }

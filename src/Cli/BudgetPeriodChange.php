@@ -6,7 +6,6 @@ use Illuminate\Support\Carbon;
 use Budgetcontrol\jobs\Cli\JobCommand;
 use Budgetcontrol\jobs\Domain\Model\Budget;
 use Budgetcontrol\Library\Definition\Period;
-use Budgetcontrol\Library\Entity\Budget as EntityBudget;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -29,7 +28,8 @@ class BudgetPeriodChange extends JobCommand
 
         try {
             foreach ($budgets as $budget) {
-                $configuration = json_decode($budget->configuration);
+
+                $configuration = $budget->configuration;
                 if ($configuration->period == Period::recursively) {
 
                     $dateStart = Carbon::parse($configuration->period_start);
