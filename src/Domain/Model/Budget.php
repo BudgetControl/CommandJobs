@@ -2,6 +2,7 @@
 namespace Budgetcontrol\jobs\Domain\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Budgetcontrol\Library\Entity\Budget as BudgetDefinition;
 
 class Budget extends Model
 {
@@ -33,6 +34,11 @@ class Budget extends Model
     public function setConfigurationEmails($value)
     {
         $this->attributes['emails'] = explode(',',$value);
+    }
+
+    public function map(): BudgetDefinition
+    {
+        return BudgetDefinition::map($this);
     }
     
 

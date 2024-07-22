@@ -10,6 +10,7 @@ use Budgetcontrol\jobs\Domain\Model\Wallet;
 use Budgetcontrol\Library\Definition\Format;
 use Budgetcontrol\Library\Entity\Entry as EntityEntry;
 use Budgetcontrol\Library\Entity\Wallet as EntityWallet;
+use Budgetcontrol\Registry\Schema\Wallets;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -44,12 +45,14 @@ class ManageCreditCardsWallet extends JobCommand
         Log::info('Managing credit cards');
 
         $creditCards = Wallet::whereIn('type', [EntityWallet::creditCard->value, EntityWallet::creditCardRevolving->value])
-        ->where('invoice_date', '<=', Carbon::now())
+        ->where(Wallets::invoice_date, '<=', Carbon::now())
         ->get();
 
         try {
             foreach ($creditCards as $creditCard) {
-                $this->creditCard($creditCard);
+                if($this->conditions($creditCard) === true) {
+                    $this->creditCard($creditCard);
+                }
             }
         } catch (\Throwable $e) {
             $this->fail($e->getMessage());
@@ -74,16 +77,19 @@ class ManageCreditCardsWallet extends JobCommand
 
         //calculate the wallet balance
         $balance = new BcMathNumber($creditCard->balance);
-        $creditCard->balance = $balance->add($creditCard->invoice_amount)->getValue();
+        $creditCard->balance = $balance->add($creditCard->installement_value)->getValue();
 
         $wallet = Wallet::find($creditCard->payment_account);
         $walletBalance = new BcMathNumber($wallet->balance);
-        $wallet->balance = $walletBalance->sub($creditCard->invoice_amount)->getValue();
+        $wallet->balance = $walletBalance->sub($creditCard->installement_value)->getValue();
         $wallet->save();
 
         // move date to next month
-        $newDate = Carbon::parse($creditCard->invoice_date)->addMonth();
-        $creditCard->invoice_date = $newDate->format(Format::date->value . ' 00:00:00');
+        $newInvoiceDate = Carbon::parse($creditCard->invoice_date)->addMonth();
+        $newClosingDate = Carbon::parse($creditCard->closing_date)->addMonth();
+
+        $creditCard->invoice_date = $newInvoiceDate->format(Format::date->value . ' 00:00:00');
+        $creditCard->closing_date = $newClosingDate->format(Format::date->value . ' 00:00:00');
         $creditCard->save();
 
         log::debug('Credit card updated', ['creditCard' => $creditCard->toArray()]);
@@ -92,6 +98,8 @@ class ManageCreditCardsWallet extends JobCommand
 
     private function saveEntry(Wallet $creditCard): Entry
     {
+
+        // se installement_value è una percentuale
 
         if($creditCard->type == EntityWallet::creditCard->value) {
             $creditCard->installement_value = $creditCard->balance;
@@ -124,6 +132,16 @@ class ManageCreditCardsWallet extends JobCommand
         Log::debug('Entry created', ['entry' => $entry->toArray()]);
 
         return $entry;
+    }
+
+    private function conditions(Wallet $creditCard): bool
+    {
+
+        if($creditCard->balance >= 0) {
+            return false;
+        }
+
+        return true;
     }
 
 }
