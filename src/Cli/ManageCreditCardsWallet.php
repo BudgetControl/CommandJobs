@@ -107,7 +107,7 @@ class ManageCreditCardsWallet extends JobCommand
         }
 
         if($creditCard->type == EntityWallet::creditCardRevolving->value) {
-            if($creditCard->balance < $creditCard->installement_value) {
+            if($creditCard->installement_value < $creditCard->balance ) {
                 $amount = $creditCard->balance;
             }
         }
