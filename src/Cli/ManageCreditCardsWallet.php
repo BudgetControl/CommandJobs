@@ -45,7 +45,7 @@ class ManageCreditCardsWallet extends JobCommand
         Log::info('Managing credit cards');
 
         $creditCards = Wallet::whereIn('type', [EntityWallet::creditCard->value, EntityWallet::creditCardRevolving->value])
-        ->where(Wallets::invoice_date, '<=', Carbon::now())
+        ->where(Wallets::invoice_date, '<=', Carbon::now())->where('balance', '<', 0)
         ->get();
 
         try {
@@ -75,13 +75,18 @@ class ManageCreditCardsWallet extends JobCommand
         $creditCardEntry->save();
         $walletEntry->save();
 
+        $installementValue = $creditCard->installement_value;
         //calculate the wallet balance
         $balance = new BcMathNumber($creditCard->balance);
-        $creditCard->balance = $balance->add($creditCard->installement_value)->getValue();
+        $creditCard->balance = $balance->add($installementValue)->getValue();
+        if($creditCard->balance > 0) {
+            $installementValue = $creditCard->balance;
+            $creditCard->balance = 0;
+        }
 
         $wallet = Wallet::find($creditCard->payment_account);
         $walletBalance = new BcMathNumber($wallet->balance);
-        $wallet->balance = $walletBalance->sub($creditCard->installement_value)->getValue();
+        $wallet->balance = $walletBalance->sub($installementValue)->getValue();
         $wallet->save();
 
         // move date to next month
