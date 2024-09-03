@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e46b90c4273c4692b024be380569bf13",
+    "content-hash": "e8f03112b552df5e07e48c3c820feba1",
     "packages": [
         {
             "name": "brick/math",
@@ -101,16 +101,16 @@
         },
         {
             "name": "budgetcontrol/libs-connector",
-            "version": "v1.0",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BudgetControl/Libs_BcConnector.git",
-                "reference": "08f14ef0c419a0e894653587f6c4491d809ac0d1"
+                "reference": "29248e45dcfbd90de28debc3b2a41e6ae12a4296"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BudgetControl/Libs_BcConnector/zipball/08f14ef0c419a0e894653587f6c4491d809ac0d1",
-                "reference": "08f14ef0c419a0e894653587f6c4491d809ac0d1",
+                "url": "https://api.github.com/repos/BudgetControl/Libs_BcConnector/zipball/29248e45dcfbd90de28debc3b2a41e6ae12a4296",
+                "reference": "29248e45dcfbd90de28debc3b2a41e6ae12a4296",
                 "shasum": ""
             },
             "require": {
@@ -143,10 +143,9 @@
             ],
             "description": "defines the dependencies required for a PHP library in a Budget control application",
             "support": {
-                "source": "https://github.com/BudgetControl/Libs_BcConnector/tree/v1.0",
-                "issues": "https://github.com/BudgetControl/Libs_BcConnector/issues"
+                "source": "https://github.com/BudgetControl/Libs_BcConnector/tree/v1.0.1"
             },
-            "time": "2024-06-07T11:38:43+00:00"
+            "time": "2024-09-03T08:30:45+00:00"
         },
         {
             "name": "budgetcontrol/schema-registry-service",

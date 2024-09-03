@@ -36,6 +36,7 @@ class AlertBudget extends JobCommand
         $workspaces = Workspace::all();
 
         foreach($workspaces as $workspace) {
+            
             $budgets = BudgetControlClient::budgetStats($workspace->id)->getResult();
 
             foreach ($budgets as $budget) {
