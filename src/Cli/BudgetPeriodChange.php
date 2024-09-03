@@ -4,7 +4,7 @@ namespace Budgetcontrol\jobs\Cli;
 
 use Illuminate\Support\Carbon;
 use Budgetcontrol\jobs\Cli\JobCommand;
-use Budgetcontrol\jobs\Domain\Model\Budget;
+use Budgetcontrol\Library\Model\Budget;
 use Budgetcontrol\Library\Definition\Period;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -29,8 +29,8 @@ class BudgetPeriodChange extends JobCommand
         try {
             foreach ($budgets as $budget) {
 
-                $configuration = $budget->configuration;
-                if ($configuration->period == Period::recursively) {
+                $configuration = json_decode($budget->configuration);
+                if ($configuration->period == Period::recursively->value) {
 
                     $dateStart = Carbon::parse($configuration->period_start);
                     $dateEnd = Carbon::parse($configuration->period_end);
@@ -44,7 +44,7 @@ class BudgetPeriodChange extends JobCommand
                         $configuration->period_end = clone $now;
                         $configuration->period_end->addDays($days);
 
-                        $budget->configuration = $configuration;
+                        $budget->configuration = json_encode($configuration);
                         $budget->save();
                     }
 
@@ -52,6 +52,7 @@ class BudgetPeriodChange extends JobCommand
             }
         } catch (\Throwable $e) {
             $this->fail($e->getMessage());
+            return Command::FAILURE;
         }
 
         $this->heartbeats(env('HEARTBEAT_BUDGET_PERIOD_CHANGE'));

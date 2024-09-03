@@ -1,6 +1,7 @@
 <?php
 namespace Budgetcontrol\jobs\Cli;
 
+use Budgetcontrol\Library\Definition\Format;
 use Carbon\Carbon;
 use Symfony\Component\Console\Command\Command;
 use Illuminate\Support\Facades\Log;
@@ -17,7 +18,7 @@ abstract class JobCommand extends Command
     {
         Log::error('Job failed '.$exception);
         $query = "INSERT INTO ".self::JOBS_TABLE." (uuid, command, exception, failed_at) VALUES 
-        ('". Uuid::uuid4() ."', '".$this->command."', '".$exception."', '".Carbon::now()->toAtomString()."')";
+        ('". Uuid::uuid4() ."', '".$this->command."', '".addslashes($exception)."', '".Carbon::now()->format(Format::dateTime->value)."')";
         Db::insert($query);
     }
 
