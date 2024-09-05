@@ -8,7 +8,9 @@ use Budgetcontrol\SdkMailer\Service\Mail as BaseMail;
  * Class Mail
  *
  * This class is a facade for the Mail class.
- * @see MLAB\SdkMailer\Service\Mail
+ * @see \BudgetcontrolLibs\Mailer\Service\ClientMail
+ * 
+ * @method static void send(string $to, string $subject, BaseMail $view)
  */
 
 class Mail extends Facade

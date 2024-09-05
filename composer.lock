@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "739f2aed7fe154f81b8e4e918e432abe",
+    "content-hash": "465a1ae9d730443cd4e7eaf598a6fa8d",
     "packages": [
         {
             "name": "brick/math",
@@ -150,6 +150,54 @@
                 "source": "https://github.com/BudgetControl/Libs_BcConnector/tree/v1.0.1"
             },
             "time": "2024-09-03T09:19:19+00:00"
+        },
+        {
+            "name": "budgetcontrol/mailer",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/BudgetControl/MailerService.git",
+                "reference": "a84c55d0bdd69ceba7eb8c879d4ac6484f9dd82b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/BudgetControl/MailerService/zipball/a84c55d0bdd69ceba7eb8c879d4ac6484f9dd82b",
+                "reference": "a84c55d0bdd69ceba7eb8c879d4ac6484f9dd82b",
+                "shasum": ""
+            },
+            "require": {
+                "mlabfactory/libs-mailer": "^1.1",
+                "php": "^8.1",
+                "twig/twig": "^3.12"
+            },
+            "require-dev": {
+                "fakerphp/faker": "^1.23",
+                "mlabfactory/phpunit-self-api-integration": "v1.1-beta",
+                "nikic/php-parser": "^5.0",
+                "phpunit/phpunit": "^10.0"
+            },
+            "default-branch": true,
+            "type": "package",
+            "autoload": {
+                "psr-4": {
+                    "BudgetcontrolLibs\\Mailer\\": "src/"
+                }
+            },
+            "license": [
+                "AGPL"
+            ],
+            "authors": [
+                {
+                    "name": "Marco De Felice",
+                    "email": "marco.defelice@mlabfactory.it"
+                }
+            ],
+            "description": "The MailerService library provides functionality for sending emails. It is used by the BC (Business Communication) module of the application.",
+            "support": {
+                "source": "https://github.com/BudgetControl/MailerService/tree/main",
+                "issues": "https://github.com/BudgetControl/MailerService/issues"
+            },
+            "time": "2024-09-05T17:52:41+00:00"
         },
         {
             "name": "budgetcontrol/schema-registry-service",
@@ -7941,7 +7989,7 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,

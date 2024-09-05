@@ -2,17 +2,15 @@
 
 namespace Budgetcontrol\jobs\Cli;
 
-use Budgetcontrol\Connector\Client\BudgetClient;
 use Budgetcontrol\jobs\Domain\Model\Workspace;
 use Budgetcontrol\jobs\Facade\Mail;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Budgetcontrol\SdkMailer\Service\MailerClientService;
-use Budgetcontrol\jobs\Domain\Repository\BudgetRepository;
 use Budgetcontrol\jobs\Facade\BudgetControlClient;
 use Budgetcontrol\jobs\MailerViews\BudgetExceededView;
+use BudgetcontrolLibs\Mailer\View\BudgetExceededView as ViewBudgetExceededView;
 
 /**
  * Class ActivatePlannedEntry
@@ -43,8 +41,7 @@ class AlertBudget extends JobCommand
                 $toNotify = $this->toNotify($budget['budget']);
                 if (!empty($toNotify)) {
                     if (str_replace('%', '', $budget['totalSpentPercentage']) > 70) {
-                        $view = new BudgetExceededView();
-                        $view->setTemplate('budget.twig');
+                        $view = new ViewBudgetExceededView();
                         $view->setMessage($budget['budget']['name']);
                         $view->setTotalSPent($budget['totalSpent']);
                         $view->setSpentPercentage($budget['totalSpentPercentage']);
@@ -54,7 +51,7 @@ class AlertBudget extends JobCommand
                         $view->setName("");
     
                         try {
-                            Mail::sendMail($toNotify, "Budget exceeded", $view);
+                            Mail::send($toNotify, "Budget exceeded", $view);
                         } catch (\Throwable $e) {
                             $this->fail($e->getMessage());
                             Log::error($e->getMessage());
