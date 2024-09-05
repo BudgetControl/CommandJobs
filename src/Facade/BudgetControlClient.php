@@ -12,7 +12,7 @@ final class BudgetControlClient
 
     private function __construct(\Budgetcontrol\Connector\Model\Response $result)
     {
-        if($result->getStatusCode() !== 200 || $result->getStatusCode() !== 201 ) {
+        if($result->getStatusCode() !== 200 || $result->getStatusCode() !== 404) {
             Log::error('Error calling BudgetControlClient: '.$result->getError());
         }
 
