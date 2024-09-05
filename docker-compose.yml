@@ -3,7 +3,9 @@ version: '2.2'
 services:
     bemodule:
       container_name: budgetcontrol-ms-jobs
-      image: mlabfactory/php8-apache:v1.0
+      image: mlabfactory/php8-apache:v1.2-xdebug
+      ports:
+        - "8085:80" # Change port do container
       volumes:
         - ./:/var/www/workdir
       networks:

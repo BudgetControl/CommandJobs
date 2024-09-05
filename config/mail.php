@@ -1,8 +1,10 @@
 <?php
 
-$mail = new \MLAB\SdkMailer\Service\Mail();
-$mail->setHost(env('MAIL_HOST', 'mailhog'));
-$mail->setDriver(env('MAIL_DRIVER', 'mailhog'));
-$mail->setPassword(env('MAIL_PASSWORD', ''));
-$mail->setUser(env('MAIL_USER', ''));
-$mail->setEmailFromAddress(env('MAIL_FROM_ADDRESS'));
+
+$mail = new \BudgetcontrolLibs\Mailer\Service\ClientMail(
+    env('MAIL_HOST', 'mailhog'),
+    env('MAIL_DRIVER', 'mailhog'),
+    env('MAIL_PASSWORD', ''),
+    env('MAIL_USER', ''),
+    env('MAIL_FROM_ADDRESS')
+);
