@@ -157,12 +157,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/BudgetControl/MailerService.git",
-                "reference": "7a01bcc5c4c77c09572f8e2714424dd208329837"
+                "reference": "c1966256fd9dd6317177db71863a3a80a9d53d97"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BudgetControl/MailerService/zipball/7a01bcc5c4c77c09572f8e2714424dd208329837",
-                "reference": "7a01bcc5c4c77c09572f8e2714424dd208329837",
+                "url": "https://api.github.com/repos/BudgetControl/MailerService/zipball/c1966256fd9dd6317177db71863a3a80a9d53d97",
+                "reference": "c1966256fd9dd6317177db71863a3a80a9d53d97",
                 "shasum": ""
             },
             "require": {
@@ -197,7 +197,7 @@
                 "source": "https://github.com/BudgetControl/MailerService/tree/main",
                 "issues": "https://github.com/BudgetControl/MailerService/issues"
             },
-            "time": "2024-09-05T18:17:21+00:00"
+            "time": "2024-09-06T08:37:46+00:00"
         },
         {
             "name": "budgetcontrol/schema-registry-service",
