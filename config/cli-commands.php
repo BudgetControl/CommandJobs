@@ -32,4 +32,9 @@ $application->add(new \Budgetcontrol\jobs\Cli\BudgetPeriodChange());
  */
 $application->add(new \Budgetcontrol\jobs\Cli\ManageCreditCardsWallet());
 
+/**
+ * Add the TestMail command to the application.
+ */
+$application->add(new \Budgetcontrol\jobs\Cli\TestMail());
+
 $application->run();

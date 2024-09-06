@@ -3,7 +3,7 @@ version: '2.2'
 services:
     database:
       container_name: budgetcontrol-db
-      image: mysql:8.0.36-debian
+      image: mysql:5.7
       restart: unless-stopped
       ports:
         - "3336:3306"
@@ -11,7 +11,7 @@ services:
         MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
         MYSQL_USER: ${MYSQL_USERNAME}
         MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-        MYSQL_DATABASE: ${DB_DATABASE}
+        MYSQL_DATABASE: ${MYSQL_DATABASE}
       volumes:
         - mysql_persistent:/var/lib/mysql
       networks:
