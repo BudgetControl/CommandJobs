@@ -49,7 +49,7 @@
         "budgetcontrol/libs-connector": "^v1.0",
         "budgetcontrol/library": "^v1.0",
         "budgetcontrol/schema-registry-service": "^v1.0",
-        "budgetcontrol/mailer": "dev-main"
+        "budgetcontrol/mailer": "v0.1"
     },
     "require-dev": {
         "nikic/php-parser": "^5.0",
@@ -67,5 +67,5 @@
             "email": "marco.defelice@mlabfactory.it"
         }
     ],
-    "minimum-stability": "dev"
+    "minimum-stability": "stable"
 }

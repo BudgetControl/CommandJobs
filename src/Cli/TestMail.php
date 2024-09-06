@@ -72,6 +72,7 @@ class TestMail extends JobCommand
 
         try {
             Mail::send($mail, $template, $view);
+            return Command::SUCCESS;
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             return Command::FAILURE;

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "465a1ae9d730443cd4e7eaf598a6fa8d",
+    "content-hash": "5a650575158113082ed6658c855826d9",
     "packages": [
         {
             "name": "brick/math",
@@ -153,20 +153,20 @@
         },
         {
             "name": "budgetcontrol/mailer",
-            "version": "dev-main",
+            "version": "v0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BudgetControl/MailerService.git",
-                "reference": "c1966256fd9dd6317177db71863a3a80a9d53d97"
+                "reference": "1988a53c3219aa4c0f39d80a9ec25f54052982e6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BudgetControl/MailerService/zipball/c1966256fd9dd6317177db71863a3a80a9d53d97",
-                "reference": "c1966256fd9dd6317177db71863a3a80a9d53d97",
+                "url": "https://api.github.com/repos/BudgetControl/MailerService/zipball/1988a53c3219aa4c0f39d80a9ec25f54052982e6",
+                "reference": "1988a53c3219aa4c0f39d80a9ec25f54052982e6",
                 "shasum": ""
             },
             "require": {
-                "mlabfactory/libs-mailer": "^1.1",
+                "mlabfactory/libs-mailer": "^v1.1",
                 "php": "^8.1",
                 "twig/twig": "^3.12"
             },
@@ -176,7 +176,6 @@
                 "nikic/php-parser": "^5.0",
                 "phpunit/phpunit": "^10.0"
             },
-            "default-branch": true,
             "type": "package",
             "autoload": {
                 "psr-4": {
@@ -194,10 +193,10 @@
             ],
             "description": "The MailerService library provides functionality for sending emails. It is used by the BC (Business Communication) module of the application.",
             "support": {
-                "source": "https://github.com/BudgetControl/MailerService/tree/main",
+                "source": "https://github.com/BudgetControl/MailerService/tree/v0.1",
                 "issues": "https://github.com/BudgetControl/MailerService/issues"
             },
-            "time": "2024-09-06T08:37:46+00:00"
+            "time": "2024-09-06T10:33:08+00:00"
         },
         {
             "name": "budgetcontrol/schema-registry-service",
@@ -7989,10 +7988,8 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "dev",
-    "stability-flags": {
-        "budgetcontrol/mailer": 20
-    },
+    "minimum-stability": "stable",
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
