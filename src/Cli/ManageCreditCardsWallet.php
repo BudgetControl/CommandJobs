@@ -45,12 +45,8 @@ class ManageCreditCardsWallet extends JobCommand
         Log::info('Managing credit cards');
 
         $creditCards = Wallet::whereIn('type', [EntityWallet::creditCard->value, EntityWallet::creditCardRevolving->value])
-            ->whereBetween(Wallets::invoice_date, [
-            Carbon::now()->startOfMonth()->format(Format::date->value),
-            Carbon::now()->endOfMonth()->format(Format::date->value)
-            ])
-            ->where('balance', '<', 0)
-            ->get();
+        ->where(Wallets::invoice_date, '<=', Carbon::now())->where('balance', '<', 0)
+        ->get();
 
         try {
             foreach ($creditCards as $creditCard) {
@@ -76,6 +72,8 @@ class ManageCreditCardsWallet extends JobCommand
         $creditCardEntry->transfer_relation = $walletEntry->uuid;
         $walletEntry->transfer_relation = $creditCardEntry->uuid;
         $walletEntry->amount = $creditCard->installement_value * -1; // negative value for related entry
+        $walletEntry->account_id = $creditCardEntry->transfer_id;
+        $walletEntry->transfer_id = $creditCardEntry->account_id;
 
         $creditCardEntry->save();
         $walletEntry->save();
