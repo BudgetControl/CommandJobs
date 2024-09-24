@@ -126,7 +126,7 @@ class ManageCreditCardsWallet extends JobCommand
         $entry->date_time = Carbon::now()->format(Format::dateTime->value);
         $entry->account_id = $creditCard->payment_account;
         $entry->amount = $amount;
-        $entry->note = $creditCard->name;
+        $entry->note = 'Credit card payment: '.$transactionUUID;
         $entry->planned = false;
         $entry->confirmed = true;
         $entry->currency_id = $creditCard->currency;
