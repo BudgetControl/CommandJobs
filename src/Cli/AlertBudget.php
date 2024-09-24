@@ -2,13 +2,15 @@
 
 namespace Budgetcontrol\jobs\Cli;
 
-use Budgetcontrol\jobs\Domain\Model\Workspace;
 use Budgetcontrol\jobs\Facade\Mail;
 use Illuminate\Support\Facades\Log;
+use Budgetcontrol\Library\Model\User;
+use Budgetcontrol\jobs\Domain\Model\Workspace;
 use Symfony\Component\Console\Command\Command;
+use Budgetcontrol\jobs\Facade\BudgetControlClient;
+use Budgetcontrol\jobs\Facade\Crypt;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Budgetcontrol\jobs\Facade\BudgetControlClient;
 use Budgetcontrol\jobs\MailerViews\BudgetExceededView;
 use BudgetcontrolLibs\Mailer\View\BudgetExceededView as ViewBudgetExceededView;
 
@@ -33,30 +35,41 @@ class AlertBudget extends JobCommand
         Log::info('Alert budget');
         $workspaces = Workspace::all();
 
-        foreach($workspaces as $workspace) {
-            
+        foreach ($workspaces as $workspace) {
+
             $budgets = BudgetControlClient::budgetStats($workspace->id)->getResult();
 
             foreach ($budgets as $budget) {
                 $toNotify = $this->toNotify($budget['budget']);
                 if (!empty($toNotify)) {
-                    if (str_replace('%', '', $budget['totalSpentPercentage']) > 70) {
-                        $view = new ViewBudgetExceededView();
-                        $view->setMessage($budget['budget']['name']);
-                        $view->setTotalSPent($budget['totalSpent']);
-                        $view->setSpentPercentage($budget['totalSpentPercentage']);
-                        $view->setPercentage($budget['totalSpentPercentage']);
-                        $className = str_replace('%', '', $budget['totalSpentPercentage']) > 80 ? 'bg-red-600' : 'bg-emerald-600';
-                        $view->setClassName($className);
-    
-                        try {
-                            Mail::send($toNotify, "Budget exceeded", $view);
-                        } catch (\Throwable $e) {
-                            $this->fail($e->getMessage());
-                            Log::error($e->getMessage());
-                            return Command::FAILURE;
+
+                    foreach ($toNotify as $email) {
+
+                        $user = $this->findUserFromEmail($email);
+                        if ($user == null) {
+                            Log::error("User not found with email: $email");
+                            continue;
                         }
-                        
+
+                        if (str_replace('%', '', $budget['totalSpentPercentage']) > 70) {
+                            $view = new ViewBudgetExceededView();
+                            $view->setUserName($user->name);
+                            $view->setUserEmail($email);
+                            $view->setMessage($budget['budget']['name']);
+                            $view->setTotalSPent($budget['totalSpent']);
+                            $view->setSpentPercentage($budget['totalSpentPercentage']);
+                            $view->setPercentage($budget['totalSpentPercentage']);
+                            $className = str_replace('%', '', $budget['totalSpentPercentage']) > 80 ? 'bg-red-600' : 'bg-emerald-600';
+                            $view->setClassName($className);
+
+                            try {
+                                Mail::send($user->email, "Budget exceeded", $view);
+                            } catch (\Throwable $e) {
+                                $this->fail($e->getMessage());
+                                Log::error($e->getMessage());
+                                return Command::FAILURE;
+                            }
+                        }
                     }
                 }
             }
@@ -81,5 +94,16 @@ class AlertBudget extends JobCommand
         }
 
         return $toNotify;
+    }
+
+    /**
+     * Find a user based on their email address.
+     *
+     * @param string $email The email address of the user.
+     * @return User|null The user object if found, null otherwise.
+     */
+    private function findUserFromEmail($email): User
+    {
+        return User::where('email', Crypt::encrypt($email))->first();
     }
 }

@@ -23,6 +23,10 @@
         "budgetcontrol/mailer":{
             "type":"vcs",
             "url":"git@github.com:BudgetControl/MailerService.git"
+        },
+        "budgetcontrol/cryptable":{
+            "type":"vcs",
+            "url":"git@github.com:BudgetControl/LibsCryptable.git"
         }
     },
     "require": {
@@ -47,9 +51,10 @@
         "mlabfactory/libs-mailer": "v1.1.4",
         "logtail/monolog-logtail": "^3.1",
         "budgetcontrol/libs-connector": "^v1.0",
-        "budgetcontrol/library": "^v1.0",
+        "budgetcontrol/library": "^v1.1",
         "budgetcontrol/schema-registry-service": "^v1.0",
-        "budgetcontrol/mailer": "v0.1"
+        "budgetcontrol/mailer": "v0.1",
+        "budgetcontrol/cryptable": "v0.1"
     },
     "require-dev": {
         "nikic/php-parser": "^5.0",
