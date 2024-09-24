@@ -19,7 +19,7 @@ use BudgetcontrolLibs\Mailer\View\BudgetExceededView as ViewBudgetExceededView;
  */
 class AlertBudget extends JobCommand
 {
-    protected string $command = 'check-budget-exceeded';
+    protected string $command = 'budget:is-exceeded';
 
     public function configure()
     {
@@ -48,7 +48,6 @@ class AlertBudget extends JobCommand
                         $view->setPercentage($budget['totalSpentPercentage']);
                         $className = str_replace('%', '', $budget['totalSpentPercentage']) > 80 ? 'bg-red-600' : 'bg-emerald-600';
                         $view->setClassName($className);
-                        $view->setName("");
     
                         try {
                             Mail::send($toNotify, "Budget exceeded", $view);

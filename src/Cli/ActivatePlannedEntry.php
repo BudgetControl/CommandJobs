@@ -19,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ActivatePlannedEntry extends JobCommand
 {
-    protected string $command = 'activate-planned-entry';
+    protected string $command = 'entry:activate-planned';
 
     public function configure()
     {

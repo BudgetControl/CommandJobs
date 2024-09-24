@@ -21,7 +21,7 @@ use Carbon\Carbon;
  */
 class AddPlannedEntry extends JobCommand
 {
-    protected string $command = 'add-planned-entry';
+    protected string $command = 'entry:add-planned';
     const TIME = [
         'daily', 'weekly', 'monthly', 'yearly'
     ];

@@ -20,7 +20,7 @@ use BudgetcontrolLibs\Mailer\View\SignUpView;
  */
 class TestMail extends JobCommand
 {
-    protected string $command = 'mail:test';
+    protected string $command = 'test:mail';
 
     const ALLOWED_TEMPLATE = [
         'recovery-password',

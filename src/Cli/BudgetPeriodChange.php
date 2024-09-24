@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class BudgetPeriodChange extends JobCommand
 {
-    protected string $command = 'change-budget-period';
+    protected string $command = 'budget:is-expired';
 
     public function configure()
     {
