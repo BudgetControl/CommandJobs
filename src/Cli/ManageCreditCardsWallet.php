@@ -24,7 +24,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ManageCreditCardsWallet extends JobCommand
 {
-    protected string $command = 'manage-credit-card';
+    protected string $command = 'wallet:update-credit-card';
 
     public function configure()
     {
@@ -71,6 +71,7 @@ class ManageCreditCardsWallet extends JobCommand
 
         $creditCardEntry->transfer_relation = $walletEntry->uuid;
         $walletEntry->transfer_relation = $creditCardEntry->uuid;
+        $walletEntry->amount = $creditCard->installement_value * -1; // negative value for related entry
 
         $creditCardEntry->save();
         $walletEntry->save();
