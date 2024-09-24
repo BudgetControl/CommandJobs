@@ -45,8 +45,12 @@ class ManageCreditCardsWallet extends JobCommand
         Log::info('Managing credit cards');
 
         $creditCards = Wallet::whereIn('type', [EntityWallet::creditCard->value, EntityWallet::creditCardRevolving->value])
-        ->where(Wallets::invoice_date, '<=', Carbon::now())->where('balance', '<', 0)
-        ->get();
+            ->whereBetween(Wallets::invoice_date, [
+            Carbon::now()->startOfMonth()->format(Format::date->value),
+            Carbon::now()->endOfMonth()->format(Format::date->value)
+            ])
+            ->where('balance', '<', 0)
+            ->get();
 
         try {
             foreach ($creditCards as $creditCard) {
