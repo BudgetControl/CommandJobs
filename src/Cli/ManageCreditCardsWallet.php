@@ -122,7 +122,8 @@ class ManageCreditCardsWallet extends JobCommand
 
         //create new payment
         $entry = new Entry();
-        $entry->uuid = Uuid::uuid4();
+        $transactionUUID = Uuid::uuid4();
+        $entry->uuid = $transactionUUID;
         $entry->date_time = Carbon::now()->format(Format::dateTime->value);
         $entry->account_id = $creditCard->payment_account;
         $entry->amount = $amount;
