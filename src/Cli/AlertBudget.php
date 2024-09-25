@@ -4,14 +4,14 @@ namespace Budgetcontrol\jobs\Cli;
 
 use Budgetcontrol\jobs\Facade\Mail;
 use Illuminate\Support\Facades\Log;
+use Budgetcontrol\jobs\Facade\Crypt;
 use Budgetcontrol\Library\Model\User;
+use Budgetcontrol\jobs\Cli\JobCommand;
 use Budgetcontrol\jobs\Domain\Model\Workspace;
 use Symfony\Component\Console\Command\Command;
 use Budgetcontrol\jobs\Facade\BudgetControlClient;
-use Budgetcontrol\jobs\Facade\Crypt;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Budgetcontrol\jobs\MailerViews\BudgetExceededView;
 use BudgetcontrolLibs\Mailer\View\BudgetExceededView as ViewBudgetExceededView;
 
 /**
@@ -54,7 +54,7 @@ class AlertBudget extends JobCommand
                         if (str_replace('%', '', $budget['totalSpentPercentage']) > 70) {
                             $view = new ViewBudgetExceededView();
                             $view->setUserName($user->name);
-                            $view->setUserEmail($email);
+                            $view->setUserEmail($user->email);
                             $view->setMessage($budget['budget']['name']);
                             $view->setTotalSPent($budget['totalSpent']);
                             $view->setSpentPercentage($budget['totalSpentPercentage']);
