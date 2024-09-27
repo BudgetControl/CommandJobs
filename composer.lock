@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0d9482c86abc538bd0d0c1fc460e5318",
+    "content-hash": "e7a044c1a00d0adcf1e54cb002d36200",
     "packages": [
         {
             "name": "brick/math",
@@ -113,16 +113,16 @@
         },
         {
             "name": "budgetcontrol/library",
-            "version": "v1.1.1",
+            "version": "v1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BudgetControl/Library.git",
-                "reference": "f1cd9095a89554db580d971f57b1f3d0741872c8"
+                "reference": "caabaa003d3849f15cbc3e66514ac7f47033440c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BudgetControl/Library/zipball/f1cd9095a89554db580d971f57b1f3d0741872c8",
-                "reference": "f1cd9095a89554db580d971f57b1f3d0741872c8",
+                "url": "https://api.github.com/repos/BudgetControl/Library/zipball/caabaa003d3849f15cbc3e66514ac7f47033440c",
+                "reference": "caabaa003d3849f15cbc3e66514ac7f47033440c",
                 "shasum": ""
             },
             "require": {
@@ -144,9 +144,9 @@
                 }
             ],
             "support": {
-                "source": "https://github.com/BudgetControl/Library/tree/v1.1.1"
+                "source": "https://github.com/BudgetControl/Library/tree/v1.2"
             },
-            "time": "2024-09-20T14:41:44+00:00"
+            "time": "2024-09-27T10:06:04+00:00"
         },
         {
             "name": "budgetcontrol/libs-connector",
@@ -198,16 +198,16 @@
         },
         {
             "name": "budgetcontrol/mailer",
-            "version": "v0.1",
+            "version": "v0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BudgetControl/MailerService.git",
-                "reference": "1988a53c3219aa4c0f39d80a9ec25f54052982e6"
+                "reference": "f18b0f916a51069d24a95e84d52e4d8dacb12e0a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BudgetControl/MailerService/zipball/1988a53c3219aa4c0f39d80a9ec25f54052982e6",
-                "reference": "1988a53c3219aa4c0f39d80a9ec25f54052982e6",
+                "url": "https://api.github.com/repos/BudgetControl/MailerService/zipball/f18b0f916a51069d24a95e84d52e4d8dacb12e0a",
+                "reference": "f18b0f916a51069d24a95e84d52e4d8dacb12e0a",
                 "shasum": ""
             },
             "require": {
@@ -238,10 +238,9 @@
             ],
             "description": "The MailerService library provides functionality for sending emails. It is used by the BC (Business Communication) module of the application.",
             "support": {
-                "source": "https://github.com/BudgetControl/MailerService/tree/v0.1",
-                "issues": "https://github.com/BudgetControl/MailerService/issues"
+                "source": "https://github.com/BudgetControl/MailerService/tree/v0.2"
             },
-            "time": "2024-09-06T10:33:08+00:00"
+            "time": "2024-09-25T15:49:23+00:00"
         },
         {
             "name": "budgetcontrol/schema-registry-service",

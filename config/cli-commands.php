@@ -37,4 +37,9 @@ $application->add(new \Budgetcontrol\jobs\Cli\ManageCreditCardsWallet());
  */
 $application->add(new \Budgetcontrol\jobs\Cli\TestMail());
 
+/**
+ * Add the Demo data command to the appliation.
+ */
+$application->add(new \Budgetcontrol\jobs\Cli\InstallDemoData());
+
 $application->run();
