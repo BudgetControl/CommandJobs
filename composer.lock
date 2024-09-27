@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5a650575158113082ed6658c855826d9",
+    "content-hash": "e7a044c1a00d0adcf1e54cb002d36200",
     "packages": [
         {
             "name": "brick/math",
@@ -67,20 +67,66 @@
             "time": "2023-11-29T23:19:16+00:00"
         },
         {
-            "name": "budgetcontrol/library",
-            "version": "v1.0.3",
+            "name": "budgetcontrol/cryptable",
+            "version": "v0.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/BudgetControl/Library.git",
-                "reference": "5b5f36d713dee34cf6a565a36071a0135d837fd5"
+                "url": "https://github.com/BudgetControl/LibsCryptable.git",
+                "reference": "12d139566fd5af05c961c99b307dbb490b97e071"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BudgetControl/Library/zipball/5b5f36d713dee34cf6a565a36071a0135d837fd5",
-                "reference": "5b5f36d713dee34cf6a565a36071a0135d837fd5",
+                "url": "https://api.github.com/repos/BudgetControl/LibsCryptable/zipball/12d139566fd5af05c961c99b307dbb490b97e071",
+                "reference": "12d139566fd5af05c961c99b307dbb490b97e071",
                 "shasum": ""
             },
             "require": {
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "fakerphp/faker": "^1.23",
+                "mlabfactory/phpunit-self-api-integration": "^v1.1-beta",
+                "nikic/php-parser": "^5.0",
+                "phpunit/phpunit": "^10.0"
+            },
+            "type": "package",
+            "autoload": {
+                "psr-4": {
+                    "BudgetcontrolLibs\\Crypt\\": "libs/"
+                }
+            },
+            "license": [
+                "AGPL"
+            ],
+            "authors": [
+                {
+                    "name": "Marco De Felice",
+                    "email": "marco.defelice@mlabfactory.it"
+                }
+            ],
+            "description": "The cryptable package",
+            "support": {
+                "source": "https://github.com/BudgetControl/LibsCryptable/tree/v0.1",
+                "issues": "https://github.com/BudgetControl/LibsCryptable/issues"
+            },
+            "time": "2024-09-13T12:32:30+00:00"
+        },
+        {
+            "name": "budgetcontrol/library",
+            "version": "v1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/BudgetControl/Library.git",
+                "reference": "166508833191b2b5e89103013be42848dc0b7075"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/BudgetControl/Library/zipball/166508833191b2b5e89103013be42848dc0b7075",
+                "reference": "166508833191b2b5e89103013be42848dc0b7075",
+                "shasum": ""
+            },
+            "require": {
+                "budgetcontrol/cryptable": "^v0.1",
                 "illuminate/database": "11.19",
                 "ramsey/uuid": "^4.7",
                 "webit/bcmath": "^2.0"
@@ -98,10 +144,9 @@
                 }
             ],
             "support": {
-                "source": "https://github.com/BudgetControl/Library/tree/v1.0.3",
-                "issues": "https://github.com/BudgetControl/Library/issues"
+                "source": "https://github.com/BudgetControl/Library/tree/v1.2"
             },
-            "time": "2024-09-03T09:50:04+00:00"
+            "time": "2024-09-27T13:30:03+00:00"
         },
         {
             "name": "budgetcontrol/libs-connector",
@@ -153,16 +198,16 @@
         },
         {
             "name": "budgetcontrol/mailer",
-            "version": "v0.1",
+            "version": "v0.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BudgetControl/MailerService.git",
-                "reference": "1988a53c3219aa4c0f39d80a9ec25f54052982e6"
+                "reference": "c2a72b4cf35abbe0fe620f29812c295d2eb1c708"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BudgetControl/MailerService/zipball/1988a53c3219aa4c0f39d80a9ec25f54052982e6",
-                "reference": "1988a53c3219aa4c0f39d80a9ec25f54052982e6",
+                "url": "https://api.github.com/repos/BudgetControl/MailerService/zipball/c2a72b4cf35abbe0fe620f29812c295d2eb1c708",
+                "reference": "c2a72b4cf35abbe0fe620f29812c295d2eb1c708",
                 "shasum": ""
             },
             "require": {
@@ -193,10 +238,9 @@
             ],
             "description": "The MailerService library provides functionality for sending emails. It is used by the BC (Business Communication) module of the application.",
             "support": {
-                "source": "https://github.com/BudgetControl/MailerService/tree/v0.1",
-                "issues": "https://github.com/BudgetControl/MailerService/issues"
+                "source": "https://github.com/BudgetControl/MailerService/tree/v0.2.1"
             },
-            "time": "2024-09-06T10:33:08+00:00"
+            "time": "2024-09-27T13:26:42+00:00"
         },
         {
             "name": "budgetcontrol/schema-registry-service",

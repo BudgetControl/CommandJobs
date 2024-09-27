@@ -2,6 +2,7 @@
 // Autoload Composer dependencies
 
 use Budgetcontrol\jobs\Facade\Mail;
+use BudgetcontrolLibs\Crypt\Service\CryptableService;
 use Monolog\Level;
 use Illuminate\Support\Facades\Facade;
 use \Illuminate\Support\Carbon as Date;
@@ -33,11 +34,15 @@ require_once __DIR__ . '/../config/mail.php';
 // Set up the Facade application HTTP
 $http = new \GuzzleHttp\Client();
 
+// Set up the Facade crypt application
+$crypt = new CryptableService(env('APP_KEY'));
+
 // Set up the Facade application
 Facade::setFacadeApplication([
     'log' => $logger,
     'date' => new Date(),
     'mail' => $mail,
-    'http' => $http
+    'http' => $http,
+    'crypt' => $crypt
 
 ]);
