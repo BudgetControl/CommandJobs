@@ -10,6 +10,7 @@ use Budgetcontrol\jobs\Cli\JobCommand;
 use Budgetcontrol\jobs\Domain\Model\Workspace;
 use Symfony\Component\Console\Command\Command;
 use Budgetcontrol\jobs\Facade\BudgetControlClient;
+use Budgetcontrol\Library\Model\Currency;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use BudgetcontrolLibs\Mailer\View\BudgetExceededView as ViewBudgetExceededView;
@@ -51,6 +52,20 @@ class AlertBudget extends JobCommand
                             continue;
                         }
 
+                        $workspaceId = $budget['budget']['workspace_id'];
+                        
+                        foreach($user->workspaces as $userWorkspace) {
+                            if ($userWorkspace->id == $workspaceId) {
+                                $workspace = $userWorkspace;
+                                break;
+                            }
+                        }
+
+                        /** @var \Budgetcontrol\Library\ValueObject\WorkspaceSetting $wsSettings */
+                        $wsSettings =  $workspace->workspaceSettings->data;
+                        $currency = $wsSettings->getCurrencyId();
+                        $currencySymbol = Currency::find($currency)->icon;
+
                         if (str_replace('%', '', $budget['totalSpentPercentage']) > 70) {
                             $view = new ViewBudgetExceededView();
                             $view->setUserName($user->name);
@@ -60,13 +75,16 @@ class AlertBudget extends JobCommand
                             $view->setSpentPercentage($budget['totalSpentPercentage']);
                             $view->setPercentage($budget['totalSpentPercentage']);
                             $className = str_replace('%', '', $budget['totalSpentPercentage']) > 80 ? 'bg-red-600' : 'bg-emerald-600';
+                            $view->setCurrency($currencySymbol);
+                            $view->setTotalRemaining(($budget['totalRemaining'] < 0) ? 0 : $budget['totalRemaining']);
                             $view->setClassName($className);
+                            $view->setBudgetAmount($budget['total']);
 
                             try {
                                 Mail::send($user->email, "Budget exceeded", $view);
                             } catch (\Throwable $e) {
                                 $this->fail($e->getMessage());
-                                Log::error($e->getMessage());
+                                Log::critical($e->getMessage());
                                 return Command::FAILURE;
                             }
                         }
@@ -104,6 +122,6 @@ class AlertBudget extends JobCommand
      */
     private function findUserFromEmail($email): User
     {
-        return User::where('email', Crypt::encrypt($email))->first();
+        return User::with('workspaces.workspaceSettings')->where('email', Crypt::encrypt($email))->first();
     }
 }
