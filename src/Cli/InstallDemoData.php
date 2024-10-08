@@ -92,7 +92,7 @@ class InstallDemoData extends JobCommand
 
         // Create workspace settings
         Log::debug('Create workspace settings');
-        $settings = WorkspaceSetting::create(['currency_id' => $currency_id, 'payment_type_id' => $payment_type_id]);
+        $settings = WorkspaceSetting::create($currency_id, $payment_type_id);
         WorkspaceSettings::create([
             'workspace_id' => $workspace->id,
             'setting' => 'app_configurations',
