@@ -13,7 +13,7 @@ use Symfony\Component\Console\Command\Command;
 class InstallDemoData extends JobCommand
 {
 
-    protected string $command = 'core:install-demo-data';
+    protected string $command = 'core:clear';
 
     const USER_EMAIL = 'demo@budgetcontrol.cloud';
     const USER_PASSWORD = 'BY3PIViM-4ieFGm';
