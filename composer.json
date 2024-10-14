@@ -27,6 +27,11 @@
         "budgetcontrol/cryptable":{
             "type":"vcs",
             "url":"git@github.com:BudgetControl/LibsCryptable.git"
+        },
+        "budgetcontrol/seeds-test-libs":
+        {
+            "type":"vcs",
+            "url":"git@github.com:BudgetControl/SeedsTestLibs.git"
         }
     },
     "require": {
@@ -52,14 +57,15 @@
         "logtail/monolog-logtail": "^3.1",
         "budgetcontrol/libs-connector": "^v1.0",
         "budgetcontrol/library": "^v1.2",
-        "budgetcontrol/schema-registry-service": "^v1.0",
+        "budgetcontrol/schema-registry-service": "v1.0-beta",
         "budgetcontrol/mailer": "^v0.2",
         "budgetcontrol/cryptable": "v0.1"
     },
     "require-dev": {
         "nikic/php-parser": "^5.0",
         "fakerphp/faker": "^1.23",
-        "phpunit/phpunit": "^10.0"
+        "phpunit/phpunit": "^10.0",
+        "budgetcontrol/seeds": "^0.2"
     },
     "autoload": {
         "psr-4": {

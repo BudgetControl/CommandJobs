@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Log;
 class InstallDemoData extends JobCommand
 {
 
-    protected string $command = 'core:install-demo-data';
+    protected string $command = 'core:demo-data';
 
     const USER_EMAIL = 'demo@budgetcontrol.cloud';
     const USER_PASSWORD = 'BY3PIViM-4ieFGm';
@@ -42,6 +42,7 @@ class InstallDemoData extends JobCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $output->writeln('Install demo data');
         Log::info('Install demo data');
 
         $currency_id = $input->getOption('currency_id');
@@ -50,6 +51,7 @@ class InstallDemoData extends JobCommand
         $faker = Factory::create();
 
         // Create user
+        $output->writeln('Create user');
         Log::debug('Create user');
         $user = User::create([
             'name' => 'Demo User',
@@ -59,6 +61,7 @@ class InstallDemoData extends JobCommand
         ]);
 
         // Create workspace
+        $output->writeln('Create workspace');
         Log::debug('Create workspace');
         $workspace = Workspace::create([
             'name' => 'Demo Workspace',
@@ -74,6 +77,7 @@ class InstallDemoData extends JobCommand
         $workspace->save();
 
         // Create wallet
+        $output->writeln('Create wallet');
         Log::debug('Create wallet');
         $wallet = Wallet::create([
             "name" => "Bank Account",
@@ -91,6 +95,7 @@ class InstallDemoData extends JobCommand
         ]);
 
         // Create workspace settings
+        $output->writeln('Create workspace settings');
         Log::debug('Create workspace settings');
         $settings = WorkspaceSetting::create($currency_id, $payment_type_id);
         WorkspaceSettings::create([
@@ -101,6 +106,7 @@ class InstallDemoData extends JobCommand
 
         // Create incomes
         $dateTime = new \DateTime();
+        $output->writeln('Create ' . $entry . ' incomes');
         Log::debug('Create ' . $entry . ' incomes');
         for ($i = 0; $i < $entry; $i++) {
             Expense::create([
@@ -170,6 +176,7 @@ class InstallDemoData extends JobCommand
 
         // Create a Model
         Log::debug('Create a Model');
+        $output->writeln('Create a Model');
         Model::create([
             "amount" => rand(1, 1000),
             "note" => "Model demo",
@@ -186,6 +193,7 @@ class InstallDemoData extends JobCommand
 
         // Create a Payee
         Log::debug('Create a Payee');
+        $output->writeln('Create a Payee');
         Payee::create([
             'uuid' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
             'name' => 'Payee 1 Demo',
@@ -194,6 +202,7 @@ class InstallDemoData extends JobCommand
 
         // Create a PlannedEntry
         Log::debug('Create a PlannedEntry');
+        $output->writeln('Create a PlannedEntry');
         PlannedEntry::create([
             "amount" => rand(1, 1000),
             "note" => "test",
@@ -210,6 +219,7 @@ class InstallDemoData extends JobCommand
         ]);
 
         Log::info('Demo data installed');
+        $output->writeln('Demo data installed');
 
         return Command::SUCCESS;
     }
