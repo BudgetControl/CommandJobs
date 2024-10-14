@@ -42,4 +42,14 @@ $application->add(new \Budgetcontrol\jobs\Cli\TestMail());
  */
 $application->add(new \Budgetcontrol\jobs\Cli\InstallDemoData());
 
+/**
+ *  Clear database command to the application.
+ */
+$application->add(new \Budgetcontrol\jobs\Cli\ClearDatabase());
+
+/**
+ *  Install the base data for the application.
+ */
+$application->add(new \Budgetcontrol\jobs\Cli\PrepareDatabase());
+
 $application->run();

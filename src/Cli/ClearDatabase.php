@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Budgetcontrol\jobs\Cli;
 
 use Budgetcontrol\jobs\Cli\JobCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Illuminate\Database\Capsule\Manager as DB;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-class InstallDemoData extends JobCommand
+class ClearDatabase extends JobCommand
 {
 
     protected string $command = 'core:clear';
@@ -22,43 +23,50 @@ class InstallDemoData extends JobCommand
     {
         $this->setName($this->command)
             ->setDescription('Clear db')
+            ->addOption('drop', null, InputOption::VALUE_OPTIONAL, 'Drop all tables', false)
             ->setHelp("This command will remove all data from the database");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $output->writeln('Clear db');
         $tables = [
             'budgets',
+            'entry_labels',
+            'entries',
+            'sub_categories',
             'categories',
             'currencies',
-            'entries',
-            'entry_labels',
             'failed_jobs',
             'labels',
-            'migrations',
             'model_labels',
             'models',
             'ms_migrations',
-            'password_reset_tokens',
             'payees',
             'payments_types',
-            'personal_access_tokens',
             'planned_entries',
             'planned_entry_labels',
-            'sub_categories',
-            'users',
-            'user_settings',
             'wallets',
-            'workspaces',
             'workspace_settings',
-            'workspaces_users_mm'
+            'workspaces_users_mm',
+            'workspaces',
+            'users',
         ];
 
+        if ($input->getOption('drop')) {
+            $command = 'DROP table';
+        } else {
+            $command = 'DELETE FROM';
+        }
+        
+
         foreach ($tables as $table) {
-            $query = "TRUNCATE TABLE $table";
+            $output->writeln($command.': ' . $table);
+            $query = "$command $table";
             Db::statement($query);
         }
 
+        $output->writeln('Database cleared');
         return Command::SUCCESS;
     }
 }
