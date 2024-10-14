@@ -53,28 +53,37 @@ class InstallDemoData extends JobCommand
         // Create user
         $output->writeln('Create user');
         Log::debug('Create user');
+        $userUUID = \Ramsey\Uuid\Uuid::uuid4()->toString();
         $user = User::create([
             'name' => 'Demo User',
             'email' => self::USER_EMAIL,
             'password' => self::USER_PASSWORD,
-            'uuid' => \Ramsey\Uuid\Uuid::uuid4()->toString()
+            'uuid' => $userUUID
         ]);
 
         // Create workspace
         $output->writeln('Create workspace');
         Log::debug('Create workspace');
+        $wsUUID = \Ramsey\Uuid\Uuid::uuid4()->toString();
         $workspace = Workspace::create([
             'name' => 'Demo Workspace',
             'description' => 'Demo Workspace',
             'currency_id' => $currency_id,
             'payment_type_id' => $payment_type_id,
             'user_id' => $user->id,
-            'uuid' => \Ramsey\Uuid\Uuid::uuid4()->toString()
+            'uuid' => $wsUUID
         ]);
 
         // set relation with user
         $workspace->user_id = $user->id;
         $workspace->save();
+
+         // set relation with user and workspace
+         $user = \Budgetcontrol\Library\Model\User::where('uuid', $userUUID)->first();
+         $workspace = \Budgetcontrol\Library\Model\Workspace::where('uuid', $wsUUID)->first();
+ 
+         $workspace->users()->attach($user);
+         $workspace->save();
 
         // Create wallet
         $output->writeln('Create wallet');

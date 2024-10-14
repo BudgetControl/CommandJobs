@@ -6345,16 +6345,16 @@
     "packages-dev": [
         {
             "name": "budgetcontrol/seeds",
-            "version": "v0.2.1",
+            "version": "v0.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BudgetControl/SeedsTestLibs.git",
-                "reference": "8b4a9d19aef863397fbad3f2e17e5d800f03341f"
+                "reference": "eb3401e4cb6cc50baccd67d4dcc6c5d6ded47611"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BudgetControl/SeedsTestLibs/zipball/8b4a9d19aef863397fbad3f2e17e5d800f03341f",
-                "reference": "8b4a9d19aef863397fbad3f2e17e5d800f03341f",
+                "url": "https://api.github.com/repos/BudgetControl/SeedsTestLibs/zipball/eb3401e4cb6cc50baccd67d4dcc6c5d6ded47611",
+                "reference": "eb3401e4cb6cc50baccd67d4dcc6c5d6ded47611",
                 "shasum": ""
             },
             "require": {
@@ -6380,10 +6380,10 @@
             ],
             "description": "Seeds and migrations for unit test",
             "support": {
-                "source": "https://github.com/BudgetControl/SeedsTestLibs/tree/v0.2.1",
+                "source": "https://github.com/BudgetControl/SeedsTestLibs/tree/v0.2.2",
                 "issues": "https://github.com/BudgetControl/SeedsTestLibs/issues"
             },
-            "time": "2024-10-02T14:15:24+00:00"
+            "time": "2024-10-14T16:00:12+00:00"
         },
         {
             "name": "fakerphp/faker",
