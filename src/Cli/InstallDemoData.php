@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Log;
 class InstallDemoData extends JobCommand
 {
 
-    protected string $command = 'core:install-demo-data';
+    protected string $command = 'core:demo-data';
 
     const USER_EMAIL = 'demo@budgetcontrol.cloud';
     const USER_PASSWORD = 'BY3PIViM-4ieFGm';
@@ -42,6 +42,7 @@ class InstallDemoData extends JobCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $output->writeln('Install demo data');
         Log::info('Install demo data');
 
         $currency_id = $input->getOption('currency_id');
@@ -50,30 +51,42 @@ class InstallDemoData extends JobCommand
         $faker = Factory::create();
 
         // Create user
+        $output->writeln('Create user');
         Log::debug('Create user');
+        $userUUID = \Ramsey\Uuid\Uuid::uuid4()->toString();
         $user = User::create([
             'name' => 'Demo User',
             'email' => self::USER_EMAIL,
             'password' => self::USER_PASSWORD,
-            'uuid' => \Ramsey\Uuid\Uuid::uuid4()->toString()
+            'uuid' => $userUUID
         ]);
 
         // Create workspace
+        $output->writeln('Create workspace');
         Log::debug('Create workspace');
+        $wsUUID = \Ramsey\Uuid\Uuid::uuid4()->toString();
         $workspace = Workspace::create([
             'name' => 'Demo Workspace',
             'description' => 'Demo Workspace',
             'currency_id' => $currency_id,
             'payment_type_id' => $payment_type_id,
             'user_id' => $user->id,
-            'uuid' => \Ramsey\Uuid\Uuid::uuid4()->toString()
+            'uuid' => $wsUUID
         ]);
 
         // set relation with user
         $workspace->user_id = $user->id;
         $workspace->save();
 
+         // set relation with user and workspace
+         $user = \Budgetcontrol\Library\Model\User::where('uuid', $userUUID)->first();
+         $workspace = \Budgetcontrol\Library\Model\Workspace::where('uuid', $wsUUID)->first();
+ 
+         $workspace->users()->attach($user);
+         $workspace->save();
+
         // Create wallet
+        $output->writeln('Create wallet');
         Log::debug('Create wallet');
         $wallet = Wallet::create([
             "name" => "Bank Account",
@@ -91,8 +104,9 @@ class InstallDemoData extends JobCommand
         ]);
 
         // Create workspace settings
+        $output->writeln('Create workspace settings');
         Log::debug('Create workspace settings');
-        $settings = WorkspaceSetting::create(['currency_id' => $currency_id, 'payment_type_id' => $payment_type_id]);
+        $settings = WorkspaceSetting::create($currency_id, $payment_type_id);
         WorkspaceSettings::create([
             'workspace_id' => $workspace->id,
             'setting' => 'app_configurations',
@@ -101,10 +115,11 @@ class InstallDemoData extends JobCommand
 
         // Create incomes
         $dateTime = new \DateTime();
-        Log::debug('Create ' . $entry . ' incomes');
+        $output->writeln('Create ' . $entry . ' expenses');
+        Log::debug('Create ' . $entry . ' expenses');
         for ($i = 0; $i < $entry; $i++) {
             Expense::create([
-                "amount" => rand(1, 1000),
+                "amount" => rand(1, 1000) * -1,
                 "note" => $faker->sentence(rand(1, 20)),
                 "category_id" => rand(1, 76),
                 "account_id" => $wallet->id,
@@ -115,11 +130,13 @@ class InstallDemoData extends JobCommand
                 "waranty" => 0,
                 "confirmed" => 1,
                 'uuid' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
-                'type' => \Budgetcontrol\Library\Entity\Entry::incoming->value,
+                'type' => \Budgetcontrol\Library\Entity\Entry::expenses->value,
                 'workspace_id' => $workspace->id,
             ]);
         }
 
+        $output->writeln('Create ' . $entry . ' income');
+        Log::debug('Create ' . $entry . ' income');
         Income::create([
             "amount" => rand(1, 1000),
             "note" => $faker->sentence(rand(1, 20)),
@@ -168,8 +185,27 @@ class InstallDemoData extends JobCommand
             'workspace_id' => $workspace->id,
         ]);
 
+        Log::debug('Create planned income entry');
+        $output->writeln('Create planned income entry');
+        Income::create([
+            "amount" => rand(1, 1000),
+            "note" => $faker->sentence(rand(1, 20)),
+            "category_id" => 74,
+            "account_id" => $wallet->id,
+            "currency_id" => $currency_id,
+            "payment_type_id" => $payment_type_id,
+            "date_time" => $dateTime->modify('+10 days')->format('Y-m-d H:i:s'),
+            "label" => [],
+            "waranty" => 0,
+            "confirmed" => 1,
+            'uuid' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
+            'type' => \Budgetcontrol\Library\Entity\Entry::incoming->value,
+            'workspace_id' => $workspace->id,
+        ]);
+
         // Create a Model
         Log::debug('Create a Model');
+        $output->writeln('Create a Model');
         Model::create([
             "amount" => rand(1, 1000),
             "note" => "Model demo",
@@ -186,6 +222,7 @@ class InstallDemoData extends JobCommand
 
         // Create a Payee
         Log::debug('Create a Payee');
+        $output->writeln('Create a Payee');
         Payee::create([
             'uuid' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
             'name' => 'Payee 1 Demo',
@@ -194,6 +231,7 @@ class InstallDemoData extends JobCommand
 
         // Create a PlannedEntry
         Log::debug('Create a PlannedEntry');
+        $output->writeln('Create a PlannedEntry');
         PlannedEntry::create([
             "amount" => rand(1, 1000),
             "note" => "test",
@@ -210,6 +248,7 @@ class InstallDemoData extends JobCommand
         ]);
 
         Log::info('Demo data installed');
+        $output->writeln('Demo data installed');
 
         return Command::SUCCESS;
     }

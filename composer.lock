@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e7a044c1a00d0adcf1e54cb002d36200",
+    "content-hash": "5f9385ae0d8138b1e1466dc27509dbb4",
     "packages": [
         {
             "name": "brick/math",
@@ -113,16 +113,16 @@
         },
         {
             "name": "budgetcontrol/library",
-            "version": "v1.2",
+            "version": "v1.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BudgetControl/Library.git",
-                "reference": "166508833191b2b5e89103013be42848dc0b7075"
+                "reference": "da913251a8950ec9a4e1bb3e73462a7e084da8ea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BudgetControl/Library/zipball/166508833191b2b5e89103013be42848dc0b7075",
-                "reference": "166508833191b2b5e89103013be42848dc0b7075",
+                "url": "https://api.github.com/repos/BudgetControl/Library/zipball/da913251a8950ec9a4e1bb3e73462a7e084da8ea",
+                "reference": "da913251a8950ec9a4e1bb3e73462a7e084da8ea",
                 "shasum": ""
             },
             "require": {
@@ -144,9 +144,9 @@
                 }
             ],
             "support": {
-                "source": "https://github.com/BudgetControl/Library/tree/v1.2"
+                "source": "https://github.com/BudgetControl/Library/tree/v1.2.4"
             },
-            "time": "2024-09-27T13:30:03+00:00"
+            "time": "2024-10-03T07:51:25+00:00"
         },
         {
             "name": "budgetcontrol/libs-connector",
@@ -244,16 +244,16 @@
         },
         {
             "name": "budgetcontrol/schema-registry-service",
-            "version": "v1.0",
+            "version": "v1.0-beta",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BudgetControl/Schema-Registry-Service.git",
-                "reference": "bd3d4a784cb018cb79ea1073be5c7f023b082b2d"
+                "reference": "01466280c3f20acec2167bee44562285e8e93751"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BudgetControl/Schema-Registry-Service/zipball/bd3d4a784cb018cb79ea1073be5c7f023b082b2d",
-                "reference": "bd3d4a784cb018cb79ea1073be5c7f023b082b2d",
+                "url": "https://api.github.com/repos/BudgetControl/Schema-Registry-Service/zipball/01466280c3f20acec2167bee44562285e8e93751",
+                "reference": "01466280c3f20acec2167bee44562285e8e93751",
                 "shasum": ""
             },
             "type": "library",
@@ -270,10 +270,10 @@
             ],
             "description": "An API Schema Registry is a centralized service that manages and distributes database schema definitions",
             "support": {
-                "source": "https://github.com/BudgetControl/Schema-Registry-Service/tree/v1.0",
+                "source": "https://github.com/BudgetControl/Schema-Registry-Service/tree/v1.0-beta",
                 "issues": "https://github.com/BudgetControl/Schema-Registry-Service/issues"
             },
-            "time": "2024-07-17T17:46:54+00:00"
+            "time": "2024-08-06T13:26:32+00:00"
         },
         {
             "name": "cakephp/chronos",
@@ -6344,6 +6344,48 @@
     ],
     "packages-dev": [
         {
+            "name": "budgetcontrol/seeds",
+            "version": "v0.2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/BudgetControl/SeedsTestLibs.git",
+                "reference": "9492477582d47111e3f37c3dd07dc3e8bb542cac"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/BudgetControl/SeedsTestLibs/zipball/9492477582d47111e3f37c3dd07dc3e8bb542cac",
+                "reference": "9492477582d47111e3f37c3dd07dc3e8bb542cac",
+                "shasum": ""
+            },
+            "require": {
+                "budgetcontrol/library": "^1.2"
+            },
+            "require-dev": {
+                "ramsey/uuid": "^4.7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Budgetcontrol\\Seeds\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Marco De Felice",
+                    "email": "marco.defelice@mlabfactory.it"
+                }
+            ],
+            "description": "Seeds and migrations for unit test",
+            "support": {
+                "source": "https://github.com/BudgetControl/SeedsTestLibs/tree/v0.2.2",
+                "issues": "https://github.com/BudgetControl/SeedsTestLibs/issues"
+            },
+            "time": "2024-10-15T06:20:40+00:00"
+        },
+        {
             "name": "fakerphp/faker",
             "version": "v1.23.1",
             "source": {
@@ -8033,7 +8075,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "budgetcontrol/schema-registry-service": 10
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
