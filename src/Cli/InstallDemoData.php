@@ -115,11 +115,11 @@ class InstallDemoData extends JobCommand
 
         // Create incomes
         $dateTime = new \DateTime();
-        $output->writeln('Create ' . $entry . ' incomes');
-        Log::debug('Create ' . $entry . ' incomes');
+        $output->writeln('Create ' . $entry . ' expenses');
+        Log::debug('Create ' . $entry . ' expenses');
         for ($i = 0; $i < $entry; $i++) {
             Expense::create([
-                "amount" => rand(1, 1000),
+                "amount" => rand(1, 1000) * -1,
                 "note" => $faker->sentence(rand(1, 20)),
                 "category_id" => rand(1, 76),
                 "account_id" => $wallet->id,
@@ -130,11 +130,13 @@ class InstallDemoData extends JobCommand
                 "waranty" => 0,
                 "confirmed" => 1,
                 'uuid' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
-                'type' => \Budgetcontrol\Library\Entity\Entry::incoming->value,
+                'type' => \Budgetcontrol\Library\Entity\Entry::expenses->value,
                 'workspace_id' => $workspace->id,
             ]);
         }
 
+        $output->writeln('Create ' . $entry . ' income');
+        Log::debug('Create ' . $entry . ' income');
         Income::create([
             "amount" => rand(1, 1000),
             "note" => $faker->sentence(rand(1, 20)),
@@ -175,6 +177,24 @@ class InstallDemoData extends JobCommand
             "currency_id" => $currency_id,
             "payment_type_id" => $payment_type_id,
             "date_time" => $dateTime->format('Y-m-d H:i:s'),
+            "label" => [],
+            "waranty" => 0,
+            "confirmed" => 1,
+            'uuid' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
+            'type' => \Budgetcontrol\Library\Entity\Entry::incoming->value,
+            'workspace_id' => $workspace->id,
+        ]);
+
+        Log::debug('Create planned income entry');
+        $output->writeln('Create planned income entry');
+        Income::create([
+            "amount" => rand(1, 1000),
+            "note" => $faker->sentence(rand(1, 20)),
+            "category_id" => 74,
+            "account_id" => $wallet->id,
+            "currency_id" => $currency_id,
+            "payment_type_id" => $payment_type_id,
+            "date_time" => $dateTime->modify('+10 days')->format('Y-m-d H:i:s'),
             "label" => [],
             "waranty" => 0,
             "confirmed" => 1,
