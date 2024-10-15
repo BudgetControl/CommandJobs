@@ -6349,12 +6349,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/BudgetControl/SeedsTestLibs.git",
-                "reference": "eb3401e4cb6cc50baccd67d4dcc6c5d6ded47611"
+                "reference": "9492477582d47111e3f37c3dd07dc3e8bb542cac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BudgetControl/SeedsTestLibs/zipball/eb3401e4cb6cc50baccd67d4dcc6c5d6ded47611",
-                "reference": "eb3401e4cb6cc50baccd67d4dcc6c5d6ded47611",
+                "url": "https://api.github.com/repos/BudgetControl/SeedsTestLibs/zipball/9492477582d47111e3f37c3dd07dc3e8bb542cac",
+                "reference": "9492477582d47111e3f37c3dd07dc3e8bb542cac",
                 "shasum": ""
             },
             "require": {
@@ -6383,7 +6383,7 @@
                 "source": "https://github.com/BudgetControl/SeedsTestLibs/tree/v0.2.2",
                 "issues": "https://github.com/BudgetControl/SeedsTestLibs/issues"
             },
-            "time": "2024-10-14T16:00:12+00:00"
+            "time": "2024-10-15T06:20:40+00:00"
         },
         {
             "name": "fakerphp/faker",
