@@ -1,7 +1,6 @@
 <?php
 // Autoload Composer dependencies
 
-use Budgetcontrol\jobs\Facade\Mail;
 use BudgetcontrolLibs\Crypt\Service\CryptableService;
 use Monolog\Level;
 use Illuminate\Support\Facades\Facade;
