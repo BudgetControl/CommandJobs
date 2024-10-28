@@ -9,6 +9,7 @@ use Budgetcontrol\Library\Definition\Period;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Budgetcontrol\Library\ValueObject\BudgetConfiguration;
 
 class BudgetPeriodChange extends JobCommand
 {
@@ -44,7 +45,17 @@ class BudgetPeriodChange extends JobCommand
                         $configuration->period_end = clone $now;
                         $configuration->period_end->addDays($days);
 
-                        $budget->configuration = json_encode($configuration);
+                        $consiguration = new BudgetConfiguration(
+                            $configuration->tags,
+                            $configuration->types,
+                            $configuration->period,
+                            $configuration->accounts,
+                            $configuration->categories,
+                            $configuration->period_end,
+                            $configuration->period_start
+                        );
+
+                        $budget->configuration = $consiguration;
                         $budget->save();
                     }
 
