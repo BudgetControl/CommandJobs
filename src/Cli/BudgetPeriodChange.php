@@ -45,14 +45,14 @@ class BudgetPeriodChange extends JobCommand
                         $configuration->period_end = clone $now;
                         $configuration->period_end->addDays($days);
 
-                        $consiguration = new BudgetConfiguration(
+                        $consiguration = BudgetConfiguration::create(
                             $configuration->tags,
                             $configuration->types,
                             $configuration->period,
                             $configuration->accounts,
                             $configuration->categories,
-                            $configuration->period_end,
-                            $configuration->period_start
+                            $configuration->period_end->toAtomString(),
+                            $configuration->period_start->toAtomString()
                         );
 
                         $budget->configuration = $consiguration;
