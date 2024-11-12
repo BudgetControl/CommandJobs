@@ -43,7 +43,8 @@ class ManageCreditCardsWallet extends JobCommand
         Log::info('Managing credit cards');
 
         $creditCards = Wallet::whereIn('type', [EntityWallet::creditCard->value, EntityWallet::creditCardRevolving->value])
-        ->where("deletedAt", null)
+        ->where('invoice_date', '<=', Carbon::now()->format(Format::dateTime->value))
+        ->where("deleted_at", null)
         ->get();
 
         try {
@@ -83,12 +84,17 @@ class ManageCreditCardsWallet extends JobCommand
      */
     private function createDebitNegativeEntry(Wallet $wallet): void
     {
+        $amount = function() use($wallet): float {
+            $value = $wallet->installement_value * -1;
+            return (float) $value >= $wallet->balance ? $wallet->installement_value : $wallet->balance * -1;
+        };
+
         $entry = $this->createDebitEntry($wallet);
         $entry->account_id = $wallet->payment_account;
-        $entry->amount = $wallet->installement_value * -1; // shoulde be negative
+        $entry->amount = $amount() * -1; // shoulde be negative
         $entry->save();
 
-        $this->updateWalletBalance($wallet->payment_account, $wallet->installement_value * -1);
+        $this->updateWalletBalance($wallet->payment_account, $amount());
 
         Log::debug("Save new debit entry [NEGATIVE] ".json_encode($entry->toArray()));
     }
@@ -102,12 +108,17 @@ class ManageCreditCardsWallet extends JobCommand
      */
     private function createDebitPositiveEntry(Wallet $wallet): void
     {
+        $amount = function()use($wallet) {
+            $value = $wallet->installement_value * -1;
+            return $value >= $wallet->balance ? $wallet->installement_value : $wallet->balance  * -1;
+        };
+
         $entry = $this->createDebitEntry($wallet);
         $entry->account_id = $wallet->id;
-        $entry->amount = $wallet->installement_value;
+        $entry->amount = $amount();
         $entry->save();
 
-        $this->updateWalletBalance($wallet->id, $wallet->installement_value);
+        $this->updateWalletBalance($wallet->id, $amount() * -1);
 
         Log::debug("Save new debit entry [POSITIVE] ".json_encode($entry->toArray()));
 
@@ -169,9 +180,9 @@ class ManageCreditCardsWallet extends JobCommand
      */
     private function updateWalletBalance(int $walletId, float|int $amount)
     {
-        $wallet = Wallet::firstOrFail($walletId);
+        $wallet = Wallet::where('id', $walletId)->first();
         $newWalletBalance = $wallet->balance - $amount;
-        $wallet->balacne = $newWalletBalance;
+        $wallet->balance = $newWalletBalance;
         $wallet->save();
 
         Log::debug("New Wallet balance for {$wallet->id} [$newWalletBalance]");
