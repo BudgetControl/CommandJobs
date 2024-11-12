@@ -113,16 +113,16 @@
         },
         {
             "name": "budgetcontrol/library",
-            "version": "v1.2.4",
+            "version": "v1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BudgetControl/Library.git",
-                "reference": "da913251a8950ec9a4e1bb3e73462a7e084da8ea"
+                "reference": "591c808cbd2a6b2e852879fcf60aca279dda1a51"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BudgetControl/Library/zipball/da913251a8950ec9a4e1bb3e73462a7e084da8ea",
-                "reference": "da913251a8950ec9a4e1bb3e73462a7e084da8ea",
+                "url": "https://api.github.com/repos/BudgetControl/Library/zipball/591c808cbd2a6b2e852879fcf60aca279dda1a51",
+                "reference": "591c808cbd2a6b2e852879fcf60aca279dda1a51",
                 "shasum": ""
             },
             "require": {
@@ -144,9 +144,9 @@
                 }
             ],
             "support": {
-                "source": "https://github.com/BudgetControl/Library/tree/v1.2.4"
+                "source": "https://github.com/BudgetControl/Library/tree/v1.3"
             },
-            "time": "2024-10-03T07:51:25+00:00"
+            "time": "2024-10-18T13:20:42+00:00"
         },
         {
             "name": "budgetcontrol/libs-connector",
@@ -8083,6 +8083,6 @@
     "platform": {
         "php": "^8.1"
     },
-    "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "platform-dev": {},
+    "plugin-api-version": "2.6.0"
 }

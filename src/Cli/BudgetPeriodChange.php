@@ -4,6 +4,7 @@ namespace Budgetcontrol\jobs\Cli;
 
 use Illuminate\Support\Carbon;
 use Budgetcontrol\jobs\Cli\JobCommand;
+use Budgetcontrol\Library\Definition\Format;
 use Budgetcontrol\Library\Model\Budget;
 use Budgetcontrol\Library\Definition\Period;
 use Symfony\Component\Console\Command\Command;
@@ -30,32 +31,34 @@ class BudgetPeriodChange extends JobCommand
         try {
             foreach ($budgets as $budget) {
 
-                $configuration = json_decode($budget->configuration);
-                if ($configuration->period == Period::recursively->value) {
+                /** @var \Budgetcontrol\Library\ValueObject\BudgetConfiguration $configuration */
+                $configuration = $budget->configuration;
+                if ($configuration->getPeriod() == Period::recursively->value) {
 
-                    $dateStart = Carbon::parse($configuration->period_start);
-                    $dateEnd = Carbon::parse($configuration->period_end);
+                    $dateStart = $configuration->getPeriodStart();
+                    $dateEnd = $configuration->getPeriodEnd();
 
                     // count days between start and end
-                    $days = $dateStart->diffInDays($dateEnd);
+                    $days = $dateStart->diff($dateEnd);
 
                     $now = Carbon::now();
+                    $newConfiguration = $configuration->toJson();
                     if ($now->greaterThan($dateEnd)) {
-                        $configuration->period_start = $now->startOfDay();
-                        $configuration->period_end = clone $now;
-                        $configuration->period_end->addDays($days);
+                        $newConfiguration->period_start = $now->startOfDay();
+                        $newConfiguration->period_end = clone $now;
+                        $newConfiguration->period_end->addDays($days->days);
 
-                        $consiguration = BudgetConfiguration::create(
-                            $configuration->tags,
-                            $configuration->types,
-                            $configuration->period,
-                            $configuration->accounts,
-                            $configuration->categories,
-                            $configuration->period_end->toAtomString(),
-                            $configuration->period_start->toAtomString()
+                        $configuration = BudgetConfiguration::create(
+                            $newConfiguration->tags,
+                            $newConfiguration->types,
+                            $newConfiguration->period,
+                            $newConfiguration->accounts,
+                            $newConfiguration->categories,
+                            $newConfiguration->period_end->format(Format::dateTime->value),
+                            $newConfiguration->period_start->format(Format::dateTime->value)
                         );
 
-                        $budget->configuration = $consiguration;
+                        $budget->configuration = $configuration;
                         $budget->save();
                     }
 
