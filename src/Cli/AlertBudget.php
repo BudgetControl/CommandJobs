@@ -108,7 +108,7 @@ class AlertBudget extends JobCommand
         $toNotify = [];
         // retrive user email
         if ($budget['notification'] == true) {
-            $toNotify = $budget['emails'] ?? null;
+            $toNotify = explode(',',$budget['emails']) ?? null;
         }
 
         return $toNotify;
