@@ -91,7 +91,7 @@ class ManageCreditCardsWallet extends JobCommand
 
         $entry = $this->createDebitEntry($wallet);
         $entry->account_id = $wallet->payment_account;
-        $entry->amount = $amount() * -1; // shoulde be negative
+        $entry->amount = $amount(); // shoulde be negative
         $entry->save();
 
         $this->updateWalletBalance($wallet->payment_account, $amount());
@@ -115,7 +115,7 @@ class ManageCreditCardsWallet extends JobCommand
 
         $entry = $this->createDebitEntry($wallet);
         $entry->account_id = $wallet->id;
-        $entry->amount = $amount();
+        $entry->amount = $amount() * -1;
         $entry->save();
 
         $this->updateWalletBalance($wallet->id, $amount() * -1);
@@ -146,7 +146,7 @@ class ManageCreditCardsWallet extends JobCommand
         // $entry->type = EntityEntry::debit->value; FIXME:
         $entry->workspace_id = $wallet->workspace_id;
         $entry->transfer = false;
-        $entry->payee_id = 0; //FIXME:
+        $entry->payee_id = null; //FIXME:
 
         return $entry;
 
