@@ -4,16 +4,17 @@ namespace Budgetcontrol\jobs\Cli;
 
 use Exception;
 use Illuminate\Support\Facades\Log;
-use Budgetcontrol\jobs\Domain\Model\Entry;
-use Budgetcontrol\jobs\Domain\Model\PlannedEntry;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Budgetcontrol\jobs\Domain\Repository\PlannedEntryRepository;
+use Budgetcontrol\Library\Definition\Format;
 use Budgetcontrol\Registry\Schema\Entries;
 use Ramsey\Uuid\Uuid;
 use Throwable;
 use Carbon\Carbon;
+use Budgetcontrol\Library\Model\Entry;
+use Budgetcontrol\Library\Model\PlannedEntry;
 
 /**
  * Class AddPlannedEntry
@@ -164,7 +165,7 @@ class AddPlannedEntry extends JobCommand
             /** @var EntryModel $request  */
             foreach ($data as $entry) {
 
-                $dateTime = Carbon::createFromFormat('Y-m-d', date('Y-m-d',strtotime($entry->date_time)))->toAtomString();
+                $dateTime = Carbon::createFromFormat('Y-m-d', date('Y-m-d',strtotime($entry->date_time)))->format(Format::dateTime->value);
 
                 $entryToInsert = new Entry([Entries::workspace_id => $entry->workspace_id]);
                 $entryToInsert->transfer = 0;
@@ -179,14 +180,12 @@ class AddPlannedEntry extends JobCommand
                 $entryToInsert->note = $entry->note;
                 $entryToInsert->currency_id = $entry->currency_id;
                 $entryToInsert->uuid = \Ramsey\Uuid\Uuid::uuid4()->toString();
-                $entryToInsert->created_at = Carbon::now()->toAtomString();
-                $entryToInsert->updated_at = Carbon::now()->toAtomString();
                 $entryToInsert->workspace_id = $entry->workspace_id;
                 $entryToInsert->save();
 
                 //save tags
                 foreach($entry->tags as $tag) {
-                    $entryToInsert->tags()->attach($tag->id);
+                    $entryToInsert->labels()->attach($tag->id);
                 }
             }
     }
@@ -202,8 +201,8 @@ class AddPlannedEntry extends JobCommand
         foreach ($entries as $e) {
             PlannedEntry::find($e->id)->update(
                 [
-                    'date_time' => Carbon::createFromFormat('Y-m-d', date('Y-m-d',strtotime($e->date_time)))->addMonth()->toAtomString(),
-                    'updated_at' => Carbon::now()->toAtomString()
+                    'date_time' => Carbon::createFromFormat('Y-m-d', date('Y-m-d',strtotime($e->date_time)))->addMonth()->format(Format::dateTime->value),
+                    'updated_at' => Carbon::now()->format(Format::dateTime->value)
                 ]
             );
         }
