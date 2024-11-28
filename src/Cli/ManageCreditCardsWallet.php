@@ -1,24 +1,22 @@
 <?php
+declare(strict_types=1);
 
 namespace Budgetcontrol\jobs\Cli;
 
 use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
 use Webit\Wrapper\BcMath\BcMathNumber;
-use Budgetcontrol\jobs\Domain\Model\Entry;
-use Budgetcontrol\jobs\Domain\Model\Wallet;
 use Budgetcontrol\Library\Definition\Format;
 use Budgetcontrol\Library\Entity\Entry as EntityEntry;
 use Budgetcontrol\Library\Entity\Wallet as EntityWallet;
-use Budgetcontrol\Registry\Schema\Wallets;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Budgetcontrol\Library\Model\Debit;
+use Budgetcontrol\Library\Model\Wallet; 
 
 /**
- * FILEPATH: /Users/marco/Projects/marco/BC/Core/microservices/CommandJobs/src/Cli/ManageCreditCardsWallet.php
- *
  * The ManageCreditCardsWallet class is responsible for managing credit cards in the wallet.
  * It extends the JobCommand class.
  */
@@ -45,15 +43,16 @@ class ManageCreditCardsWallet extends JobCommand
         Log::info('Managing credit cards');
 
         $creditCards = Wallet::whereIn('type', [EntityWallet::creditCard->value, EntityWallet::creditCardRevolving->value])
-        ->where(Wallets::invoice_date, '<=', Carbon::now())->where('balance', '<', 0)
+        ->where('invoice_date', '<=', Carbon::now()->format(Format::dateTime->value))
+        ->where("deleted_at", null)
         ->get();
 
         try {
+
             foreach ($creditCards as $creditCard) {
-                if($this->conditions($creditCard) === true) {
-                    $this->creditCard($creditCard);
-                }
+                $this->manageCreditCard($creditCard);
             }
+
         } catch (\Throwable $e) {
             $this->fail($e->getMessage());
             return Command::FAILURE;
@@ -64,94 +63,129 @@ class ManageCreditCardsWallet extends JobCommand
         return Command::SUCCESS;
     }
 
-    private function creditCard(Wallet $creditCard)
+    private function manageCreditCard(Wallet $creditCard)
     {
-        $creditCardEntry = $this->saveEntry($creditCard);
-        $walletEntry = $this->saveEntry($creditCard);
-
-        $creditCardEntry->transfer_relation = $walletEntry->uuid;
-        $walletEntry->transfer_relation = $creditCardEntry->uuid;
-        $walletEntry->amount = $creditCard->installement_value * -1; // negative value for related entry
-        $walletEntry->account_id = $creditCardEntry->transfer_id;
-        $walletEntry->transfer_id = $creditCardEntry->account_id;
-
-        $creditCardEntry->save();
-        $walletEntry->save();
-
-        $installementValue = $creditCard->installement_value;
-        //calculate the wallet balance
-        $balance = new BcMathNumber($creditCard->balance);
-        $creditCard->balance = $balance->add($installementValue)->getValue();
-        if($creditCard->balance > 0) {
-            $installementValue = $creditCard->balance;
-            $creditCard->balance = 0;
+        //first check if the balance is greather then 0
+        if($creditCard->balance < 0) {
+            // you need to create new debit entry
+            $this->createDebitNegativeEntry($creditCard);
+            $this->createDebitPositiveEntry($creditCard);
         }
 
-        $wallet = Wallet::find($creditCard->payment_account);
-        $walletBalance = new BcMathNumber($wallet->balance);
-        $wallet->balance = $walletBalance->sub($installementValue)->getValue();
-        $wallet->save();
+        $this->changeWalletDate($creditCard);
+    }
 
-        // move date to next month
-        $newInvoiceDate = Carbon::parse($creditCard->invoice_date)->addMonth();
-        $newClosingDate = Carbon::parse($creditCard->closing_date)->addMonth();
+    /**
+     * Creates a debit negative entry for the given wallet.
+     *
+     * @param Wallet $wallet The wallet for which the debit negative entry will be created.
+     *
+     * @return void
+     */
+    private function createDebitNegativeEntry(Wallet $wallet): void
+    {
+        $amount = function() use($wallet): float {
+            $value = $wallet->installement_value * -1;
+            return (float) $value >= $wallet->balance ? $wallet->installement_value : $wallet->balance * -1;
+        };
 
-        $creditCard->invoice_date = $newInvoiceDate->format(Format::date->value . ' 00:00:00');
-        $creditCard->closing_date = $newClosingDate->format(Format::date->value . ' 00:00:00');
-        $creditCard->save();
+        $entry = $this->createDebitEntry($wallet);
+        $entry->account_id = $wallet->payment_account;
+        $entry->amount = $amount(); // shoulde be negative
+        $entry->save();
 
-        log::debug('Credit card updated', ['creditCard' => $creditCard->toArray()]);
+        $this->updateWalletBalance($wallet->payment_account, $amount());
+
+        Log::debug("Save new debit entry [NEGATIVE] ".json_encode($entry->toArray()));
+    }
+
+    /**
+     * Creates a positive debit entry in the specified wallet.
+     *
+     * @param Wallet $wallet The wallet in which to create the debit entry.
+     *
+     * @return void
+     */
+    private function createDebitPositiveEntry(Wallet $wallet): void
+    {
+        $amount = function()use($wallet) {
+            $value = $wallet->installement_value * -1;
+            return $value >= $wallet->balance ? $wallet->installement_value : $wallet->balance  * -1;
+        };
+
+        $entry = $this->createDebitEntry($wallet);
+        $entry->account_id = $wallet->id;
+        $entry->amount = $amount() * -1;
+        $entry->save();
+
+        $this->updateWalletBalance($wallet->id, $amount() * -1);
+
+        Log::debug("Save new debit entry [POSITIVE] ".json_encode($entry->toArray()));
 
     }
 
-    private function saveEntry(Wallet $creditCard): Entry
+    /**
+     * Creates a debit entry for the given wallet.
+     *
+     * @param Wallet $wallet The wallet for which the debit entry is to be created.
+     * @return Debit The created debit entry.
+     */
+    private function createDebitEntry(Wallet $wallet): Debit
     {
-
-        // se installement_value è una percentuale
-        $amount = $creditCard->installement_value;
-
-        if($creditCard->type == EntityWallet::creditCard->value) {
-            $amount = $creditCard->balance;
-        }
-
-        if($creditCard->type == EntityWallet::creditCardRevolving->value) {
-            if($creditCard->installement_value < $creditCard->balance ) {
-                $amount = $creditCard->balance;
-            }
-        }
-
-        //create new payment
-        $entry = new Entry();
         $transactionUUID = Uuid::uuid4();
+
+        $entry = new Debit();
         $entry->uuid = $transactionUUID;
         $entry->date_time = Carbon::now()->format(Format::dateTime->value);
-        $entry->account_id = $creditCard->payment_account;
-        $entry->amount = $amount;
         $entry->note = 'Credit card payment: '.$transactionUUID;
         $entry->planned = false;
         $entry->confirmed = true;
-        $entry->currency_id = $creditCard->currency;
-        $entry->payment_type = 2;
-        $entry->category_id = 75;
-        $entry->type = EntityEntry::transfer->value;
-        $entry->transfer_id = $creditCard->id;
-        $entry->workspace_id = $creditCard->workspace_id;
-        $entry->transfer = true;
-        $entry->save();
-
-        Log::debug('Entry created', ['entry' => $entry->toArray()]);
+        $entry->currency_id = $wallet->currency;
+        $entry->payment_type = 2; //FIXME:
+        $entry->category_id = 75; //FIXME:
+        // $entry->type = EntityEntry::debit->value; FIXME:
+        $entry->workspace_id = $wallet->workspace_id;
+        $entry->transfer = false;
+        $entry->payee_id = null; //FIXME:
 
         return $entry;
+
     }
 
-    private function conditions(Wallet $creditCard): bool
+    /**
+     * Changes the date of the given wallet.
+     *
+     * @param Wallet $wallet The wallet whose date needs to be changed.
+     *
+     * @return void
+     */
+    private function changeWalletDate(Wallet $wallet): void
     {
+        // move date to next month
+        $newInvoiceDate = Carbon::parse($wallet->invoice_date)->addMonth();
+        $newClosingDate = Carbon::parse($wallet->closing_date)->addMonth();
 
-        if($creditCard->balance >= 0) {
-            return false;
-        }
+        $wallet->invoice_date = $newInvoiceDate->format(Format::date->value . ' 00:00:00');
+        $wallet->closing_date = $newClosingDate->format(Format::date->value . ' 00:00:00');
+        $wallet->save();
 
-        return true;
+        log::debug('Credit card updated', ['creditCard' => $wallet->toArray()]);
+    }
+
+    /**
+     * Updates the balance of a specified wallet.
+     *
+     * @param int $walletId The ID of the wallet to update.
+     * @param float|int $balance The new amount to set for the wallet.
+     */
+    private function updateWalletBalance(int $walletId, float|int $amount)
+    {
+        $wallet = Wallet::where('id', $walletId)->first();
+        $newWalletBalance = $wallet->balance - $amount;
+        $wallet->balance = $newWalletBalance;
+        $wallet->save();
+
+        Log::debug("New Wallet balance for {$wallet->id} [$newWalletBalance]");
     }
 
 }
