@@ -13,7 +13,12 @@ class EntryRepository extends Repository {
      */
     public function entryOfCurrentTime()
     {
-        $query = "SELECT id FROM entries WHERE DATE(date_time) = CURDATE() AND deleted_at IS NULL and planned = 1 ;";
+        $query = "SELECT id 
+            FROM entries 
+            WHERE DATE(date_time) = CURRENT_DATE 
+            AND deleted_at IS NULL 
+            AND planned = true;
+            ;";
         $results = DB::select($query);
 
         if(empty($results)) {
