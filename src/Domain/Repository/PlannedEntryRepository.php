@@ -30,7 +30,7 @@ class PlannedEntryRepository extends Repository {
      */
     public function plannedEntryOfTheMonth()
     {
-        $query = "SELECT * FROM planned_entries WHERE MONTH(date_time) = MONTH(CURRENT_DATE()) AND deleted_at IS NULL";
+        $query = "SELECT * FROM planned_entries WHERE EXTRACT(MONTH FROM date_time) = EXTRACT(MONTH FROM CURRENT_DATE) AND deleted_at IS NULL;";
         $results = DB::select($query);
 
         if(empty($results)) {
