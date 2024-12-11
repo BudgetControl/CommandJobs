@@ -8,7 +8,7 @@ class PlannedEntryRepository extends Repository {
 
     public function plannedEntriesFromDateTime(string $date)
     {
-         $query = "SELECT * FROM planned_entries WHERE DATE(date_time) = CURRENT_DATE AND deleted_at IS NULL";
+         $query = "SELECT * FROM planned_entries WHERE date_time::date = CURRENT_DATE AND deleted_at IS NULL;";
         $results = DB::select($query);
 
         if(empty($results)) {
