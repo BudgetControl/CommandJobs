@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5f9385ae0d8138b1e1466dc27509dbb4",
+    "content-hash": "5c4e1946e58a912c0efb5f5ca1a6c59e",
     "packages": [
         {
             "name": "brick/math",
@@ -150,7 +150,7 @@
         },
         {
             "name": "budgetcontrol/libs-connector",
-            "version": "v1.0.1",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BudgetControl/Libs_BcConnector.git",
@@ -192,22 +192,22 @@
             ],
             "description": "defines the dependencies required for a PHP library in a Budget control application",
             "support": {
-                "source": "https://github.com/BudgetControl/Libs_BcConnector/tree/v1.0.1"
+                "source": "https://github.com/BudgetControl/Libs_BcConnector/tree/v1.0.2"
             },
             "time": "2024-09-03T09:19:19+00:00"
         },
         {
             "name": "budgetcontrol/mailer",
-            "version": "v0.2.1",
+            "version": "v0.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BudgetControl/MailerService.git",
-                "reference": "c2a72b4cf35abbe0fe620f29812c295d2eb1c708"
+                "reference": "e7da4edb48c8caa1a0c348a79a875a24aa0a6301"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BudgetControl/MailerService/zipball/c2a72b4cf35abbe0fe620f29812c295d2eb1c708",
-                "reference": "c2a72b4cf35abbe0fe620f29812c295d2eb1c708",
+                "url": "https://api.github.com/repos/BudgetControl/MailerService/zipball/e7da4edb48c8caa1a0c348a79a875a24aa0a6301",
+                "reference": "e7da4edb48c8caa1a0c348a79a875a24aa0a6301",
                 "shasum": ""
             },
             "require": {
@@ -238,22 +238,22 @@
             ],
             "description": "The MailerService library provides functionality for sending emails. It is used by the BC (Business Communication) module of the application.",
             "support": {
-                "source": "https://github.com/BudgetControl/MailerService/tree/v0.2.1"
+                "source": "https://github.com/BudgetControl/MailerService/tree/v0.2.2"
             },
-            "time": "2024-09-27T13:26:42+00:00"
+            "time": "2024-09-27T15:15:46+00:00"
         },
         {
             "name": "budgetcontrol/schema-registry-service",
-            "version": "v1.0-beta",
+            "version": "v1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BudgetControl/Schema-Registry-Service.git",
-                "reference": "01466280c3f20acec2167bee44562285e8e93751"
+                "reference": "75db04ebf37fa4155cafce73237b1b46612c5a6f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BudgetControl/Schema-Registry-Service/zipball/01466280c3f20acec2167bee44562285e8e93751",
-                "reference": "01466280c3f20acec2167bee44562285e8e93751",
+                "url": "https://api.github.com/repos/BudgetControl/Schema-Registry-Service/zipball/75db04ebf37fa4155cafce73237b1b46612c5a6f",
+                "reference": "75db04ebf37fa4155cafce73237b1b46612c5a6f",
                 "shasum": ""
             },
             "type": "library",
@@ -270,10 +270,10 @@
             ],
             "description": "An API Schema Registry is a centralized service that manages and distributes database schema definitions",
             "support": {
-                "source": "https://github.com/BudgetControl/Schema-Registry-Service/tree/v1.0-beta",
+                "source": "https://github.com/BudgetControl/Schema-Registry-Service/tree/v1.2",
                 "issues": "https://github.com/BudgetControl/Schema-Registry-Service/issues"
             },
-            "time": "2024-08-06T13:26:32+00:00"
+            "time": "2024-12-12T10:01:00+00:00"
         },
         {
             "name": "cakephp/chronos",
@@ -8075,9 +8075,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "budgetcontrol/schema-registry-service": 10
-    },
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

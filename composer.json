@@ -57,7 +57,7 @@
         "logtail/monolog-logtail": "^3.1",
         "budgetcontrol/libs-connector": "^v1.0",
         "budgetcontrol/library": "^v1.2",
-        "budgetcontrol/schema-registry-service": "v1.0-beta",
+        "budgetcontrol/schema-registry-service": "^v1.2",
         "budgetcontrol/mailer": "^v0.2",
         "budgetcontrol/cryptable": "v0.1"
     },
