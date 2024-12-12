@@ -63,7 +63,7 @@ class AlertBudget extends JobCommand
 
                         /** @var \Budgetcontrol\Library\ValueObject\WorkspaceSetting $wsSettings */
                         $wsSettings =  $workspace->workspaceSettings->data;
-                        $currency = $wsSettings->getCurrencyId();
+                        $currency = $wsSettings->getCurrency();
                         $currencySymbol = Currency::find($currency)->icon;
 
                         if (str_replace('%', '', $budget['totalSpentPercentage']) > 70) {
