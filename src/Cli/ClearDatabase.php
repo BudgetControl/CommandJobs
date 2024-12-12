@@ -8,6 +8,7 @@ use Budgetcontrol\jobs\Cli\JobCommand;
 use Illuminate\Database\Capsule\Manager as DB;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -23,7 +24,7 @@ class ClearDatabase extends JobCommand
     {
         $this->setName($this->command)
             ->setDescription('Clear db')
-            ->addOption('drop', null, InputOption::VALUE_OPTIONAL, 'Drop all tables', false)
+            ->addArgument('action', InputArgument::OPTIONAL, 'Action to perform', 'clear')
             ->setHelp("This command will remove all data from the database");
     }
 
@@ -53,17 +54,32 @@ class ClearDatabase extends JobCommand
             'users',
         ];
 
-        if ($input->getOption('drop')) {
+        if ($input->getArgument('action') == 'drop') {
             $command = 'DROP table';
         } else {
             $command = 'DELETE FROM';
         }
-        
+
 
         foreach ($tables as $table) {
-            $output->writeln($command.': ' . $table);
+            $output->writeln($command . ': ' . $table);
             $query = "$command $table";
             Db::statement($query);
+        }
+
+        if ($input->getArgument('action') == 'drop') {
+            $command = 'DROP table';
+            $enumTypes = [
+                'entry',
+                'planning',
+                'wallet'
+            ];
+
+            foreach ($enumTypes as $type) {
+                $output->writeln('DROP TYPE: ' . $type);
+                $query = "DROP TYPE IF EXISTS $type";
+                Db::statement($query);
+            }
         }
 
         $output->writeln('Database cleared');
