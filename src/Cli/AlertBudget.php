@@ -7,13 +7,14 @@ use Illuminate\Support\Facades\Log;
 use Budgetcontrol\jobs\Facade\Crypt;
 use Budgetcontrol\Library\Model\User;
 use Budgetcontrol\jobs\Cli\JobCommand;
-use Budgetcontrol\jobs\Domain\Model\Workspace;
 use Symfony\Component\Console\Command\Command;
 use Budgetcontrol\jobs\Facade\BudgetControlClient;
 use Budgetcontrol\Library\Model\Currency;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use BudgetcontrolLibs\Mailer\View\BudgetExceededView as ViewBudgetExceededView;
+use Illuminate\Database\Capsule\Manager as DB;
+use Budgetcontrol\Library\Model\Workspace;
 
 /**
  * Class ActivatePlannedEntry
@@ -53,8 +54,10 @@ class AlertBudget extends JobCommand
                         }
 
                         $workspaceId = $budget['budget']['workspace_id'];
+
+
                         
-                        foreach($user->workspaces as $userWorkspace) {
+                        foreach($this->getUserWorkspace($user->id) as $userWorkspace) {
                             if ($userWorkspace->id == $workspaceId) {
                                 $workspace = $userWorkspace;
                                 break;
@@ -118,10 +121,29 @@ class AlertBudget extends JobCommand
      * Find a user based on their email address.
      *
      * @param string $email The email address of the user.
-     * @return User|null The user object if found, null otherwise.
+     * @return ?User The user object if found, null otherwise.
      */
-    private function findUserFromEmail($email): User
+    private function findUserFromEmail($email): ?User
     {
-        return User::with('workspaces.workspaceSettings')->where('email', Crypt::encrypt($email))->first();
+        return User::where('email', Crypt::encrypt($email))->first();
+    }
+
+    /**
+     * Retrieves the workspace associated with a specific user.
+     *
+     * @param int $userId The ID of the user whose workspace is to be retrieved.
+     * @return \Illuminate\Database\Eloquent\Collection The workspace associated with the specified user.
+     */
+    public function getUserWorkspace(int $userId): \Illuminate\Database\Eloquent\Collection
+    {
+        $query = "SELECT workspace_id FROM workspaces_users_mm where user_id = ?";
+        $resultsQUery = DB::select($query, [$userId]);
+
+        $workspaceIds = [];
+        foreach ($resultsQUery as $result) {
+            $workspaceIds[] = $result->workspace_id;
+        }
+        
+        return Workspace::whereIn('id', $workspaceIds)->get();
     }
 }
