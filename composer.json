@@ -78,5 +78,5 @@
             "email": "marco.defelice@mlabfactory.it"
         }
     ],
-    "minimum-stability": "stable"
+    "minimum-stability": "dev"
 }

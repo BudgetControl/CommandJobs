@@ -7,6 +7,7 @@ namespace Budgetcontrol\jobs\Cli;
 use Faker\Factory;
 use Budgetcontrol\Library\Model\User;
 use Budgetcontrol\jobs\Cli\JobCommand;
+use Budgetcontrol\Library\Model\Currency;
 use Budgetcontrol\Library\Model\Model;
 use Budgetcontrol\Library\Model\Payee;
 use Budgetcontrol\Library\Model\Income;
@@ -68,8 +69,6 @@ class InstallDemoData extends JobCommand
         $workspace = Workspace::create([
             'name' => 'Demo Workspace',
             'description' => 'Demo Workspace',
-            'currency_id' => $currency_id,
-            'payment_type_id' => $payment_type_id,
             'user_id' => $user->id,
             'uuid' => $wsUUID
         ]);
@@ -106,10 +105,11 @@ class InstallDemoData extends JobCommand
         // Create workspace settings
         $output->writeln('Create workspace settings');
         Log::debug('Create workspace settings');
-        $settings = WorkspaceSetting::create($currency_id, $payment_type_id);
+
+        $currency = Currency::find($currency_id);
+        $settings = WorkspaceSetting::create($currency->toArray(), $payment_type_id);
         WorkspaceSettings::create([
             'workspace_id' => $workspace->id,
-            'setting' => 'app_configurations',
             'data' => $settings
         ]);
 
