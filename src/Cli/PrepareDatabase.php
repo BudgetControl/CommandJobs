@@ -27,6 +27,7 @@ class PrepareDatabase extends JobCommand
     {
         //execute seeders
         $output->writeln('Install db');
+        $this->output = $output;
         Log::info('Install db');
         shell_exec('vendor/bin/phinx migrate');
 

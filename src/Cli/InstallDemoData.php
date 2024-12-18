@@ -45,6 +45,7 @@ class InstallDemoData extends JobCommand
     {
         $output->writeln('Install demo data');
         Log::info('Install demo data');
+        $this->output = $output;
 
         $currency_id = $input->getOption('currency_id');
         $payment_type_id = $input->getOption('payment_type_id');

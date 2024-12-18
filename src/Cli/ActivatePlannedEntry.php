@@ -39,6 +39,7 @@ class ActivatePlannedEntry extends JobCommand
     {
         $repository = new EntryRepository();
         Log::info('Activating planned entries');
+        $this->output = $output;
         try {
             $entries = $repository->entryOfCurrentTime();
 
@@ -59,16 +60,9 @@ class ActivatePlannedEntry extends JobCommand
                     continue;
                 }
 
-                $walletBalance = $wallet->balance;
                 $entry->planned = false;
                 $entry->save();
 
-                if($entry->confirmed == 1) {
-                    $newBalance = BigNumber::sum($walletBalance, $entry->amount);
-                    $wallet->balance = $newBalance;
-                    $wallet->save();
-                }
-                
             }
 
             $this->heartbeats(env('HEARTBEAT_ACTIVATE_PLANNED_ENTRY'));
