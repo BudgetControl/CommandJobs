@@ -2,19 +2,20 @@
 
 namespace Budgetcontrol\jobs\Cli;
 
+use Budgetcontrol\Connector\Client\BudgetClient;
 use Budgetcontrol\jobs\Facade\Mail;
 use Illuminate\Support\Facades\Log;
 use Budgetcontrol\jobs\Facade\Crypt;
 use Budgetcontrol\Library\Model\User;
 use Budgetcontrol\jobs\Cli\JobCommand;
 use Symfony\Component\Console\Command\Command;
-use Budgetcontrol\jobs\Facade\BudgetControlClient;
 use Budgetcontrol\Library\Model\Currency;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use BudgetcontrolLibs\Mailer\View\BudgetExceededView as ViewBudgetExceededView;
 use Illuminate\Database\Capsule\Manager as DB;
 use Budgetcontrol\Library\Model\Workspace;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * Class ActivatePlannedEntry
@@ -24,6 +25,15 @@ use Budgetcontrol\Library\Model\Workspace;
 class AlertBudget extends JobCommand
 {
     protected string $command = 'budget:is-exceeded';
+    private BudgetClient $budgetClient;
+
+    public function __construct()
+    {
+        $logger = Facade::getFacadeApplication();
+        $this->budgetClient = new BudgetClient('http://budgetcontrol-ms-budgets', $logger['log']);
+
+        parent::__construct();
+    }
 
     public function configure()
     {
@@ -36,12 +46,18 @@ class AlertBudget extends JobCommand
     {
         Log::info('Alert budget');
         $workspaces = Workspace::all();
+        $this->output = $output;
 
         foreach ($workspaces as $workspace) {
 
-            $budgets = BudgetControlClient::budgetStats($workspace->id)->getResult();
+            $budgets = $this->budgetClient->getAllStats($workspace->id);
 
-            foreach ($budgets as $budget) {
+            if(false === $budgets->isSuccessful()) {
+                $this->fail($budgets->getBody());
+                return Command::FAILURE;
+            }
+
+            foreach ($budgets->toArray() as $budget) {
                 $toNotify = $this->toNotify($budget['budget']);
                 if (!empty($toNotify)) {
 
@@ -55,8 +71,6 @@ class AlertBudget extends JobCommand
 
                         $workspaceId = $budget['budget']['workspace_id'];
 
-
-                        
                         foreach($this->getUserWorkspace($user->id) as $userWorkspace) {
                             if ($userWorkspace->id == $workspaceId) {
                                 $workspace = $userWorkspace;

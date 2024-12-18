@@ -27,6 +27,7 @@ class BudgetPeriodChange extends JobCommand
     {
         //TODO: improve this code
         $budgets = Budget::all();
+        $this->output = $output;
 
         try {
             foreach ($budgets as $budget) {

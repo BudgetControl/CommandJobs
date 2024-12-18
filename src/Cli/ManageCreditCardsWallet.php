@@ -41,6 +41,7 @@ class ManageCreditCardsWallet extends JobCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         Log::info('Managing credit cards');
+        $this->output = $output;
 
         $creditCards = Wallet::whereIn('type', [EntityWallet::creditCard->value, EntityWallet::creditCardRevolving->value])
         ->where('invoice_date', '<=', Carbon::now()->format(Format::dateTime->value))

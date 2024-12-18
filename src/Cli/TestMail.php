@@ -48,9 +48,10 @@ class TestMail extends JobCommand
     {
 
         $template = $input->getArgument('template');
+        $this->output = $output;
 
         if(!in_array($template, self::ALLOWED_TEMPLATE)) {
-            Log::error('Template not allowed: ' . $template . '. Allowed templates: ' . implode(', ', self::ALLOWED_TEMPLATE));
+            $this->fail('Template not allowed: ' . $template . '. Allowed templates: ' . implode(', ', self::ALLOWED_TEMPLATE));
             return Command::FAILURE;
         }
 

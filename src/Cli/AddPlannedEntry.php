@@ -46,6 +46,7 @@ class AddPlannedEntry extends JobCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {   
         Log::info('Adding planned entries');
+        $this->output = $output;
         try {
 
             $entries = $this->getPlannedEntry();

@@ -31,6 +31,7 @@ class ClearDatabase extends JobCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('Clear db');
+        $this->output = $output;
         $tables = [
             'budgets',
             'entry_labels',
