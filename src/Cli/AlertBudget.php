@@ -53,6 +53,11 @@ class AlertBudget extends JobCommand
             $budgets = $this->budgetClient->getAllStats($workspace->id);
 
             if(false === $budgets->isSuccessful()) {
+                if($budgets->getStatusCode() == 404) {
+                    Log::info("No budgets found for workspace: $workspace->uuid");
+                    continue;
+                }
+
                 $this->fail($budgets->getBody());
                 return Command::FAILURE;
             }
