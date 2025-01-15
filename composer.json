@@ -59,7 +59,7 @@
         "budgetcontrol/schema-registry-service": "^v1.2",
         "budgetcontrol/mailer": "^v0.2",
         "budgetcontrol/cryptable": "v0.1",
-        "budgetcontrol/connector": "main-dev"
+        "budgetcontrol/connector": "v2.0.1-beta"
     },
     "require-dev": {
         "nikic/php-parser": "^5.0",
