@@ -248,12 +248,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/BudgetControl/Schema-Registry-Service.git",
-                "reference": "2c394df8c80d6f87df6d8aa94454ef11b02f2f1c"
+                "reference": "168a22b14447b15023386dea086a8753299ba2d4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BudgetControl/Schema-Registry-Service/zipball/2c394df8c80d6f87df6d8aa94454ef11b02f2f1c",
-                "reference": "2c394df8c80d6f87df6d8aa94454ef11b02f2f1c",
+                "url": "https://api.github.com/repos/BudgetControl/Schema-Registry-Service/zipball/168a22b14447b15023386dea086a8753299ba2d4",
+                "reference": "168a22b14447b15023386dea086a8753299ba2d4",
                 "shasum": ""
             },
             "type": "library",
@@ -273,7 +273,7 @@
                 "source": "https://github.com/BudgetControl/Schema-Registry-Service/tree/v1.3.1",
                 "issues": "https://github.com/BudgetControl/Schema-Registry-Service/issues"
             },
-            "time": "2025-02-05T10:08:16+00:00"
+            "time": "2025-02-06T08:54:14+00:00"
         },
         {
             "name": "cakephp/chronos",
