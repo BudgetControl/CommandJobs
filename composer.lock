@@ -244,16 +244,16 @@
         },
         {
             "name": "budgetcontrol/schema-registry-service",
-            "version": "v1.3.1",
+            "version": "v1.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BudgetControl/Schema-Registry-Service.git",
-                "reference": "168a22b14447b15023386dea086a8753299ba2d4"
+                "reference": "f9c1473ead224c41576723cf480af6a1436b9d68"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BudgetControl/Schema-Registry-Service/zipball/168a22b14447b15023386dea086a8753299ba2d4",
-                "reference": "168a22b14447b15023386dea086a8753299ba2d4",
+                "url": "https://api.github.com/repos/BudgetControl/Schema-Registry-Service/zipball/f9c1473ead224c41576723cf480af6a1436b9d68",
+                "reference": "f9c1473ead224c41576723cf480af6a1436b9d68",
                 "shasum": ""
             },
             "type": "library",
@@ -270,10 +270,10 @@
             ],
             "description": "An API Schema Registry is a centralized service that manages and distributes database schema definitions",
             "support": {
-                "source": "https://github.com/BudgetControl/Schema-Registry-Service/tree/v1.3.1",
+                "source": "https://github.com/BudgetControl/Schema-Registry-Service/tree/v1.3.3",
                 "issues": "https://github.com/BudgetControl/Schema-Registry-Service/issues"
             },
-            "time": "2025-02-06T08:54:14+00:00"
+            "time": "2025-02-11T06:45:36+00:00"
         },
         {
             "name": "cakephp/chronos",
