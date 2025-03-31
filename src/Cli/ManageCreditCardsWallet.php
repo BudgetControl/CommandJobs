@@ -87,6 +87,10 @@ class ManageCreditCardsWallet extends JobCommand
     {
         $amount = function() use($wallet): float {
             $value = $wallet->installement_value * -1;
+            // if is not revolving card return the balance
+            if($wallet->type === EntityWallet::creditCard->value) {
+                return $wallet->balance * -1;
+            }
             return (float) $value >= $wallet->balance ? $wallet->installement_value : $wallet->balance * -1;
         };
 

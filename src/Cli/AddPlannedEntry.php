@@ -64,7 +64,6 @@ class AddPlannedEntry extends JobCommand
         } catch(Throwable $e) {
             Log::error('Error adding planned entry: ' . $e->getMessage());
             $this->fail($e->getMessage());
-            return Command::FAILURE;
         }
     }
 
