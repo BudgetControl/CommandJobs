@@ -14,6 +14,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Budgetcontrol\Library\Model\Debit;
+use Budgetcontrol\Library\Model\Transfer;
 use Budgetcontrol\Library\Model\Wallet; 
 
 /**
@@ -69,8 +70,9 @@ class ManageCreditCardsWallet extends JobCommand
         //first check if the balance is greather then 0
         if($creditCard->balance < 0) {
             // you need to create new debit entry
-            $this->createDebitNegativeEntry($creditCard);
-            $this->createDebitPositiveEntry($creditCard);
+            $negativEntry = $this->createTransferNegativeEntry($creditCard);
+            $positiveEntry = $this->createTransferPositiveEntry($creditCard);
+            $this->updateTransferRelastionField($negativEntry, $positiveEntry);
         }
 
         $this->changeWalletDate($creditCard);
@@ -81,9 +83,9 @@ class ManageCreditCardsWallet extends JobCommand
      *
      * @param Wallet $wallet The wallet for which the debit negative entry will be created.
      *
-     * @return void
+     * @return Transfer
      */
-    private function createDebitNegativeEntry(Wallet $wallet): void
+    protected function createTransferNegativeEntry(Wallet $wallet): Transfer
     {
         $amount = function() use($wallet): float {
             $value = $wallet->installement_value * -1;
@@ -94,7 +96,7 @@ class ManageCreditCardsWallet extends JobCommand
             return (float) $value >= $wallet->balance ? $wallet->installement_value : $wallet->balance * -1;
         };
 
-        $entry = $this->createDebitEntry($wallet);
+        $entry = $this->createTransferEntry($wallet);
         $entry->account_id = $wallet->payment_account;
         $entry->amount = $amount(); // shoulde be negative
         $entry->save();
@@ -102,23 +104,26 @@ class ManageCreditCardsWallet extends JobCommand
         $this->updateWalletBalance($wallet->payment_account, $amount());
 
         Log::debug("Save new debit entry [NEGATIVE] ".json_encode($entry->toArray()));
+
+        return $entry;
     }
 
     /**
      * Creates a positive debit entry in the specified wallet.
      *
      * @param Wallet $wallet The wallet in which to create the debit entry.
+     * @param string|null $transferRelation Optional transfer relation, if any.
      *
-     * @return void
+     * @return Transfer The created debit entry.
      */
-    private function createDebitPositiveEntry(Wallet $wallet): void
+    protected function createTransferPositiveEntry(Wallet $wallet): Transfer
     {
         $amount = function()use($wallet) {
             $value = $wallet->installement_value * -1;
             return $value >= $wallet->balance ? $wallet->installement_value : $wallet->balance  * -1;
         };
 
-        $entry = $this->createDebitEntry($wallet);
+        $entry = $this->createTransferEntry($wallet);
         $entry->account_id = $wallet->id;
         $entry->amount = $amount() * -1;
         $entry->save();
@@ -127,19 +132,43 @@ class ManageCreditCardsWallet extends JobCommand
 
         Log::debug("Save new debit entry [POSITIVE] ".json_encode($entry->toArray()));
 
+        return $entry;
+
+    }
+
+     /**
+     * Updates the relation field between two transfer entries.
+     *
+     * Associates a negative transfer entry with a positive one, typically
+     * used when handling credit card wallet transfers.
+     *
+     * @param Transfer $entryNegative The negative transfer entry
+     * @param Transfer $entryPositive The positive transfer entry
+     * @return void
+     */
+    protected function updateTransferRelastionField(Transfer $entryNegative, Transfer $entryPositive): void
+    {
+        // update the transfer relation field
+        $entryNegative->transfer_relation = $entryPositive->uuid;
+        $entryNegative->save();
+
+        $entryPositive->transfer_relation = $entryNegative->uuid;
+        $entryPositive->save();
+
+        Log::debug("Update transfer relation for [NEGATIVE] entry {$entryNegative->uuid} to {$entryPositive->uuid}");
     }
 
     /**
      * Creates a debit entry for the given wallet.
      *
      * @param Wallet $wallet The wallet for which the debit entry is to be created.
-     * @return Debit The created debit entry.
+     * @return Transfer The created debit entry.
      */
-    private function createDebitEntry(Wallet $wallet): Debit
+    private function createTransferEntry(Wallet $wallet): Transfer
     {
         $transactionUUID = Uuid::uuid4();
 
-        $entry = new Debit();
+        $entry = new Transfer();
         $entry->uuid = $transactionUUID;
         $entry->date_time = Carbon::now()->format(Format::dateTime->value);
         $entry->note = 'Credit card payment: '.$transactionUUID;
@@ -150,8 +179,7 @@ class ManageCreditCardsWallet extends JobCommand
         $entry->category_id = 75; //FIXME:
         // $entry->type = EntityEntry::debit->value; FIXME:
         $entry->workspace_id = $wallet->workspace_id;
-        $entry->transfer = false;
-        $entry->payee_id = null; //FIXME:
+        $entry->transfer = true;
 
         return $entry;
 
