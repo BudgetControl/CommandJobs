@@ -18,20 +18,20 @@
         },
         "budgetcontrol/schema-registry-service": {
             "type": "vcs",
-            "url": "git@github.com:BudgetControl/Schema-Registry-Service.git"
+            "url": "https://github.com/BudgetControl/Schema-Registry-Service.git"
         },
         "budgetcontrol/mailer":{
             "type":"vcs",
-            "url":"git@github.com:BudgetControl/MailerService.git"
+            "url":"https://github.com/BudgetControl/MailerService.git"
         },
         "budgetcontrol/cryptable":{
             "type":"vcs",
-            "url":"git@github.com:BudgetControl/LibsCryptable.git"
+            "url":"https://github.com/BudgetControl/LibsCryptable.git"
         },
         "budgetcontrol/seeds-test-libs":
         {
             "type":"vcs",
-            "url":"git@github.com:BudgetControl/SeedsTestLibs.git"
+            "url":"https://github.com/BudgetControl/SeedsTestLibs.git"
         }
     },
     "require": {
