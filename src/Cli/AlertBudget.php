@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Budgetcontrol\jobs\Facade\Crypt;
 use Budgetcontrol\Library\Model\User;
 use Budgetcontrol\jobs\Cli\JobCommand;
+use Budgetcontrol\Library\Model\Budget;
 use Symfony\Component\Console\Command\Command;
 use Budgetcontrol\Library\Model\Currency;
 use Symfony\Component\Console\Input\InputInterface;
@@ -50,10 +51,17 @@ class AlertBudget extends JobCommand
 
         foreach ($workspaces as $workspace) {
 
+            //check if workspace has budget
+            $hasBudget = Budget::where('workspace_id', $workspace->id)->exists();
+            if (!$hasBudget) {
+                Log::info("No budgets found for workspace: $workspace->uuid");
+                continue;
+            }
+
             try {
                 $budgets = $this->budgetClient->getAllStats($workspace->id);
             } catch (\Throwable $e) {
-                Log::warning("Error fetching budgets for workspace: $workspace->uuid - " . $e->getMessage());
+                Log::error("Error fetching budgets for workspace: $workspace->uuid - " . $e->getMessage());
                 continue;
             }
 
