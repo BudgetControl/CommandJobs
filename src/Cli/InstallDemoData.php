@@ -17,6 +17,7 @@ use Budgetcontrol\Library\Model\Expense;
 use Budgetcontrol\Library\Model\Currency;
 use Budgetcontrol\Library\Model\Workspace;
 use Budgetcontrol\Library\Model\PlannedEntry;
+use Budgetcontrol\Library\Model\Saving;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Budgetcontrol\Library\Model\WorkspaceSettings;
@@ -280,6 +281,23 @@ class InstallDemoData extends JobCommand
             $goal->category_icon = $goalData['category_icon'] ?? null;
             $goal->uuid = $goalData['uuid'];
             $goal->save();
+
+            Saving::create([
+            "amount" => rand(1, 1000),
+            "note" => $faker->sentence(rand(1, 20)),
+            "category_id" => 74,
+            "account_id" => $wallet->id,
+            "currency_id" => $currency_id,
+            "payment_type_id" => $payment_type_id,
+            "date_time" => $dateTime->modify('+10 days')->format('Y-m-d H:i:s'),
+            "label" => [],
+            "waranty" => 0,
+            "confirmed" => 1,
+            'uuid' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
+            'type' => \Budgetcontrol\Library\Entity\Entry::incoming->value,
+            'workspace_id' => $workspace->id,
+            'goal_id' => $goal->id,
+        ]);
         }
 
         Log::info('Demo data installed');
