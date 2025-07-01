@@ -50,7 +50,12 @@ class AlertBudget extends JobCommand
 
         foreach ($workspaces as $workspace) {
 
-            $budgets = $this->budgetClient->getAllStats($workspace->id);
+            try {
+                $budgets = $this->budgetClient->getAllStats($workspace->id);
+            } catch (\Throwable $e) {
+                Log::warning("Error fetching budgets for workspace: $workspace->uuid - " . $e->getMessage());
+                continue;
+            }
 
             if(false === $budgets->isSuccessful()) {
                 if($budgets->getStatusCode() == 404) {
