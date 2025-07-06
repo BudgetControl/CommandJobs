@@ -15,7 +15,7 @@ class EntryRepository extends Repository {
     {
         $query = "SELECT id 
             FROM entries 
-            WHERE DATE(date_time) = CURRENT_DATE 
+            WHERE DATE(date_time) <= CURRENT_DATE 
             AND deleted_at IS NULL 
             AND planned = true;
             ;";
