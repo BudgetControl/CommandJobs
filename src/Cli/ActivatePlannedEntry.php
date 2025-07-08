@@ -51,15 +51,6 @@ class ActivatePlannedEntry extends JobCommand
             
             foreach ($entries as $currentEntry) {
                 $entry = Entry::find($currentEntry->id);
-                //for each entry, update wallet balance
-                $walletId = $entry->account_id;
-                $wallet = Wallet::find($walletId);
-
-                if($wallet === null) {
-                    Log::error('Wallet not found for entry: ' . $entry->id);
-                    continue;
-                }
-
                 $entry->planned = false;
                 $entry->save();
 
