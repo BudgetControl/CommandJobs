@@ -1,9 +1,15 @@
 #!/usr/bin/env php
 <?php
 
-use App\Kernel;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
+require_once __DIR__ . '/bootstrap/app.php';
 
+/**
+ * Create a new instance of the Symfony Console Application.
+ */
+$application = new \Symfony\Component\Console\Application();
 
 require_once __DIR__."/config/cli-commands.php";
+
+$application->run();
+
 

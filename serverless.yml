@@ -1,0 +1,85 @@
+service: budgetcontrol-ms-jobs
+provider:
+  name: aws
+  region: eu-west-1
+  runtime: provided.al2
+  deploymentBucket:
+    name: serverless-framework-deployments-eu-west-1-41d5edce-535f
+plugins:
+  - ./vendor/bref/bref
+functions:
+  activatePlanned:
+    handler: labda.php
+    layers:
+      - arn:aws:lambda:eu-west-1:534081306603:layer:php-82:99
+    timeout: 120
+    memorySize: 1024
+    events:
+     - schedule: 
+          rate: rate(1 minute)
+    environment:
+      COMMAND: 'entry:activate-planned'
+  
+  addPlanned:
+    handler: labda.php
+    layers:
+      - arn:aws:lambda:eu-west-1:534081306603:layer:php-82:99
+    timeout: 120
+    memorySize: 1024
+    events:
+      - schedule: 
+          rate: rate(1 minute)
+    environment:
+      COMMAND: 'entry:add-planned'
+      
+  # Aggiungi altri comandi se necessario
+  alertBudget:
+    handler: labda.php
+    layers:
+      - arn:aws:lambda:eu-west-1:534081306603:layer:php-82:99
+    timeout: 120
+    memorySize: 1024
+    events:
+      - schedule: 
+          rate: rate(1 day)
+    environment:
+      COMMAND: 'budget:is-exceeded'
+      
+  manageCreditCards:
+    handler: labda.php
+    layers:
+      - arn:aws:lambda:eu-west-1:534081306603:layer:php-82:99
+    timeout: 120
+    memorySize: 1024
+    events:
+      - schedule: 
+          rate: rate(1 day)
+    environment:
+      COMMAND: 'wallet:update-credit-card'
+
+  budgetIsExpired:
+    handler: labda.php
+    layers:
+      - arn:aws:lambda:eu-west-1:534081306603:layer:php-82:99
+    timeout: 120
+    memorySize: 1024
+    events:
+      - schedule: 
+          rate: rate(1 day)
+    environment:
+      COMMAND: 'budget:budget:is-expired'
+      
+package:
+  exclude:
+    - '.git/**'
+    - '.idea/**'
+    - 'node_modules/**'
+    - 'tests/**'
+    - 'storage/logs/**'
+    - '.env.*'
+  include:
+    - 'public/**'
+    - 'vendor/**'
+    - 'bootstrap/**'
+    - 'storage/**'
+    - 'config/**'

@@ -1,32 +1,37 @@
-# Laravel specific files/directories
+.DS_Store
+/vendor
+/bootstrap/cache
 .env
-vendor/
+.phpunit.result.cache
+auth.json
+/.fleet
+/.idea
+/.vscode
+
+## laravel
+/vendor/
 node_modules/
-public/storage
-public/hot
-storage/*.key
-Homestead.json
-Homestead.yaml
 npm-debug.log
 yarn-error.log
 
-# IDE/Editor specific files/directories
-.idea/
-.vscode/
-*.sublime-project
-*.sublime-workspace
+# Laravel 4 specific
+bootstrap/compiled.php
+app/storage/
 
-# Build files
-public/css/
-public/js/
-public/mix-manifest.json
-public/web.config
+# Laravel 5 & Lumen specific
+public/storage
+public/hot
 
-# Testing files
-phpunit.xml
-tests/
+# Laravel 5 & Lumen specific with changed public path
+public_html/storage
+public_html/hot
 
-# Miscellaneous
-.DS_Store
-Thumbs.db
-storage/*
+*.log
+.env.*
+
+## IMAGES
+.jpeg
+.png
+.gif
+.phpunit*
+.serverless/*
