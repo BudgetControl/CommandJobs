@@ -48,12 +48,20 @@ class ActivatePlannedEntry extends JobCommand
                 $this->heartbeats(env('HEARTBEAT_ACTIVATE_PLANNED_ENTRY'));
                 return Command::SUCCESS;
             }
-            
+
+            $workspaceIds = [];
             foreach ($entries as $currentEntry) {
+                $workspaceIds[] = $currentEntry->workspace_id;
                 $entry = Entry::find($currentEntry->id);
                 $entry->planned = false;
                 $entry->save();
 
+            }
+
+            if(!empty($workspaceIds)) {
+                foreach (array_unique($workspaceIds) as $workspaceId) {
+                    $this->invokeClearCache('entry', $workspaceId);
+                }
             }
 
             $this->heartbeats(env('HEARTBEAT_ACTIVATE_PLANNED_ENTRY'));

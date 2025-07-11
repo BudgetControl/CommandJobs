@@ -27,6 +27,8 @@ class AddPlannedEntry extends JobCommand
         'daily', 'weekly', 'monthly', 'yearly'
     ];
 
+    protected array $workspaceIds = [];
+
     /**
      * Configure the command
      */
@@ -58,13 +60,19 @@ class AddPlannedEntry extends JobCommand
             $this->insertEntry(
                 $entries
             );
-            
+
+            foreach (array_unique($this->workspaceIds) as $workspaceId) {
+                $this->invokeClearCache('entry', $workspaceId);
+            }
+
             $this->heartbeats(env('HEARTBEAT_PLANNED_ENTRY'));
             return Command::SUCCESS;
         } catch(Throwable $e) {
             Log::error('Error adding planned entry: ' . $e->getMessage());
             $this->fail($e->getMessage());
         }
+
+        return Command::FAILURE;
     }
 
     private function getPlannedEntry()
@@ -164,7 +172,7 @@ class AddPlannedEntry extends JobCommand
     {
             /** @var EntryModel $request  */
             foreach ($data as $entry) {
-
+                $this->workspaceIds[] = $entry->workspace_id;
                 $dateTime = Carbon::createFromFormat('Y-m-d', date('Y-m-d',strtotime($entry->date_time)))->format(Format::dateTime->value);
 
                 $entryToInsert = new Entry([Entries::workspace_id => $entry->workspace_id]);

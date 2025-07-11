@@ -69,15 +69,6 @@ functions:
     environment:
       COMMAND: 'budget:budget:is-expired'
 
-  installDemoData:
-    handler: labda.php
-    layers:
-      - arn:aws:lambda:eu-west-1:534081306603:layer:php-82:99
-    timeout: 350
-    memorySize: 1024
-    environment:
-      COMMAND: 'core:clear drop && core:install && core:demo-data'
-
 package:
   exclude:
     - '.git/**'

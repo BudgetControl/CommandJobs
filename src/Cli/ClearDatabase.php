@@ -96,6 +96,7 @@ class ClearDatabase extends JobCommand
         }
 
         $output->writeln('Database cleared');
+        $this->invokeClearCache('*');
         return Command::SUCCESS;
     }
 }

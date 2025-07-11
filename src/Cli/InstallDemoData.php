@@ -302,7 +302,7 @@ class InstallDemoData extends JobCommand
 
         Log::info('Demo data installed');
         $output->writeln('Demo data installed');
-
+        $this->invokeClearCache('*');
         return Command::SUCCESS;
     }
 }

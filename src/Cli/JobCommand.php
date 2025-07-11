@@ -5,6 +5,7 @@ use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use Budgetcontrol\Library\Model\Workspace;
 use Budgetcontrol\Library\Definition\Format;
 use Illuminate\Database\Capsule\Manager as DB;
 use Symfony\Component\Console\Command\Command;
@@ -34,5 +35,34 @@ abstract class JobCommand extends Command
         }
 
         $this->output->writeln("Job completed");
+    }
+
+    /**
+     * Invokes a clear cache operation with the given pattern.
+     *
+     * This method is responsible for clearing the cache entries matching the specified pattern.
+     *
+     * @param string $pattern The pattern used to identify which cache entries should be cleared.
+     * @param int $workspaceId The id of the workspace for which the cache should be cleared.
+     * @return void
+     */
+    protected function invokeClearCache(string $pattern, ?int $workspaceId = null): void
+    {
+        if($workspaceId !== null) {
+            $workspaceUuid = Workspace::find($workspaceId)->uuid;
+            $route = env('CACHE_CLEAR_URL') . "/{$workspaceUuid}/{$pattern}";
+        } else {
+            $route = env('CACHE_CLEAR_URL') . "/all";
+        }
+
+        try {
+            $http = new \GuzzleHttp\Client();
+            $http->headers([
+                'X-webhook-secret' => env('WEBHOOK_SECRET')
+            ]);
+            $http->get($route);
+        } catch (\Exception $e) {
+            Log::critical('Failed to invoke clear cache: '.$e->getMessage());
+        }
     }
 }
