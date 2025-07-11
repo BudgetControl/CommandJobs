@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fb4116069e41758cd1da1ab77bca227a",
+    "content-hash": "3c4fab4ea61ac91d873750494e73e369",
     "packages": [
         {
             "name": "bref/bref",
@@ -240,16 +240,16 @@
         },
         {
             "name": "budgetcontrol/library",
-            "version": "v1.4.3",
+            "version": "v1.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BudgetControl/Library.git",
-                "reference": "45467c946b73d067a4b6293309ef1cd387ece9a6"
+                "reference": "6ac08b9eb6bedf50e8b9b471101c2b741475d8f3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BudgetControl/Library/zipball/45467c946b73d067a4b6293309ef1cd387ece9a6",
-                "reference": "45467c946b73d067a4b6293309ef1cd387ece9a6",
+                "url": "https://api.github.com/repos/BudgetControl/Library/zipball/6ac08b9eb6bedf50e8b9b471101c2b741475d8f3",
+                "reference": "6ac08b9eb6bedf50e8b9b471101c2b741475d8f3",
                 "shasum": ""
             },
             "require": {
@@ -271,9 +271,9 @@
                 }
             ],
             "support": {
-                "source": "https://github.com/BudgetControl/Library/tree/v1.4.3"
+                "source": "https://github.com/BudgetControl/Library/tree/v1.4.4"
             },
-            "time": "2025-07-01T12:43:16+00:00"
+            "time": "2025-07-11T08:09:52+00:00"
         },
         {
             "name": "budgetcontrol/mailer",
@@ -8314,8 +8314,7 @@
     "aliases": [],
     "minimum-stability": "RC",
     "stability-flags": {
-        "budgetcontrol/connector": 10,
-        "budgetcontrol/schema-registry-service": 5
+        "budgetcontrol/connector": 10
     },
     "prefer-stable": false,
     "prefer-lowest": false,
