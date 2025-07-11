@@ -53,6 +53,7 @@ class ManageCreditCardsWallet extends JobCommand
 
             foreach ($creditCards as $creditCard) {
                 $this->manageCreditCard($creditCard);
+                $this->invokeClearCache('wallet', $creditCard->workspace_id);
             }
 
         } catch (\Throwable $e) {

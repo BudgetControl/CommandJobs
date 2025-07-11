@@ -5,23 +5,26 @@ declare(strict_types=1);
 namespace Budgetcontrol\jobs\Cli;
 
 use Faker\Factory;
+use Illuminate\Support\Facades\Log;
+use Budgetcontrol\Library\Model\Goal;
 use Budgetcontrol\Library\Model\User;
 use Budgetcontrol\jobs\Cli\JobCommand;
-use Budgetcontrol\Library\Model\Currency;
 use Budgetcontrol\Library\Model\Model;
 use Budgetcontrol\Library\Model\Payee;
 use Budgetcontrol\Library\Model\Income;
 use Budgetcontrol\Library\Model\Wallet;
 use Budgetcontrol\Library\Model\Expense;
+use Budgetcontrol\Library\Model\Currency;
 use Budgetcontrol\Library\Model\Workspace;
 use Budgetcontrol\Library\Model\PlannedEntry;
+use Budgetcontrol\Library\Model\Saving;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Budgetcontrol\Library\Model\WorkspaceSettings;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Budgetcontrol\Library\ValueObject\WorkspaceSetting;
-use Illuminate\Support\Facades\Log;
+use Budgetcontrol\Seeds\Resources\Seeds\Seed;
 
 class InstallDemoData extends JobCommand
 {
@@ -46,6 +49,9 @@ class InstallDemoData extends JobCommand
         $output->writeln('Install demo data');
         Log::info('Install demo data');
         $this->output = $output;
+
+        Log::info('Run basic seeds');
+        $output->writeln('Run basic seeds');
 
         $currency_id = $input->getOption('currency_id');
         $payment_type_id = $input->getOption('payment_type_id');
@@ -78,12 +84,12 @@ class InstallDemoData extends JobCommand
         $workspace->user_id = $user->id;
         $workspace->save();
 
-         // set relation with user and workspace
-         $user = \Budgetcontrol\Library\Model\User::where('uuid', $userUUID)->first();
-         $workspace = \Budgetcontrol\Library\Model\Workspace::where('uuid', $wsUUID)->first();
- 
-         $workspace->users()->attach($user);
-         $workspace->save();
+        // set relation with user and workspace
+        $user = \Budgetcontrol\Library\Model\User::where('uuid', $userUUID)->first();
+        $workspace = \Budgetcontrol\Library\Model\Workspace::where('uuid', $wsUUID)->first();
+
+        $workspace->users()->attach($user);
+        $workspace->save();
 
         // Create wallet
         $output->writeln('Create wallet');
@@ -248,9 +254,55 @@ class InstallDemoData extends JobCommand
             'uuid' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
         ]);
 
+        // Create a goal
+        Log::debug('Create a Goal');
+        $output->writeln('Create a Goal');
+        $goals = [
+            [
+                'workspace_id' => 1,
+                'name' => 'Vatation on the beach',
+                'amount' => rand(1, 10000),
+                'description' => 'Vacation on the beach in the summer',
+                'due_date' => $dateTime->format('Y-m-d H:i:s'),
+                'status' => 'active',
+                'category_icon' => 'fa-solid fa-suitcase',
+                'uuid' => \Ramsey\Uuid\Uuid::uuid4()->toString()
+            ]
+        ];
+
+        foreach ($goals as $goalData) {
+            $goal = new Goal();
+            $goal->workspace_id = $goalData['workspace_id'];
+            $goal->name = $goalData['name'];
+            $goal->amount = $goalData['amount'];
+            $goal->description = $goalData['description'] ?? null;
+            $goal->due_date = $goalData['due_date'] ?? null;
+            $goal->status = $goalData['status'] ?? 'active';
+            $goal->category_icon = $goalData['category_icon'] ?? null;
+            $goal->uuid = $goalData['uuid'];
+            $goal->save();
+
+            Saving::create([
+            "amount" => rand(1, 1000),
+            "note" => $faker->sentence(rand(1, 20)),
+            "category_id" => 74,
+            "account_id" => $wallet->id,
+            "currency_id" => $currency_id,
+            "payment_type_id" => $payment_type_id,
+            "date_time" => $dateTime->modify('+10 days')->format('Y-m-d H:i:s'),
+            "label" => [],
+            "waranty" => 0,
+            "confirmed" => 1,
+            'uuid' => \Ramsey\Uuid\Uuid::uuid4()->toString(),
+            'type' => \Budgetcontrol\Library\Entity\Entry::incoming->value,
+            'workspace_id' => $workspace->id,
+            'goal_id' => $goal->id,
+        ]);
+        }
+
         Log::info('Demo data installed');
         $output->writeln('Demo data installed');
-
+        $this->invokeClearCache('*');
         return Command::SUCCESS;
     }
 }

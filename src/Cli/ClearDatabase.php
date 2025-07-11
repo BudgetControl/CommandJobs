@@ -6,6 +6,7 @@ namespace Budgetcontrol\jobs\Cli;
 
 use Budgetcontrol\jobs\Cli\JobCommand;
 use Illuminate\Database\Capsule\Manager as DB;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
@@ -16,9 +17,15 @@ class ClearDatabase extends JobCommand
 {
 
     protected string $command = 'core:clear';
-
     const USER_EMAIL = 'demo@budgetcontrol.cloud';
     const USER_PASSWORD = 'BY3PIViM-4ieFGm';
+
+    private const ENUMS = [
+        'entry',
+        'planning',
+        'wallet',
+        'status'
+    ];
 
     public function configure()
     {
@@ -41,6 +48,7 @@ class ClearDatabase extends JobCommand
             'currencies',
             'failed_jobs',
             'labels',
+            'goals',
             'model_labels',
             'models',
             'ms_migrations',
@@ -56,6 +64,8 @@ class ClearDatabase extends JobCommand
         ];
 
         if ($input->getArgument('action') == 'drop') {
+            $tables[] = 'migrations';
+            $tables[] = 'ms_migrations';
             $command = 'DROP table';
         } else {
             $command = 'DELETE FROM';
@@ -65,16 +75,18 @@ class ClearDatabase extends JobCommand
         foreach ($tables as $table) {
             $output->writeln($command . ': ' . $table);
             $query = "$command $table";
-            Db::statement($query);
+
+            try {
+                Db::statement($query);
+            }catch (\Throwable $e) {
+                Log::warning('Error executing query: ' . $query);
+                $output->writeln('Warning: ' . $e->getMessage());
+            }
         }
 
         if ($input->getArgument('action') == 'drop') {
             $command = 'DROP table';
-            $enumTypes = [
-                'entry',
-                'planning',
-                'wallet'
-            ];
+            $enumTypes = self::ENUMS;
 
             foreach ($enumTypes as $type) {
                 $output->writeln('DROP TYPE: ' . $type);
@@ -84,6 +96,7 @@ class ClearDatabase extends JobCommand
         }
 
         $output->writeln('Database cleared');
+        $this->invokeClearCache('*');
         return Command::SUCCESS;
     }
 }

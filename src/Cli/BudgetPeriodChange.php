@@ -28,9 +28,12 @@ class BudgetPeriodChange extends JobCommand
         //TODO: improve this code
         $budgets = Budget::all();
         $this->output = $output;
+        $workspaceIds = [];
 
         try {
             foreach ($budgets as $budget) {
+
+                $workspaceIds[] = $budget->workspace_id;
 
                 /** @var \Budgetcontrol\Library\ValueObject\BudgetConfiguration $configuration */
                 $configuration = $budget->configuration;
@@ -63,6 +66,12 @@ class BudgetPeriodChange extends JobCommand
                         $budget->save();
                     }
 
+                }
+
+                if(!empty($workspaceIds)) {
+                    foreach (array_unique($workspaceIds) as $workspaceId) {
+                        $this->invokeClearCache('budget', $workspaceId);
+                    }
                 }
             }
         } catch (\Throwable $e) {

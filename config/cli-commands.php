@@ -1,11 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../bootstrap/app.php';
 
-/**
- * Create a new instance of the Symfony Console Application.
- */
-$application = new \Symfony\Component\Console\Application();
 
 /**
  * Add the ActivatePlannedEntry command to the application.
@@ -51,5 +46,3 @@ $application->add(new \Budgetcontrol\jobs\Cli\ClearDatabase());
  *  Install the base data for the application.
  */
 $application->add(new \Budgetcontrol\jobs\Cli\PrepareDatabase());
-
-$application->run();

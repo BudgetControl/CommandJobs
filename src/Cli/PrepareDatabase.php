@@ -37,6 +37,7 @@ class PrepareDatabase extends JobCommand
         $seeders->runAllSeeds();
 
         $output->writeln('Database has been prepared');
+        $this->invokeClearCache('*');
         return Command::SUCCESS;
     }
 }
