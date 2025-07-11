@@ -37,6 +37,20 @@ class ClearDatabase extends JobCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        // Check if in production environment and ask for confirmation
+        if (env('APP_ENV') === 'prod' || env('APP_ENV') === 'production') {
+            $output->writeln('<error>WARNING: You are attempting to clear the database in PRODUCTION environment!</error>');
+            $helper = $this->getHelper('question');
+            $question = new \Symfony\Component\Console\Question\ConfirmationQuestion('Are you sure you want to proceed? [y/N] ', false);
+            
+            if (!$helper->ask($input, $output, $question)) {
+                $output->writeln('<info>Operation cancelled.</info>');
+                return Command::SUCCESS;
+            }
+            
+            $output->writeln('<comment>Proceeding with database clear in production environment...</comment>');
+        }
+
         $output->writeln('Clear db');
         $this->output = $output;
         $tables = [
