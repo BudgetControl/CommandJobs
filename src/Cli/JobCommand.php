@@ -1,6 +1,8 @@
 <?php
+
 namespace Budgetcontrol\jobs\Cli;
 
+use Budgetcontrol\jobs\Facade\Cache;
 use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\Log;
@@ -20,18 +22,18 @@ abstract class JobCommand extends Command
 
     protected function fail(string $exception): void
     {
-        Log::error('Job failed '.$exception);
-        $query = "INSERT INTO ".self::JOBS_TABLE." (uuid, command, exception, failed_at) VALUES 
-        ('". Uuid::uuid4() ."', '".$this->command."', '".addslashes($exception)."', '".Carbon::now()->format(Format::dateTime->value)."')";
+        Log::error('Job failed ' . $exception);
+        $query = "INSERT INTO " . self::JOBS_TABLE . " (uuid, command, exception, failed_at) VALUES 
+        ('" . Uuid::uuid4() . "', '" . $this->command . "', '" . addslashes($exception) . "', '" . Carbon::now()->format(Format::dateTime->value) . "')";
         Db::insert($query);
         $this->output->writeln("Job failed - check error logs");
     }
 
     protected function heartbeats(string|null $key): void
     {
-        if($key) {
+        if ($key) {
             $http = new \GuzzleHttp\Client();
-            $http->head('https://uptime.betterstack.com/api/v1/heartbeat/'.$key);
+            $http->head('https://uptime.betterstack.com/api/v1/heartbeat/' . $key);
         }
 
         $this->output->writeln("Job completed");
@@ -48,21 +50,15 @@ abstract class JobCommand extends Command
      */
     protected function invokeClearCache(string $pattern, ?int $workspaceId = null): void
     {
-        if($workspaceId !== null) {
-            $workspaceUuid = Workspace::find($workspaceId)->uuid;
-            $route = env('CACHE_CLEAR_URL') . "/{$workspaceUuid}/{$pattern}";
-        } else {
-            $route = env('CACHE_CLEAR_URL') . "/all";
-        }
-
         try {
-            $http = new \GuzzleHttp\Client();
-            $http->headers([
-                'X-webhook-secret' => env('WEBHOOK_SECRET')
-            ]);
-            $http->get($route);
+            if ($workspaceId !== null) {
+                $workspaceUuid = Workspace::find($workspaceId)->uuid;
+                Cache::invalidate($workspaceUuid, $pattern);
+            } else {
+                Cache::clear();
+            }
         } catch (\Exception $e) {
-            Log::critical('Failed to invoke clear cache: '.$e->getMessage());
+            Log::critical('Failed to invoke clear cache: ' . $e->getMessage());
         }
     }
 }

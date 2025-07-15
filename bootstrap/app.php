@@ -44,6 +44,7 @@ Facade::setFacadeApplication([
     'date' => new Date(),
     'mail' => $mail,
     'http' => $http,
-    'crypt' => $crypt
+    'crypt' => $crypt,
+    'cache-http' => $cache,
 
 ]);
