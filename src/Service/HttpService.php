@@ -33,7 +33,7 @@ class HttpService {
             'json' => $data
         ]);
 
-        if ($response->getStatusCode() >= 200 ) {
+        if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) {
             throw new \RuntimeException('HTTP request failed with status ' . $response->getStatusCode());
         }
 
