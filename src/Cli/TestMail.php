@@ -65,7 +65,7 @@ class TestMail extends JobCommand
                 case 'recovery-password':
                     Mail::recoveryPassword(
                         [
-                            'to' => 'user@example.com',
+                            'to' => $mail,
                             'token' => 'abc123token',
                             'url' => 'https://example.com/reset?token=abc123token',
                             'username' => 'User Test'
@@ -75,7 +75,7 @@ class TestMail extends JobCommand
                 case 'signup':
                     Mail::signUp(
                         [
-                            'to' => 'newuser@example.com',
+                            'to' => $mail,
                             'token' => 'confirmation123',
                             'url' => 'https://example.com/confirm?token=confirmation123',
                             'username' => 'John Doe'
@@ -85,7 +85,7 @@ class TestMail extends JobCommand
                 case 'budget-exeded':
                     Mail::budgetExceeded(
                         [
-                            'to' => 'user@example.com',
+                            'to' => $mail,
                             'budget_name' => 'Monthly Budget',
                             'current_amount' => '1200.00',
                             'budget_limit' => '1000.00',
@@ -97,7 +97,7 @@ class TestMail extends JobCommand
                 case 'shared-workspace':
                     Mail::sharedWorkspace(
                         [
-                            'to' => 'user@example.com',
+                            'to' => $mail,
                             'workspace_name' => 'Team Budget',
                             'shared_by' => 'John Doe',
                             'role' => 'editor',
