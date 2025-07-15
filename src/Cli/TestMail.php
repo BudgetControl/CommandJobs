@@ -117,6 +117,8 @@ class TestMail extends JobCommand
                     Mail::contact($data);
                     break;
             }
+
+            return Command::SUCCESS;
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             return Command::FAILURE;
