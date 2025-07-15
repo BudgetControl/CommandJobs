@@ -52,30 +52,36 @@ class AlertBudget extends JobCommand
         foreach ($workspaces as $workspace) {
 
             //check if workspace has budget
-            $hasBudget = Budget::where('workspace_id', $workspace->id)->exists();
+                $hasBudget = Budget::where('workspace_id', $workspace->id)->exists();
             if (!$hasBudget) {
                 Log::info("No budgets found for workspace: $workspace->uuid");
                 continue;
             }
 
             try {
-                $budgets = $this->budgetClient->getAllStats($workspace->id);
+                $budgetStats = $this->budgetClient->getAllStats($workspace->id);
             } catch (\Throwable $e) {
                 Log::error("Error fetching budgets for workspace: $workspace->uuid - " . $e->getMessage());
                 continue;
             }
 
-            if(false === $budgets->isSuccessful()) {
-                if($budgets->getStatusCode() == 404) {
+            if(false === $budgetStats->isSuccessful()) {
+                if($budgetStats->getStatusCode() == 404) {
                     Log::info("No budgets found for workspace: $workspace->uuid");
                     continue;
                 }
 
-                $this->fail($budgets->getBody());
+                $this->fail($budgetStats->getBody());
                 return Command::FAILURE;
             }
 
-            foreach ($budgets->toArray() as $budget) {
+            $budgets = $budgetStats->toArray();
+            if (empty($budgets)) {
+                Log::info("No budgets found for workspace: $workspace->uuid");
+                continue;
+            }
+
+            foreach ($budgets as $budget) {
                 $toNotify = $this->toNotify($budget['budget']);
                 if (!empty($toNotify)) {
 
@@ -99,7 +105,7 @@ class AlertBudget extends JobCommand
                         /** @var \Budgetcontrol\Library\ValueObject\WorkspaceSetting $wsSettings */
                         $wsSettings =  $workspace->workspaceSettings->data;
                         $currency = $wsSettings->getCurrency();
-                        $currencySymbol = Currency::find($currency)->icon;
+                        $currencySymbol = $currency['icon'];
 
                         if (str_replace('%', '', $budget['totalSpentPercentage']) > 70) {
                             try {
@@ -110,11 +116,10 @@ class AlertBudget extends JobCommand
                                         'budget_limit' => $budget['total'],
                                         'current_amount' => $budget['totalSpent'],
                                         'currency' => $currencySymbol,
-                                        'username' => $user->name,
+                                        'username' => empty($user->name) ? $user->email : $user->name,
                                     ]
                                 );
                             } catch (\Throwable $e) {
-                                $this->fail($e->getMessage());
                                 Log::critical($e->getMessage());
                                 return Command::FAILURE;
                             }
@@ -153,7 +158,7 @@ class AlertBudget extends JobCommand
      */
     private function findUserFromEmail($email): ?User
     {
-        return User::where('email', Crypt::encrypt($email))->first();
+        return User::where('email', $email)->first();
     }
 
     /**
