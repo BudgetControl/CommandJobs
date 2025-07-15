@@ -8,23 +8,16 @@ use Budgetcontrol\SdkMailer\Service\Mail as BaseMail;
  * Class Mail
  *
  * This class is a facade for the Mail class.
- * @see \BudgetcontrolLibs\Mailer\Service\ClientMail
+ * @see \Budgetcontrol\jobs\Service\MailerService
  * 
- * @method static void send(string $to, string $subject, BaseMail $view)
+ * @method static void budgetExceeded(array $data)
+ * @method static void contact(array $data)
  */
 
 class Mail extends Facade
 {
-    public static function setProperty($value)
-    {
-        self::$app['config']->set('mail.driver', env('MAIL_DRIVER'));
-        self::$app['config']->set('mail.host', env('MAIL_HOST'));
-        self::$app['config']->set('mail.username', env('MAIL_USERNAME'));
-        self::$app['config']->set('mail.password', env('MAIL_PASSWORD'));
-        self::$app['config']->set('mail.from.address', env('MAIL_FROM_ADDRESS'));
-    }
 
-    protected static function getFacadeAccessor()
+    protected static function getFacadeAccessor(): string
     {
         return 'mail';
     }

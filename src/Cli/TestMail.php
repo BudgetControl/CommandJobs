@@ -50,7 +50,7 @@ class TestMail extends JobCommand
         $template = $input->getArgument('template');
         $this->output = $output;
 
-        if(!in_array($template, self::ALLOWED_TEMPLATE)) {
+        if (!in_array($template, self::ALLOWED_TEMPLATE)) {
             $this->fail('Template not allowed: ' . $template . '. Allowed templates: ' . implode(', ', self::ALLOWED_TEMPLATE));
             return Command::FAILURE;
         }
@@ -58,76 +58,68 @@ class TestMail extends JobCommand
         $mail = $input->getArgument('mail');
 
         Log::info('Testing mail template: ' . $template . ' to ' . $mail);
-        
-        switch ($template) {
-            case 'recovery-password':
-                $view = $this->dummyRecoveryPasswordDataMail();
-                break;
-            case 'signup':
-                $view = $this->dymmySignUpDataMail();
-                break;
-            case 'budget-exeded':
-                $view = $this->dummyBudgetExededDataMail();
-                break;
-        }
 
         try {
-            Mail::send($mail, $template, $view);
-            return Command::SUCCESS;
+
+            switch ($template) {
+                case 'recovery-password':
+                    Mail::recoveryPassword(
+                        [
+                            'to' => 'user@example.com',
+                            'token' => 'abc123token',
+                            'url' => 'https://example.com/reset?token=abc123token',
+                            'username' => 'User Test'
+                        ]
+                    );
+                    break;
+                case 'signup':
+                    Mail::signUp(
+                        [
+                            'to' => 'newuser@example.com',
+                            'token' => 'confirmation123',
+                            'url' => 'https://example.com/confirm?token=confirmation123',
+                            'username' => 'John Doe'
+                        ]
+                    );
+                    break;
+                case 'budget-exeded':
+                    Mail::budgetExceeded(
+                        [
+                            'to' => 'user@example.com',
+                            'budget_name' => 'Monthly Budget',
+                            'current_amount' => '1200.00',
+                            'budget_limit' => '1000.00',
+                            'currency' => 'EUR',
+                            'username' => 'User Test'
+                        ]
+                    );
+                    break;
+                case 'shared-workspace':
+                    Mail::sharedWorkspace(
+                        [
+                            'to' => 'user@example.com',
+                            'workspace_name' => 'Team Budget',
+                            'shared_by' => 'John Doe',
+                            'role' => 'editor',
+                            'invitation_url' => 'https://example.com/invite/abc123'
+                        ]
+                    );
+                    break;
+                default:
+                    $data = [
+                        'to' => $mail,
+                        'subject' => 'Test Email for ' . $template,
+                        'message' => 'This is a test email for template: ' . $template,
+                        'user_name' => "Test User",
+                        'email' => $mail,
+                        'privacy' => true
+                    ];
+                    Mail::contact($data);
+                    break;
+            }
         } catch (Throwable $e) {
             Log::error($e->getMessage());
             return Command::FAILURE;
         }
-
     }
-
-    /**
-     * Sends a dummy budget exceeded data mail.
-     *
-     * @return BudgetExceededView The budget exceeded view.
-     */
-    private function dummyBudgetExededDataMail(): BudgetExceededView
-    {
-        $view = new BudgetExceededView();
-        $view->setMessage('Budget exceeded');
-        $view->setTotalSPent('$ 100,00');
-        $view->setSpentPercentage('100%');
-        $view->setPercentage('100%');
-        $view->setClassName('bg-red-600');
-        $view->setUserName("John Doe");
-        $view->setUserEmail('foo@bar.com');
-
-        return $view;
-    }
-
-    /**
-     * Generates dummy sign-up data mail.
-     *
-     * @return SignUpView The generated sign-up data mail.
-     */
-    private function dymmySignUpDataMail(): SignUpView
-    {
-        $view = new SignUpView();
-        $view->setUserName("John Doe");
-        $view->setUserEmail('foo@bar.com');
-        $view->setConfirmLink('http://localhost:8000/confirm/123456');
-
-        return $view;
-    }
-
-    /**
-     * Generates dummy recovery password data mail.
-     *
-     * @return RecoveryPasswordView The recovery password view.
-     */
-    private function dummyRecoveryPasswordDataMail(): RecoveryPasswordView
-    {
-        $view = new RecoveryPasswordView();
-        $view->setUserName("John Doe");
-        $view->setUserEmail('foo@bar.com');
-        $view->setLink('http://localhost:8000/recovery/123456');
-
-        return $view;
-    }
-
 }
