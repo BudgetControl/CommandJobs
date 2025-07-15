@@ -102,21 +102,17 @@ class AlertBudget extends JobCommand
                         $currencySymbol = Currency::find($currency)->icon;
 
                         if (str_replace('%', '', $budget['totalSpentPercentage']) > 70) {
-                            $view = new ViewBudgetExceededView();
-                            $view->setUserName($user->name);
-                            $view->setUserEmail($user->email);
-                            $view->setMessage($budget['budget']['name']);
-                            $view->setTotalSPent($budget['totalSpent']);
-                            $view->setSpentPercentage($budget['totalSpentPercentage']);
-                            $view->setPercentage($budget['totalSpentPercentage']);
-                            $className = str_replace('%', '', $budget['totalSpentPercentage']) > 80 ? 'bg-red-600' : 'bg-emerald-600';
-                            $view->setCurrency($currencySymbol);
-                            $view->setTotalRemaining(($budget['totalRemaining'] < 0) ? 0 : $budget['totalRemaining']);
-                            $view->setClassName($className);
-                            $view->setBudgetAmount($budget['total']);
-
                             try {
-                                Mail::send($user->email, "Budget exceeded", $view);
+                                Mail::budgetExceeded(
+                                    [
+                                        'to' => $user->email,
+                                        'budget_name' => $budget['budget']['name'],
+                                        'budget_limit' => $budget['total'],
+                                        'current_amount' => $budget['totalSpent'],
+                                        'currency' => $currencySymbol,
+                                        'username' => $user->name,
+                                    ]
+                                );
                             } catch (\Throwable $e) {
                                 $this->fail($e->getMessage());
                                 Log::critical($e->getMessage());
