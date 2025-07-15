@@ -53,7 +53,7 @@ abstract class JobCommand extends Command
         try {
             if ($workspaceId !== null) {
                 $workspaceUuid = Workspace::find($workspaceId)->uuid;
-                Cache::invalidate($workspaceUuid, $pattern);
+                Cache::invokeInvalidation($workspaceUuid, $pattern);
             } else {
                 Cache::clear();
             }

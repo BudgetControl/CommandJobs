@@ -11,7 +11,7 @@ use Budgetcontrol\SdkMailer\Service\Mail as BaseMail;
  * @see \Budgetcontrol\jobs\Service\CacheService
  *
  * @method static void clear()
- * @method static void invalidate(string $workspaceUuid, string $pattern)
+ * @method static void invokeInvalidation(string $workspaceUuid, string $pattern)
  */
 
 class Cache extends Facade
