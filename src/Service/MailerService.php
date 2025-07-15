@@ -13,31 +13,31 @@ class MailerService extends HttpService {
      */
     public function budgetExceeded(array $data): void
     {
-        $url = $this->baseUrl . '/notify/email/budget/exceeded';
+        $url = '/notify/email/budget/exceeded';
         $this->invoke('POST', $url, $data);
     }
 
     public function contact(array $data): void
     {
-        $url = $this->baseUrl . '/notify/email/contact';
+        $url = '/notify/email/contact';
         $this->invoke('POST', $url, $data);
     }
 
     public function sharedWorkspace(array $data): void
     {
-        $url = $this->baseUrl . '/notify/email/workspace/share';
+        $url = '/notify/email/workspace/share';
         $this->invoke('POST', $url, $data);
     }
 
     public function recoveryPassword(array $data): void
     {
-        $url = $this->baseUrl . '/notify/email/auth/recovery-password';
+        $url = '/notify/email/auth/recovery-password';
         $this->invoke('POST', $url, $data);
     }
 
     public function signUp(array $data): void
     {
-        $url = $this->baseUrl . '/notify/email/auth/sign-up';
+        $url = '/notify/email/auth/sign-up';
         $this->invoke('POST', $url, $data);
     }
 

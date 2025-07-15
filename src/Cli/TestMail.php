@@ -32,7 +32,7 @@ class TestMail extends JobCommand
     {
         $this->setName($this->command)
             ->setDescription('Test template mail')
-            ->addArgument('template', InputArgument::REQUIRED, 'Template name of the mail')
+            ->addArgument('template', InputArgument::REQUIRED, 'Template name of the mail (recovery-password, signup, budget-exeded, shared-workspace, or any custom template)')
             ->addArgument('mail', InputArgument::REQUIRED, 'Email address to send the mail')
             ->setHelp("This command allows you to test a template mail");
     }

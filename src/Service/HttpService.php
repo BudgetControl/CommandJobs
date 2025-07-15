@@ -9,7 +9,7 @@ class HttpService {
     protected string $apiKey;
 
     public function __construct(string $baseUrl, string $apiKey) {
-        $this->baseUrl = rtrim($baseUrl, '/');
+        $this->baseUrl = $baseUrl;
         $this->apiKey = $apiKey;
     }
 
