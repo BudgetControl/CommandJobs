@@ -30,7 +30,7 @@ $capsule->setAsGlobal();
 require_once __DIR__ . '/../config/logger.php';
 
 /** mail configuration */
-require_once __DIR__ . '/../config/mail.php';
+require_once __DIR__ . '/../config/http-service.php';
 
 // Set up the Facade application HTTP
 $http = new \GuzzleHttp\Client();
