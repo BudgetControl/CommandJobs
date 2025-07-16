@@ -49,7 +49,7 @@
         "budgetcontrol/library": "^v1.2",
         "budgetcontrol/schema-registry-service": "~v1.4.0",
         "budgetcontrol/cryptable": "v0.1",
-        "budgetcontrol/connector": "v2.0.1-beta",
+        "budgetcontrol/connector": "~v2.0.3-beta",
         "bref/bref": "~2.4.1"
     },
     "require-dev": {

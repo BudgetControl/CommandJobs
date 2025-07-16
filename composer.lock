@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "52d59febe086d06f25cd46fecca626fb",
+    "content-hash": "a2c93c61b59dfba66b3128324edcddf6",
     "packages": [
         {
             "name": "bref/bref",
@@ -147,16 +147,16 @@
         },
         {
             "name": "budgetcontrol/connector",
-            "version": "v2.0.1-beta",
+            "version": "v2.0.3-beta1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BudgetControl/BcConnector.git",
-                "reference": "bb07e74648c2adff6584a5fd8ea180c6ecaf518c"
+                "reference": "fae12cb6976f37433531a1eba08994c58cbdc068"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BudgetControl/BcConnector/zipball/bb07e74648c2adff6584a5fd8ea180c6ecaf518c",
-                "reference": "bb07e74648c2adff6584a5fd8ea180c6ecaf518c",
+                "url": "https://api.github.com/repos/BudgetControl/BcConnector/zipball/fae12cb6976f37433531a1eba08994c58cbdc068",
+                "reference": "fae12cb6976f37433531a1eba08994c58cbdc068",
                 "shasum": ""
             },
             "require": {
@@ -189,9 +189,9 @@
             ],
             "description": "defines the dependencies required for a PHP library in a Budget control application",
             "support": {
-                "source": "https://github.com/BudgetControl/BcConnector/tree/v2.0.1-beta"
+                "source": "https://github.com/BudgetControl/BcConnector/tree/v2.0.3-beta1"
             },
-            "time": "2025-01-17T13:28:55+00:00"
+            "time": "2025-03-26T18:04:52+00:00"
         },
         {
             "name": "budgetcontrol/cryptable",
