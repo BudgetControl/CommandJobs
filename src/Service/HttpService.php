@@ -7,10 +7,16 @@ class HttpService {
 
     protected string $baseUrl;
     protected string $apiKey;
+    protected array $headers = [];
 
     public function __construct(string $baseUrl, string $apiKey) {
         $this->baseUrl = $baseUrl;
         $this->apiKey = $apiKey;
+    }
+
+    public function addHeader(string $key, string $value): void
+    {
+        $this->headers[$key] = $value;
     }
 
     /**
@@ -26,10 +32,12 @@ class HttpService {
     {
         $url = $this->baseUrl . $endpoint;
         $client = new \GuzzleHttp\Client();
+        $headers = array_merge([
+            'Content-Type' => 'application/json',
+            'X-API-SECRET' => $this->apiKey
+        ], $this->headers);
         $response = $client->request($method, $url, [
-            'headers' => [
-                'X-API-SECRET' => $this->apiKey
-            ],
+            'headers' => $headers,
             'json' => $data
         ]);
 

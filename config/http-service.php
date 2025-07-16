@@ -9,3 +9,5 @@ $cache = new \Budgetcontrol\jobs\Service\CacheService(
     baseUrl: env('CACHE_CLEAR_URL'),
     apiKey: env('API_SECRET')
 );
+
+$cache->addHeader('X-webhook-secret', env('WEBHOOK_SECRET', ''));
