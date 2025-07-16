@@ -119,7 +119,7 @@ class AlertBudget extends JobCommand
                                         'to' => $user->email,
                                         'budget_name' => $budget['budget']['name'],
                                         'budget_limit' => $budget['total'],
-                                        'current_amount' => $budget['totalSpent'],
+                                        'current_amount' => $budget['totalSpent'] * -1,
                                         'currency' => $currencySymbol,
                                         'username' => empty($user->name) ? $user->email : $user->name,
                                     ]
