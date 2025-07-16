@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 namespace Budgetcontrol\jobs\Service;
 
+use GuzzleHttp\Psr7\Request;
 use Illuminate\Support\Facades\Log;
 
 class HttpService {
@@ -36,10 +37,19 @@ class HttpService {
             'Content-Type' => 'application/json',
             'X-API-SECRET' => $this->apiKey
         ], $this->headers);
-        $response = $client->request($method, $url, [
-            'headers' => $headers,
-            'json' => $data
-        ]);
+
+        if (empty($data)) {
+            $body = null;
+        } else {
+            $body = json_encode($data);
+            if ($body === false) {
+                throw new \RuntimeException('Failed to encode data to JSON: ' . json_last_error_msg());
+            }
+        }
+        $request = new Request($method, $url, $headers, $body);
+
+
+        $response = $client->sendAsync($request)->wait();
 
         if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) {
             throw new \RuntimeException('HTTP request failed with status ' . $response->getStatusCode());
