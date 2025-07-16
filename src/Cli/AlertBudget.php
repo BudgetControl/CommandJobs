@@ -81,6 +81,8 @@ class AlertBudget extends JobCommand
                 continue;
             }
 
+            Log::debug("Found " . count($budgets) . " budgets for workspace: $workspace->uuid");
+
             foreach ($budgets as $budget) {
                 $toNotify = $this->toNotify($budget['budget']);
                 if (!empty($toNotify)) {
@@ -107,8 +109,11 @@ class AlertBudget extends JobCommand
                         $currency = $wsSettings->getCurrency();
                         $currencySymbol = $currency['icon'];
 
+                        Log::debug("Checking budget for user: $email in workspace: $workspace->uuid");
+
                         if (str_replace('%', '', $budget['totalSpentPercentage']) > 70) {
                             try {
+                                Log::debug("Sending budget exceeded notification to: $email");
                                 Mail::budgetExceeded(
                                     [
                                         'to' => $user->email,
