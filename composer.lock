@@ -147,16 +147,16 @@
         },
         {
             "name": "budgetcontrol/connector",
-            "version": "v2.0.3-beta1",
+            "version": "v2.0.4-beta",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BudgetControl/BcConnector.git",
-                "reference": "fae12cb6976f37433531a1eba08994c58cbdc068"
+                "reference": "9fc4022df3fb4a0c87ba3bba9bd515b501e0d34a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BudgetControl/BcConnector/zipball/fae12cb6976f37433531a1eba08994c58cbdc068",
-                "reference": "fae12cb6976f37433531a1eba08994c58cbdc068",
+                "url": "https://api.github.com/repos/BudgetControl/BcConnector/zipball/9fc4022df3fb4a0c87ba3bba9bd515b501e0d34a",
+                "reference": "9fc4022df3fb4a0c87ba3bba9bd515b501e0d34a",
                 "shasum": ""
             },
             "require": {
@@ -189,9 +189,9 @@
             ],
             "description": "defines the dependencies required for a PHP library in a Budget control application",
             "support": {
-                "source": "https://github.com/BudgetControl/BcConnector/tree/v2.0.3-beta1"
+                "source": "https://github.com/BudgetControl/BcConnector/tree/v2.0.4-beta"
             },
-            "time": "2025-03-26T18:04:52+00:00"
+            "time": "2025-07-18T12:53:59+00:00"
         },
         {
             "name": "budgetcontrol/cryptable",
