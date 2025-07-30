@@ -53,8 +53,9 @@ class AddPlannedEntry extends JobCommand
 
             $entries = $this->getPlannedEntry();
             if ($entries === false) {
+                Log::info('No planned entries found to save');
                 $this->heartbeats(env('HEARTBEAT_PLANNED_ENTRY'));
-                return Command::INVALID;
+                return Command::SUCCESS;
             }
 
             $this->insertEntry(
@@ -189,7 +190,7 @@ class AddPlannedEntry extends JobCommand
                 $entryToInsert->currency_id = $entry->currency_id;
                 $entryToInsert->uuid = \Ramsey\Uuid\Uuid::uuid4()->toString();
                 $entryToInsert->workspace_id = $entry->workspace_id;
-                $entryToInsert->save();
+                // $entryToInsert->save();
 
                 //save tags
                 foreach($entry->tags as $tag) {
@@ -206,6 +207,7 @@ class AddPlannedEntry extends JobCommand
      */
     private function updatePlanningEntry($entries)
     {
+        return true;
         foreach ($entries as $e) {
             PlannedEntry::find($e->id)->update(
                 [
