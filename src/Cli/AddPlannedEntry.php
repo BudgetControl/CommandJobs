@@ -207,7 +207,6 @@ class AddPlannedEntry extends JobCommand
      */
     private function updatePlanningEntry($entries)
     {
-        return true;
         foreach ($entries as $e) {
             PlannedEntry::find($e->id)->update(
                 [
