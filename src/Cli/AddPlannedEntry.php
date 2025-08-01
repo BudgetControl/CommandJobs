@@ -190,7 +190,7 @@ class AddPlannedEntry extends JobCommand
                 $entryToInsert->currency_id = $entry->currency_id;
                 $entryToInsert->uuid = \Ramsey\Uuid\Uuid::uuid4()->toString();
                 $entryToInsert->workspace_id = $entry->workspace_id;
-                // $entryToInsert->save();
+                $entryToInsert->save();
 
                 //save tags
                 foreach($entry->tags as $tag) {
