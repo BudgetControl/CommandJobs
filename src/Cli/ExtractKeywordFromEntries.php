@@ -47,9 +47,14 @@ class ExtractKeywordFromEntries extends JobCommand
         Entry::where('has_keywords', '=', false)
             ->chunk($this->chunkSize, function ($entries) {
                 foreach ($entries as $entry) {
-                    $keywords = RakePlus::create($entry->note);
-                    $scores = $keywords->scores();
-                    $stringKeys = $keywords->get();
+
+                    $stringKeys = [];
+                    if(!empty($entry->note)) {
+                        $keywords = RakePlus::create($entry->note);
+                        $scores = $keywords->scores();
+                        $stringKeys = $keywords->get();
+                    }
+                    
                     if (count($stringKeys) > 0) {
 
                         //if already exist records we need to delete them
