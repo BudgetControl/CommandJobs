@@ -46,17 +46,18 @@
         "nesbot/carbon": "^3.3.1",
         "symfony/console": "7.0.7",
         "logtail/monolog-logtail": "^3.1",
-        "budgetcontrol/library": "^v1.2",
-        "budgetcontrol/schema-registry-service": "~1.5.0",
-        "budgetcontrol/cryptable": "v0.1",
+        "budgetcontrol/library": "~v1.5",
+        "budgetcontrol/schema-registry-service": "~v1.5.1",
         "budgetcontrol/connector": "~v2.0.3-beta",
-        "bref/bref": "~2.4.1"
+        "bref/bref": "~2.4.1",
+        "donatello-za/rake-php-plus": "^2.0",
+        "budgetcontrol/cryptable": "^0.2.0",
+        "budgetcontrol/seeds": "^v0.3.2"
     },
     "require-dev": {
         "nikic/php-parser": "^5.0",
         "fakerphp/faker": "^1.23",
-        "phpunit/phpunit": "^10.0",
-        "budgetcontrol/seeds": "^0.2"
+        "phpunit/phpunit": "^10.0"
     },
     "autoload": {
         "psr-4": {
@@ -69,5 +70,5 @@
             "email": "marco.defelice@mlabfactory.it"
         }
     ],
-    "minimum-stability": "RC"
+    "minimum-stability": "dev"
 }
