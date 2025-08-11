@@ -61,12 +61,12 @@ class ExtractKeywordFromEntries extends JobCommand
                                 'keyword' => $key,
                                 'score' => $scores[$key] ?? 0
                             ]);
-
-                            $entry->has_keywords = true;
-                            $entry->save();
                         }
                         Log::info("Entry ID {$entry->id} keywords extracted and saved.");
                     }
+
+                    $entry->has_keywords = true;
+                    $entry->save();
                 }
             });
 
