@@ -46,3 +46,8 @@ $application->add(new \Budgetcontrol\jobs\Cli\ClearDatabase());
  *  Install the base data for the application.
  */
 $application->add(new \Budgetcontrol\jobs\Cli\PrepareDatabase());
+
+/**
+ *  Extract keywords from entries command to the application.
+ */
+$application->add(new \Budgetcontrol\jobs\Cli\ExtractKeywordFromEntries());
