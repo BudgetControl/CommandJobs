@@ -192,9 +192,9 @@ class AddPlannedEntry extends JobCommand
                 $entryToInsert->workspace_id = $entry->workspace_id;
                 $entryToInsert->save();
 
-                //save tags
-                foreach($entry->tags as $tag) {
-                    $entryToInsert->labels()->attach($tag->id);
+                //save labels
+                foreach($entry->labels as $label) {
+                    $entryToInsert->labels()->attach($label->id);
                 }
             }
     }

@@ -2,6 +2,8 @@
 namespace Budgetcontrol\jobs\Domain\Repository;
 
 use Budgetcontrol\jobs\Domain\Model\PlannedEntry;
+use Budgetcontrol\Library\Model\PlannedEntry as ModelPlannedEntry;
+use Carbon\Carbon;
 use Illuminate\Database\Capsule\Manager as DB;
 
 class PlannedEntryRepository extends Repository {
@@ -30,17 +32,15 @@ class PlannedEntryRepository extends Repository {
      */
     public function plannedEntryOfTheMonth()
     {
-        $query = "SELECT * FROM planned_entries WHERE EXTRACT(MONTH FROM date_time) = EXTRACT(MONTH FROM CURRENT_DATE) AND deleted_at IS NULL;";
-        $results = DB::select($query);
+        $now = Carbon::now()->month;
+        $plannedEntry =  ModelPlannedEntry::with('labels')->whereMonth('date_time', $now)
+            ->whereNull('deleted_at')
+            ->get();
 
-        if(empty($results)) {
+        if ($plannedEntry->isEmpty()) {
             return null;
         }
 
-        foreach($results as $result) {
-            $result->tags = self::tags($result->id);
-        }
-
-        return $results;
+        return $plannedEntry;
     }
 }
