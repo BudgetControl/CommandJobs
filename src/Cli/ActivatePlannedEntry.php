@@ -3,14 +3,15 @@
 namespace Budgetcontrol\jobs\Cli;
 
 use Throwable;
-use Brick\Math\BigNumber;
 use Illuminate\Support\Facades\Log;
-use Budgetcontrol\jobs\Domain\Model\Entry;
-use Budgetcontrol\jobs\Domain\Model\Wallet;
 use Budgetcontrol\jobs\Domain\Repository\EntryRepository;
+use Budgetcontrol\jobs\Service\NotificationService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Budgetcontrol\Library\Model\Wallet;
+use Budgetcontrol\Library\Model\Entry;
+use Budgetcontrol\Library\Model\Workspace;
 
 /**
  * Class ActivatePlannedEntry
@@ -20,6 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ActivatePlannedEntry extends JobCommand
 {
     protected string $command = 'entry:activate-planned';
+    private NotificationService $notificationService;
 
     public function configure()
     {
@@ -37,6 +39,7 @@ class ActivatePlannedEntry extends JobCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->notificationService = new NotificationService();
         $repository = new EntryRepository();
         Log::info('Activating planned entries');
         $this->output = $output;
@@ -56,6 +59,11 @@ class ActivatePlannedEntry extends JobCommand
                 $entry->planned = false;
                 $entry->save();
 
+                $users = $this->findUserUuidByWorkspaceId($currentEntry->workspace_id);
+                if (!empty($users)) {
+                    $this->sendUserNotification($users, 'Nuova spesa pianificata', 'La spesa "' . $currentEntry->note . '" è stata attivata. ' . $entry->amount . '€'); //FIXME: manage currency
+                }
+
             }
 
             if(!empty($workspaceIds)) {
@@ -70,6 +78,32 @@ class ActivatePlannedEntry extends JobCommand
             Log::error('Error activating planned entry: ' . $e->getMessage());
             $this->fail($e->getMessage());
             return Command::FAILURE;
+        }
+    }
+
+    /**
+     * Finds the UUID(s) of user(s) associated with the given workspace ID.
+     *
+     * @param int $workspaceId The ID of the workspace to search for users.
+     * @return array An array of user UUIDs associated with the workspace.
+     */
+    private function findUserUuidByWorkspaceId(int $workspaceId): array
+    {
+        $workspace = Workspace::with('users')->find($workspaceId);
+
+        if ($workspace) {
+            return $workspace->users->pluck('uuid')->toArray();
+        }
+
+        Log::warning("No users found for workspace ID: {$workspaceId}");
+        
+        return [];
+    }
+
+    protected function sendUserNotification(array $userUuids, string $title, string $body): void
+    {
+        foreach ($userUuids as $userUuid) {
+            $this->notificationService->sendPushNotificationToUser($userUuid, $title, $body);
         }
     }
 }

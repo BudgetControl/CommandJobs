@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cdc4c863d131fc3aa363001f4a0639ab",
+    "content-hash": "0d3890fc6c040fc47f79e4348348c83b",
     "packages": [
         {
             "name": "bref/bref",
@@ -147,16 +147,16 @@
         },
         {
             "name": "budgetcontrol/connector",
-            "version": "v2.0.4-beta",
+            "version": "dev-alpha-2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/BudgetControl/BcConnector.git",
-                "reference": "9fc4022df3fb4a0c87ba3bba9bd515b501e0d34a"
+                "reference": "f1c8c6e911619c75e4577e578c06172d7f23510c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BudgetControl/BcConnector/zipball/9fc4022df3fb4a0c87ba3bba9bd515b501e0d34a",
-                "reference": "9fc4022df3fb4a0c87ba3bba9bd515b501e0d34a",
+                "url": "https://api.github.com/repos/BudgetControl/BcConnector/zipball/f1c8c6e911619c75e4577e578c06172d7f23510c",
+                "reference": "f1c8c6e911619c75e4577e578c06172d7f23510c",
                 "shasum": ""
             },
             "require": {
@@ -189,9 +189,9 @@
             ],
             "description": "defines the dependencies required for a PHP library in a Budget control application",
             "support": {
-                "source": "https://github.com/BudgetControl/BcConnector/tree/v2.0.4-beta"
+                "source": "https://github.com/BudgetControl/BcConnector/tree/alpha-2.0"
             },
-            "time": "2025-07-18T12:53:59+00:00"
+            "time": "2025-08-13T14:05:39+00:00"
         },
         {
             "name": "budgetcontrol/cryptable",
@@ -7642,7 +7642,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {},
+    "stability-flags": {
+        "budgetcontrol/connector": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
