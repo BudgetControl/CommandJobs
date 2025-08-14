@@ -46,5 +46,6 @@ Facade::setFacadeApplication([
     'http' => $http,
     'crypt' => $crypt,
     'cache-http' => $cache,
+    'client-http' => $_client
 
 ]);

@@ -48,7 +48,7 @@
         "logtail/monolog-logtail": "^3.1",
         "budgetcontrol/library": "~v1.5",
         "budgetcontrol/schema-registry-service": "~v1.5.1",
-        "budgetcontrol/connector": "~v2.0.3-beta",
+        "budgetcontrol/connector": "dev-alpha-2.0",
         "bref/bref": "~2.4.1",
         "donatello-za/rake-php-plus": "^2.0",
         "budgetcontrol/cryptable": "^0.2.0",
