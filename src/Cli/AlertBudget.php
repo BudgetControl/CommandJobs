@@ -3,6 +3,7 @@
 namespace Budgetcontrol\jobs\Cli;
 
 use Budgetcontrol\Connector\Client\MailerClient;
+use Budgetcontrol\Connector\Client\StatsClient;
 use Budgetcontrol\Connector\Entities\Payloads\Mailer\Budget\BudgetMailer;
 use Illuminate\Support\Facades\Log;
 use Budgetcontrol\Library\Model\User;
@@ -25,11 +26,13 @@ class AlertBudget extends JobCommand
 {
     protected string $command = 'budget:is-exceeded';
     private MailerClient $mailerClient;
+    private StatsClient $budgetClient;
 
     public function __construct()
     {
         $logger = Facade::getFacadeApplication();
         $this->mailerClient = BudgetControlClient::mailer();
+        $this->budgetClient = BudgetControlClient::stats();
 
         parent::__construct();
     }
@@ -57,7 +60,8 @@ class AlertBudget extends JobCommand
             }
 
             try {
-                $budgetStats = $this->budgetClient->getAllStats($workspace->id); //FIXME:
+                // @depreceated use uuid instead of id
+                $budgetStats = $this->budgetClient->getBudgetsStats($workspace->id);
             } catch (\Throwable $e) {
                 Log::error("Error fetching budgets for workspace: $workspace->uuid - " . $e->getMessage());
                 continue;
