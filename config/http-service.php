@@ -13,7 +13,9 @@ $cache->addHeader('X-webhook-secret', env('WEBHOOK_SECRET', ''));
 
 
 $domains_config = [
-    'notification' => env('NOTIFICATION_MS_URL', 'http://budgetcontrol-ms-notifications')
+    'notification' => env('NOTIFICATION_MS_URL', 'http://budgetcontrol-ms-notifications'),
+    'mailer' => env('NOTIFICATION_MS_URL', 'http://budgetcontrol-ms-notifications'),
+    'budget' => env('STATS_MS_URL', 'http://budgetcontrol-ms-budget'),
 ];
 
 $_client = new \Budgetcontrol\Connector\Factory\MicroserviceClient(

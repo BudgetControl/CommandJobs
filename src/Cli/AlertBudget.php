@@ -2,6 +2,7 @@
 
 namespace Budgetcontrol\jobs\Cli;
 
+use Budgetcontrol\Connector\Client\BudgetClient;
 use Budgetcontrol\Connector\Client\MailerClient;
 use Budgetcontrol\Connector\Client\StatsClient;
 use Budgetcontrol\Connector\Entities\Payloads\Mailer\Budget\BudgetMailer;
@@ -26,13 +27,12 @@ class AlertBudget extends JobCommand
 {
     protected string $command = 'budget:is-exceeded';
     private MailerClient $mailerClient;
-    private StatsClient $budgetClient;
+    private BudgetClient $budgetClient;
 
     public function __construct()
     {
-        $logger = Facade::getFacadeApplication();
         $this->mailerClient = BudgetControlClient::mailer();
-        $this->budgetClient = BudgetControlClient::stats();
+        $this->budgetClient = BudgetControlClient::budget();
 
         parent::__construct();
     }

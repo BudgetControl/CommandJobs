@@ -12,8 +12,11 @@ namespace Budgetcontrol\jobs\Facade;
  * @method static \Budgetcontrol\Connector\Client\AuthenticationClient authentication()
  * @method static \Budgetcontrol\Connector\Client\EntryClient entry()
  * @method static \Budgetcontrol\Connector\Client\StatsClient stats()
+ * @method static \Budgetcontrol\Connector\Client\CacheClient cache()
+ * @method static \Budgetcontrol\Connector\Client\BudgetClient budget()
+ * @method static \Budgetcontrol\Connector\Client\WorkspaceClient workspace()
  */
-final class BudgetControlClient
+final class BudgetControlClient extends \Illuminate\Support\Facades\Facade
 {
     protected static function getFacadeAccessor(): string
     {
