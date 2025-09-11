@@ -52,7 +52,9 @@
         "bref/bref": "~2.4.1",
         "donatello-za/rake-php-plus": "^2.0",
         "budgetcontrol/cryptable": "^0.2.0",
-        "budgetcontrol/seeds": "^v0.3.2"
+        "budgetcontrol/seeds": "^v0.3.2",
+        "predis/predis": "^3.0",
+        "illuminate/cache": "^11.45"
     },
     "require-dev": {
         "nikic/php-parser": "^5.0",

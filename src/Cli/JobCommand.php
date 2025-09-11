@@ -6,13 +6,12 @@ use Budgetcontrol\jobs\Facade\Cache;
 use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Http;
 use Budgetcontrol\Library\Model\Workspace;
 use Budgetcontrol\Library\Definition\Format;
 use Illuminate\Database\Capsule\Manager as DB;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Formatter\OutputFormatterStyle;
+use Budgetcontrol\Library\Model\User;
 
 abstract class JobCommand extends Command
 {
@@ -60,5 +59,28 @@ abstract class JobCommand extends Command
         } catch (\Exception $e) {
             Log::critical('Failed to invoke clear cache: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Retrieves the user associated with the specified workspace ID.
+     *
+     * @param int $workspaceId The unique identifier of the workspace.
+     * @return User|null The user associated with the workspace, or null if not found.
+     */
+    protected function getUserFromWorkspaceId(int $workspaceId): ?User
+    {
+        $workspace = Workspace::find($workspaceId);
+        if (!$workspace) {
+            Log::error("Workspace not found for ID: $workspaceId");
+            return null;
+        }
+
+        $user = User::find($workspace->user_id);
+        if (!$user) {
+            Log::error("User not found for Workspace ID: $workspaceId");
+            return null;
+        }
+
+        return $user;
     }
 }

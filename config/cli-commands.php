@@ -51,3 +51,8 @@ $application->add(new \Budgetcontrol\jobs\Cli\PrepareDatabase());
  *  Extract keywords from entries command to the application.
  */
 $application->add(new \Budgetcontrol\jobs\Cli\ExtractKeywordFromEntries());
+
+/**
+ *  Bill reminder command to the application.
+ */
+$application->add(new \Budgetcontrol\jobs\Cli\BillReminder());
