@@ -1,35 +1,25 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Budgetcontrol\jobs\Facade;
 
-use Budgetcontrol\Connector\Client\BudgetClient;
-use Illuminate\Support\Facades\Log;
 
-final class BudgetControlClient
+/**
+ * @see \Budgetcontrol\Connector\Factory\MicroserviceClient
+ * @method static \Budgetcontrol\Connector\Client\MailerClient mailer()
+ * @method static \Budgetcontrol\Connector\Client\PushNotificationClient pushNotification()
+ * @method static \Budgetcontrol\Connector\Client\AuthenticationClient authentication()
+ * @method static \Budgetcontrol\Connector\Client\EntryClient entry()
+ * @method static \Budgetcontrol\Connector\Client\StatsClient stats()
+ * @method static \Budgetcontrol\Connector\Client\CacheClient cache()
+ * @method static \Budgetcontrol\Connector\Client\BudgetClient budget()
+ * @method static \Budgetcontrol\Connector\Client\WorkspaceClient workspace()
+ */
+final class BudgetControlClient extends \Illuminate\Support\Facades\Facade
 {
-    private array $result;
-
-    private function __construct(\Budgetcontrol\Connector\Model\Response $result)
+    protected static function getFacadeAccessor(): string
     {
-        if($result->getStatusCode() !== 200 || $result->getStatusCode() !== 404) {
-            Log::warning('Error calling BudgetControlClient: '.$result->getError());
-        }
-
-        $this->result = $result->getBody();
-    }
-
-    public static function budgetStats(int $wsId): self
-    {
-        $budgetClient = new BudgetClient();
-        return new self($budgetClient->call('/budgets/stats', $wsId));
-    }
-
-    /**
-     * Get the value of result
-     */
-    public function getResult(): array
-    {
-        return $this->result;
+        return 'client-http';
     }
 }

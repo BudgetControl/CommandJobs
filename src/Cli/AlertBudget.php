@@ -3,17 +3,17 @@
 namespace Budgetcontrol\jobs\Cli;
 
 use Budgetcontrol\Connector\Client\BudgetClient;
-use Budgetcontrol\jobs\Facade\Mail;
+use Budgetcontrol\Connector\Client\MailerClient;
+use Budgetcontrol\Connector\Client\StatsClient;
+use Budgetcontrol\Connector\Entities\Payloads\Mailer\Budget\BudgetMailer;
 use Illuminate\Support\Facades\Log;
-use Budgetcontrol\jobs\Facade\Crypt;
 use Budgetcontrol\Library\Model\User;
 use Budgetcontrol\jobs\Cli\JobCommand;
+use Budgetcontrol\jobs\Facade\BudgetControlClient;
 use Budgetcontrol\Library\Model\Budget;
 use Symfony\Component\Console\Command\Command;
-use Budgetcontrol\Library\Model\Currency;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use BudgetcontrolLibs\Mailer\View\BudgetExceededView as ViewBudgetExceededView;
 use Illuminate\Database\Capsule\Manager as DB;
 use Budgetcontrol\Library\Model\Workspace;
 use Illuminate\Support\Facades\Facade;
@@ -26,12 +26,13 @@ use Illuminate\Support\Facades\Facade;
 class AlertBudget extends JobCommand
 {
     protected string $command = 'budget:is-exceeded';
+    private MailerClient $mailerClient;
     private BudgetClient $budgetClient;
 
     public function __construct()
     {
-        $logger = Facade::getFacadeApplication();
-        $this->budgetClient = new BudgetClient('http://budgetcontrol-ms-budget', $logger['log']);
+        $this->mailerClient = BudgetControlClient::mailer();
+        $this->budgetClient = BudgetControlClient::budget();
 
         parent::__construct();
     }
@@ -59,7 +60,8 @@ class AlertBudget extends JobCommand
             }
 
             try {
-                $budgetStats = $this->budgetClient->getAllStats($workspace->id);
+                // @depreceated use uuid instead of id
+                $budgetStats = $this->budgetClient->getBudgetsStats($workspace->id);
             } catch (\Throwable $e) {
                 Log::error("Error fetching budgets for workspace: $workspace->uuid - " . $e->getMessage());
                 continue;
@@ -114,16 +116,10 @@ class AlertBudget extends JobCommand
                         if (str_replace('%', '', $budget['totalSpentPercentage']) > 70) {
                             try {
                                 Log::debug("Sending budget exceeded notification to: $email");
-                                Mail::budgetExceeded(
-                                    [
-                                        'to' => $user->email,
-                                        'budget_name' => $budget['budget']['name'],
-                                        'budget_limit' => $budget['total'],
-                                        'current_amount' => $budget['totalSpent'] * -1,
-                                        'currency' => $currencySymbol,
-                                        'username' => empty($user->name) ? $user->email : $user->name,
-                                    ]
-                                );
+
+                                $mailerPayload = new BudgetMailer($user->email, $budget['budget']['name'], $budget['totalSpent'] * -1, $budget['total'] * -1, $currencySymbol, $user->name);
+                                $this->mailerClient->budgetExceeded($mailerPayload);
+                                
                             } catch (\Throwable $e) {
                                 Log::critical($e->getMessage());
                                 return Command::FAILURE;
