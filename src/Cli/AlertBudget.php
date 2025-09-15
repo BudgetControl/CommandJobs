@@ -117,7 +117,7 @@ class AlertBudget extends JobCommand
                             try {
                                 Log::debug("Sending budget exceeded notification to: $email");
 
-                                $mailerPayload = new BudgetMailer($user->email, $budget['budget']['name'], $budget['totalSpent'] * -1, $budget['total'] * -1, $currencySymbol, $user->name);
+                                $mailerPayload = new BudgetMailer($user->email, $budget['budget']['name'], $budget['totalSpent'] * -1, $budget['total'], $currencySymbol, $user->name);
                                 $this->mailerClient->budgetExceeded($mailerPayload);
                                 
                             } catch (\Throwable $e) {
