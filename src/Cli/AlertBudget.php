@@ -114,16 +114,10 @@ class AlertBudget extends JobCommand
                         if (str_replace('%', '', $budget['totalSpentPercentage']) > 70) {
                             try {
                                 Log::debug("Sending budget exceeded notification to: $email");
-                                Mail::budgetExceeded(
-                                    [
-                                        'to' => $user->email,
-                                        'budget_name' => $budget['budget']['name'],
-                                        'budget_limit' => $budget['total'],
-                                        'current_amount' => $budget['totalSpent'] * -1,
-                                        'currency' => $currencySymbol,
-                                        'username' => empty($user->name) ? $user->email : $user->name,
-                                    ]
-                                );
+
+                                $mailerPayload = new BudgetMailer($user->email, $budget['budget']['name'], $budget['totalSpent'] * -1, $budget['total'], $currencySymbol, $user->name);
+                                $this->mailerClient->budgetExceeded($mailerPayload);
+                                
                             } catch (\Throwable $e) {
                                 Log::critical($e->getMessage());
                                 return Command::FAILURE;
