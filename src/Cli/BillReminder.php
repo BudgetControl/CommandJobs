@@ -55,8 +55,6 @@ class BillReminder extends JobCommand
                 Notification::sendNotification(new \Budgetcontrol\jobs\Domain\Entities\NotificationData(
                     $user->uuid,
                     $message,
-                     Carbon::now()->toAtomString(),
-                    true
                 ));
             } catch (\Exception $e) {
                 $this->fail("Failed to send notification for entry {$entry->id}: {$e->getMessage()}");
