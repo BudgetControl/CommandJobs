@@ -59,11 +59,13 @@
     "require-dev": {
         "nikic/php-parser": "^5.0",
         "fakerphp/faker": "^1.23",
-        "phpunit/phpunit": "^10.0"
+        "phpunit/phpunit": "^10.0",
+        "mockery/mockery": "2.0.x-dev"
     },
     "autoload": {
         "psr-4": {
-            "Budgetcontrol\\jobs\\": "src/"
+            "Budgetcontrol\\jobs\\": "src/",
+            "Tests\\": "tests/"
         }
     },
     "authors": [

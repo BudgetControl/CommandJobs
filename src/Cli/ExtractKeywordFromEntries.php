@@ -33,6 +33,11 @@ class ExtractKeywordFromEntries extends JobCommand
         }
     }
 
+    public function getChunkSize(): int
+    {
+        return $this->chunkSize;
+    }
+
     public function configure()
     {
         $this->setName($this->command)

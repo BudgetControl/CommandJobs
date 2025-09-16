@@ -38,7 +38,6 @@ class ActivatePlannedEntry extends JobCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $repository = new EntryRepository();
-        Log::info('Activating planned entries');
         $this->output = $output;
         try {
             $entries = $repository->entryOfCurrentTime();
