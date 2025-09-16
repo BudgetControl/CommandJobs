@@ -38,6 +38,8 @@ $http = new \GuzzleHttp\Client();
 // Set up the Facade crypt application
 $crypt = new CryptableService(env('APP_KEY'));
 
+require_once __DIR__ . '/../config/cache.php';
+
 // Set up the Facade application
 Facade::setFacadeApplication([
     'log' => $logger,
@@ -46,5 +48,7 @@ Facade::setFacadeApplication([
     'http' => $http,
     'crypt' => $crypt,
     'cache-http' => $cache,
+    'notification-http' => $notification,
+    'cache' => $cache,
 
 ]);
