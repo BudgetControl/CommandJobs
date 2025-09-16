@@ -43,7 +43,10 @@ class BillReminder extends JobCommand
         foreach ($entries as $entry) {
             Log::debug("Found planned entry {$entry->id} for date {$entry->date_time}");
             $user = $this->getUserFromWorkspaceId($entry->workspace_id);
-
+            if(is_null($user)) {
+                Log::warning("No user found for workspace {$entry->workspace_id}, skipping entry {$entry->id}");
+                continue;
+            }
             if($this->checkIfNotificationSent($entry->id, $user->uuid) === true) {
                 Log::info("Notification already sent for entry {$entry->id} to user {$user->uuid}, skipping.");
                 continue;
