@@ -7,54 +7,45 @@ use Budgetcontrol\jobs\Domain\Entities\EntityInterface;
 
 final class NotificationData implements EntityInterface
 {
-    private string $to;
-    private string $message;
-    private string $dateTimeToSend;
-    private bool $active;
+    private string $userUuid;
+    private string $body;
+    private ?string $title;
 
     public function toArray(): array
     {
         return [
-            'to' => $this->to,
-            'message' => $this->message,
-            'dateTimeToSend' => $this->dateTimeToSend,
-            'active' => $this->active,
+            'userUuid' => $this->userUuid,
+            'body' => $this->body,
+            'title' => $this->title,
         ];
     }
 
     private string $id;
 
     public function __construct(
-        string $to,
-        string $message,
-        string $dateTimeToSend,
-        bool $active
+        string $userUuid,
+        string $body,
+        ?string $title = null
     ) {
-        $this->to = $to;
-        $this->message = $message;
-        $this->dateTimeToSend = $dateTimeToSend;
-        $this->active = $active;
+        $this->userUuid = $userUuid;
+        $this->body = $body;
+        $this->title = $title;
         $this->id = Uuid::uuid4()->toString();
     }
 
-    public function getTo(): string
+    public function getUserUuid(): string
     {
-        return $this->to;
+        return $this->userUuid;
     }
 
-    public function getMessage(): string
+    public function getBody(): string
     {
-        return $this->message;
+        return $this->body;
     }
 
-    public function getDateTimeToSend(): string
+    public function getTitle(): ?string
     {
-        return $this->dateTimeToSend;
-    }
-
-    public function isActive(): bool
-    {
-        return $this->active;
+        return $this->title;
     }
 
     public function getId(): string

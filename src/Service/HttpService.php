@@ -47,8 +47,6 @@ class HttpService {
             }
         }
         $request = new Request($method, $url, $headers, $body);
-
-
         $response = $client->sendAsync($request)->wait();
 
         if ($response->getStatusCode() < 200 || $response->getStatusCode() >= 300) {

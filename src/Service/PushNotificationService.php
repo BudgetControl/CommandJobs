@@ -13,7 +13,7 @@ class PushNotificationService extends HttpService {
      */
     public function sendNotification(NotificationData $data): void
     {
-        $url = '/notify/message';
+        $url = '/notify/message/send';
         $this->invoke('POST', $url, $data->toArray());
     }
 
