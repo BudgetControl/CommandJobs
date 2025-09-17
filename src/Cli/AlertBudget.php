@@ -191,7 +191,7 @@ class AlertBudget extends JobCommand
     {
         // Warning threshold (70%)
         if ($spentPercentage >= self::WARNING_THRESHOLD && $spentPercentage < self::CRITICAL_THRESHOLD) {
-            $this->setCacheKey("warning_{$budget['budget']['id']}_{$user->uuid}");
+            $this->setCacheKey("warning_{$budget['budget']['uuid']}_{$user->uuid}");
             if (!$this->checkIfNotificationSent()) {
                 Mail::budgetExceeded(
                     [
@@ -209,7 +209,7 @@ class AlertBudget extends JobCommand
 
         // Critical threshold (90%)
         if ($spentPercentage >= self::CRITICAL_THRESHOLD && $spentPercentage < self::EXCEEDED_THRESHOLD) {
-            $this->setCacheKey("critical_{$budget['budget']['id']}_{$user->uuid}");
+            $this->setCacheKey("critical_{$budget['budget']['uuid']}_{$user->uuid}");
             if (!$this->checkIfNotificationSent()) {
                 Mail::budgetExceeded(
                     data: [
@@ -227,7 +227,7 @@ class AlertBudget extends JobCommand
 
         // Exceeded threshold (100%)
         if ($spentPercentage >= self::EXCEEDED_THRESHOLD) {
-            $this->setCacheKey("exceeded_{$budget['budget']['id']}_{$user->uuid}");
+            $this->setCacheKey("exceeded_{$budget['budget']['uuid']}_{$user->uuid}");
             if (!$this->checkIfNotificationSent()) {
                 Mail::budgetExceeded(
                     [
