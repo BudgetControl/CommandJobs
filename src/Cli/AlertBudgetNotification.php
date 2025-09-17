@@ -111,7 +111,7 @@ class AlertBudgetNotification extends JobCommand
 
     private function sendWarningNotification(User $user, array $budget, float $spentPercentage, string $currencySymbol): void
     {
-        $this->setCacheKey("warning_{$budget['budget']['id']}_{$user->uuid}");
+        $this->setCacheKey("warning_{$budget['budget']['uuid']}_{$user->uuid}");
         $this->notify(new NotificationData(
             $user->uuid,
             "Il budget {$budget['budget']['name']} ha raggiunto il {$spentPercentage}% ({$currencySymbol}{$budget['totalSpent']})",
@@ -121,7 +121,7 @@ class AlertBudgetNotification extends JobCommand
 
     private function sendExceededNotification(User $user, array $budget, float $spentPercentage, string $currencySymbol): void
     {
-        $this->setCacheKey("exceeded_{$budget['budget']['id']}_{$user->uuid}");
+        $this->setCacheKey("exceeded_{$budget['budget']['uuid']}_{$user->uuid}");
         $this->notify(new NotificationData(
             $user->uuid,
             "Il budget {$budget['budget']['name']} è stato superato! ({$currencySymbol}{$budget['totalSpent']})",
