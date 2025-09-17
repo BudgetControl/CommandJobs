@@ -56,3 +56,8 @@ $application->add(new \Budgetcontrol\jobs\Cli\ExtractKeywordFromEntries());
  *  Bill reminder command to the application.
  */
 $application->add(new \Budgetcontrol\jobs\Cli\BillReminder());
+
+/**
+ *  Alert budget notification command to the application.
+ */
+$application->add(new \Budgetcontrol\jobs\Cli\AlertBudgetNotification());
