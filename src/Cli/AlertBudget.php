@@ -28,11 +28,17 @@ use Illuminate\Support\Facades\Facade;
 class AlertBudget extends JobCommand
 {
     use Notify;
-    protected string $command = 'budget:is-exceeded';
+    protected string $command = 'budget:email-exceeded';
     private BudgetClient $budgetClient;
-    
+
     private const WARNING_THRESHOLD = 70;
+    private const CRITICAL_THRESHOLD = 90;
     private const EXCEEDED_THRESHOLD = 100;
+
+    public function setCacheKey(string $key): void
+    {
+        $this->setNotifyKey("budget_email_{$key}");
+    }
 
     public function __construct()
     {
@@ -117,40 +123,10 @@ class AlertBudget extends JobCommand
 
                         Log::debug("Checking budget for user: $email in workspace: $workspace->uuid");
 
-                        $spentPercentage = (float)str_replace('%', '', subject: $budget['totalSpentPercentage']);
-                        
+                        $spentPercentage = (float) str_replace('%', '', subject: $budget['totalSpentPercentage']);
+
                         try {
-                            // Warning threshold (70%)
-                            if ($spentPercentage >= self::WARNING_THRESHOLD && $spentPercentage < self::EXCEEDED_THRESHOLD) {
-                                $notificationData = new NotificationData(
-                                    $user->uuid,
-                                    "Il budget {$budget['budget']['name']} ha raggiunto il {$spentPercentage}% ({$currencySymbol}{$budget['totalSpent']})",
-                                    "Avviso Budget"
-                                );
-                                $this->notify($notificationData);
-                            }
-                            
-                            // Exceeded threshold (100%)
-                            if ($spentPercentage >= self::EXCEEDED_THRESHOLD) {
-                                // Send email
-                                Mail::budgetExceeded(
-                                    $user->email,
-                                    $budget['budget']['name'],
-                                    $budget['totalSpent'] * -1,
-                                    $budget['total'],
-                                    $currencySymbol,
-                                    $user->name
-                                );
-                                
-                                // Send push notification
-                                $this->setNotifyKey("exceeded_{$budget['budget']['id']}_{$user->uuid}");
-                                $notificationData = new NotificationData(
-                                    $user->uuid,
-                                    "Il budget {$budget['budget']['name']} è stato superato! ({$currencySymbol}{$budget['totalSpent']})",
-                                    "Budget Superato"
-                                );
-                                $this->notify($notificationData, true);
-                            }
+                            $this->handleBudgetEmails($budget, $spentPercentage, $user, $currencySymbol);
                         } catch (\Throwable $e) {
                             Log::critical($e->getMessage());
                             return Command::FAILURE;
@@ -209,5 +185,62 @@ class AlertBudget extends JobCommand
         }
 
         return Workspace::whereIn('id', $workspaceIds)->get();
+    }
+
+    private function handleBudgetEmails(array $budget, float $spentPercentage, User $user, string $currencySymbol): void
+    {
+        // Warning threshold (70%)
+        if ($spentPercentage >= self::WARNING_THRESHOLD && $spentPercentage < self::CRITICAL_THRESHOLD) {
+            $this->setCacheKey("warning_{$budget['budget']['id']}_{$user->uuid}");
+            if (!$this->checkIfNotificationSent()) {
+                Mail::budgetExceeded(
+                    [
+                        $user->email,
+                        $budget['budget']['name'],
+                        $budget['totalSpent'] * -1,
+                        $budget['total'],
+                        $currencySymbol,
+                        $user->name,
+                    ]
+                );
+                $this->cacheNotificationFlag(7); // Cache per 7 giorni
+            }
+        }
+
+        // Critical threshold (90%)
+        if ($spentPercentage >= self::CRITICAL_THRESHOLD && $spentPercentage < self::EXCEEDED_THRESHOLD) {
+            $this->setCacheKey("critical_{$budget['budget']['id']}_{$user->uuid}");
+            if (!$this->checkIfNotificationSent()) {
+                Mail::budgetExceeded(
+                    data: [
+                        $user->email,
+                        $budget['budget']['name'],
+                        $budget['totalSpent'] * -1,
+                        $budget['total'],
+                        $currencySymbol,
+                        $user->name
+                    ],
+                );
+                $this->cacheNotificationFlag(3); // Cache per 3 giorni
+            }
+        }
+
+        // Exceeded threshold (100%)
+        if ($spentPercentage >= self::EXCEEDED_THRESHOLD) {
+            $this->setCacheKey("exceeded_{$budget['budget']['id']}_{$user->uuid}");
+            if (!$this->checkIfNotificationSent()) {
+                Mail::budgetExceeded(
+                    [
+                        $user->email,
+                        $budget['budget']['name'],
+                        $budget['totalSpent'] * -1,
+                        $budget['total'],
+                        $currencySymbol,
+                        $user->name
+                    ]
+                );
+                $this->cacheNotificationFlag(1); // Cache per 1 giorno
+            }
+        }
     }
 }
