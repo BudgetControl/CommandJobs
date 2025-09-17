@@ -1,0 +1,20 @@
+changelog:
+  categories:
+    - title: '🚀 New Features'
+      labels:
+        - 'feature'
+      commits:
+        pattern: 'feat:'
+    - title: '🔥 Hotfixes'
+      labels:
+        - 'hotfix'
+      commits:
+        pattern: 'hotfix:'
+    - title: '🐛 Bug Fixes'
+      labels:
+        - 'bug'
+      commits:
+        pattern: 'fix:'
+    - title: 'Other Changes'
+      labels:
+        - '*'
