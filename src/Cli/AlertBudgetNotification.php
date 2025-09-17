@@ -56,7 +56,7 @@ class AlertBudgetNotification extends JobCommand
             }
 
             try {
-                $budgetStats = $this->budgetClient->getAllStats($workspace->id);
+                $budgetStats = $this->budgetClient->getBudgetsStats($workspace->id);
                 if (!$budgetStats->isSuccessful() || empty($budgetStats->toArray())) {
                     continue;
                 }

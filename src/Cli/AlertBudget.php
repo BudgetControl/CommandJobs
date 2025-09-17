@@ -71,7 +71,7 @@ class AlertBudget extends JobCommand
             }
 
             try {
-                $budgetStats = $this->budgetClient->getAllStats($workspace->id);
+                $budgetStats = $this->budgetClient->getBudgetsStats($workspace->id);
             } catch (\Throwable $e) {
                 Log::error("Error fetching budgets for workspace: $workspace->uuid - " . $e->getMessage());
                 continue;
