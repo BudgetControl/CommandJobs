@@ -43,7 +43,7 @@ class AlertBudget extends JobCommand
     public function __construct()
     {
         $logger = Facade::getFacadeApplication();
-        $this->budgetClient = new BudgetClient('http://budgetcontrol-ms-budget', $logger['log']);
+        $this->budgetClient = new BudgetClient('http://budgetcontrol-ms-budget', env('API_SECRET'));
 
         parent::__construct();
     }
