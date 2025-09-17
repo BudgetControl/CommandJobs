@@ -12,12 +12,17 @@ trait Notify
     private string $cacheKey;
     private NotificationData $dataNotification;
 
-    abstract public function setCacheKey(string $key): void;
+    protected function setNotifyKey(string $key): void
+    {
+        $this->cacheKey = $key;
+    }
 
     protected function notify(NotificationData $data, bool $force = false): void
     {
         $this->dataNotification = $data;
-        $this->cacheKey = md5(serialize($data->toArray()));
+        if(!isset($this->cacheKey)) {
+            $this->cacheKey = md5(serialize($data->toArray()));
+        }
 
         if( $force === false && $this->checkIfNotificationSent() === true) {
             return;

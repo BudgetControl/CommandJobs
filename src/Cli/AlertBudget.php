@@ -5,6 +5,7 @@ namespace Budgetcontrol\jobs\Cli;
 use Budgetcontrol\Connector\Client\BudgetClient;
 use Budgetcontrol\jobs\Facade\Mail;
 use Budgetcontrol\jobs\Traits\Notify;
+use Budgetcontrol\jobs\Domain\Entities\NotificationData;
 use Illuminate\Support\Facades\Log;
 use Budgetcontrol\jobs\Facade\Crypt;
 use Budgetcontrol\Library\Model\User;
@@ -29,6 +30,9 @@ class AlertBudget extends JobCommand
     use Notify;
     protected string $command = 'budget:is-exceeded';
     private BudgetClient $budgetClient;
+    
+    private const WARNING_THRESHOLD = 70;
+    private const EXCEEDED_THRESHOLD = 100;
 
     public function __construct()
     {
@@ -108,22 +112,48 @@ class AlertBudget extends JobCommand
 
                         /** @var \Budgetcontrol\Library\ValueObject\WorkspaceSetting $wsSettings */
                         $wsSettings = $workspace->workspaceSettings->data;
-                        $currency = $wsSettings->getCurrency();
-                        $currencySymbol = $currency['icon'];
+                        $currency = Currency::find($wsSettings->getCurrency());
+                        $currencySymbol = $currency->symbol;
 
                         Log::debug("Checking budget for user: $email in workspace: $workspace->uuid");
 
-                        if (str_replace('%', '', $budget['totalSpentPercentage']) > 70) {
-                            try {
-                                Log::debug("Sending budget exceeded notification to: $email");
-
-                                $mailerPayload = new BudgetMailer($user->email, $budget['budget']['name'], $budget['totalSpent'] * -1, $budget['total'], $currencySymbol, $user->name);
-                                $this->mailerClient->budgetExceeded($mailerPayload);
-
-                            } catch (\Throwable $e) {
-                                Log::critical($e->getMessage());
-                                return Command::FAILURE;
+                        $spentPercentage = (float)str_replace('%', '', subject: $budget['totalSpentPercentage']);
+                        
+                        try {
+                            // Warning threshold (70%)
+                            if ($spentPercentage >= self::WARNING_THRESHOLD && $spentPercentage < self::EXCEEDED_THRESHOLD) {
+                                $notificationData = new NotificationData(
+                                    $user->uuid,
+                                    "Il budget {$budget['budget']['name']} ha raggiunto il {$spentPercentage}% ({$currencySymbol}{$budget['totalSpent']})",
+                                    "Avviso Budget"
+                                );
+                                $this->notify($notificationData);
                             }
+                            
+                            // Exceeded threshold (100%)
+                            if ($spentPercentage >= self::EXCEEDED_THRESHOLD) {
+                                // Send email
+                                Mail::budgetExceeded(
+                                    $user->email,
+                                    $budget['budget']['name'],
+                                    $budget['totalSpent'] * -1,
+                                    $budget['total'],
+                                    $currencySymbol,
+                                    $user->name
+                                );
+                                
+                                // Send push notification
+                                $this->setNotifyKey("exceeded_{$budget['budget']['id']}_{$user->uuid}");
+                                $notificationData = new NotificationData(
+                                    $user->uuid,
+                                    "Il budget {$budget['budget']['name']} è stato superato! ({$currencySymbol}{$budget['totalSpent']})",
+                                    "Budget Superato"
+                                );
+                                $this->notify($notificationData, true);
+                            }
+                        } catch (\Throwable $e) {
+                            Log::critical($e->getMessage());
+                            return Command::FAILURE;
                         }
                     }
                 }
