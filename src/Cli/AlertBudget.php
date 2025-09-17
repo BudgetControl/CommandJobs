@@ -4,6 +4,7 @@ namespace Budgetcontrol\jobs\Cli;
 
 use Budgetcontrol\Connector\Client\BudgetClient;
 use Budgetcontrol\jobs\Facade\Mail;
+use Budgetcontrol\jobs\Traits\Notify;
 use Illuminate\Support\Facades\Log;
 use Budgetcontrol\jobs\Facade\Crypt;
 use Budgetcontrol\Library\Model\User;
@@ -25,6 +26,7 @@ use Illuminate\Support\Facades\Facade;
  */
 class AlertBudget extends JobCommand
 {
+    use Notify;
     protected string $command = 'budget:is-exceeded';
     private BudgetClient $budgetClient;
 
@@ -52,7 +54,7 @@ class AlertBudget extends JobCommand
         foreach ($workspaces as $workspace) {
 
             //check if workspace has budget
-                $hasBudget = Budget::where('workspace_id', $workspace->id)->exists();
+            $hasBudget = Budget::where('workspace_id', $workspace->id)->exists();
             if (!$hasBudget) {
                 Log::info("No budgets found for workspace: $workspace->uuid");
                 continue;
@@ -65,8 +67,8 @@ class AlertBudget extends JobCommand
                 continue;
             }
 
-            if(false === $budgetStats->isSuccessful()) {
-                if($budgetStats->getStatusCode() == 404) {
+            if (false === $budgetStats->isSuccessful()) {
+                if ($budgetStats->getStatusCode() == 404) {
                     Log::info("No budgets found for workspace: $workspace->uuid");
                     continue;
                 }
@@ -97,7 +99,7 @@ class AlertBudget extends JobCommand
 
                         $workspaceId = $budget['budget']['workspace_id'];
 
-                        foreach($this->getUserWorkspace($user->id) as $userWorkspace) {
+                        foreach ($this->getUserWorkspace($user->id) as $userWorkspace) {
                             if ($userWorkspace->id == $workspaceId) {
                                 $workspace = $userWorkspace;
                                 break;
@@ -105,7 +107,7 @@ class AlertBudget extends JobCommand
                         }
 
                         /** @var \Budgetcontrol\Library\ValueObject\WorkspaceSetting $wsSettings */
-                        $wsSettings =  $workspace->workspaceSettings->data;
+                        $wsSettings = $workspace->workspaceSettings->data;
                         $currency = $wsSettings->getCurrency();
                         $currencySymbol = $currency['icon'];
 
@@ -117,7 +119,7 @@ class AlertBudget extends JobCommand
 
                                 $mailerPayload = new BudgetMailer($user->email, $budget['budget']['name'], $budget['totalSpent'] * -1, $budget['total'], $currencySymbol, $user->name);
                                 $this->mailerClient->budgetExceeded($mailerPayload);
-                                
+
                             } catch (\Throwable $e) {
                                 Log::critical($e->getMessage());
                                 return Command::FAILURE;
@@ -143,7 +145,7 @@ class AlertBudget extends JobCommand
         $toNotify = [];
         // retrive user email
         if ($budget['notification'] == true) {
-            $toNotify = explode(',',$budget['emails']) ?? null;
+            $toNotify = explode(',', $budget['emails']) ?? null;
         }
 
         return $toNotify;
@@ -175,7 +177,7 @@ class AlertBudget extends JobCommand
         foreach ($resultsQUery as $result) {
             $workspaceIds[] = $result->workspace_id;
         }
-        
+
         return Workspace::whereIn('id', $workspaceIds)->get();
     }
 }

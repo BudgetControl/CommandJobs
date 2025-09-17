@@ -3,6 +3,7 @@
 namespace Budgetcontrol\jobs\Cli;
 
 use Budgetcontrol\jobs\Facade\Cache;
+use Budgetcontrol\jobs\Traits\Notify;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Budgetcontrol\jobs\Cli\JobCommand;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Cache as SysCache;
 
 class BillReminder extends JobCommand
 {
+    use Notify;
     protected string $command = 'entry:check-bill-reminder';
 
     private const ENTRY_TYPES = [
@@ -42,13 +44,10 @@ class BillReminder extends JobCommand
         $entries = $this->findFuturePlannedEntries($days);
         foreach ($entries as $entry) {
             Log::debug("Found planned entry {$entry->id} for date {$entry->date_time}");
+            
             $user = $this->getUserFromWorkspaceId($entry->workspace_id);
             if(is_null($user)) {
                 Log::warning("No user found for workspace {$entry->workspace_id}, skipping entry {$entry->id}");
-                continue;
-            }
-            if($this->checkIfNotificationSent($entry->id, $user->uuid) === true) {
-                Log::info("Notification already sent for entry {$entry->id} to user {$user->uuid}, skipping.");
                 continue;
             }
 
@@ -57,11 +56,14 @@ class BillReminder extends JobCommand
             $message = $this->message($entry, 'it');
             $title = $this->title('it');
             try {
-                Notification::sendNotification(new \Budgetcontrol\jobs\Domain\Entities\NotificationData(
+                
+                $dataToNotify = new \Budgetcontrol\jobs\Domain\Entities\NotificationData(
                     $user->uuid,
                     $message,
                     $title,
-                ));
+                );
+                $this->notify($dataToNotify);
+
             } catch (\Exception $e) {
                 $this->fail("Failed to send notification for entry {$entry->id}: {$e->getMessage()}");
                 return Command::FAILURE;
@@ -106,9 +108,9 @@ class BillReminder extends JobCommand
      * @param int $ttl The time to live in days for the cache entry (default is 3 days)
      * @return void
      */
-    private function cacheNotificationFlag(int $id, string $user_uuid, int $ttl = 3): void
+    protected function cacheNotificationFlag(int $id, string $user_uuid, string $cache_key,int $ttl = 3): void
     {
-        $cacheKey = "bill_reminder_{$user_uuid}_{$id}";
+        $cacheKey = "{$cache_key}_{$user_uuid}_{$id}";
         SysCache::put($cacheKey, true, $ttl * 60 * 60 * 24); // Cache for the same days
     }
 
@@ -119,9 +121,9 @@ class BillReminder extends JobCommand
      * @param string $user_uuid The UUID of the user to check
      * @return bool Returns true if notification was not sent yet, false otherwise
      */
-    private function checkIfNotificationSent(int $id, string $user_uuid): bool
+    protected function checkIfNotificationSent(int $id, string $user_uuid, string $cache_key): bool
     {
-        $cacheKey = "bill_reminder_{$user_uuid}_{$id}";
+        $cacheKey = "{$cache_key}_{$user_uuid}_{$id}";
         return SysCache::has($cacheKey);
     }
 
