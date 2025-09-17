@@ -84,7 +84,7 @@ class AlertBudgetNotification extends JobCommand
 
         $wsSettings = $workspace->workspaceSettings->data;
         $currency = Currency::find($wsSettings->getCurrency());
-        $currencySymbol = $currency->icon;
+        $currencySymbol = '€'; //FIXME:
         $spentPercentage = (float)str_replace('%', '', $budget['totalSpentPercentage']);
 
         foreach ($toNotify as $email) {
