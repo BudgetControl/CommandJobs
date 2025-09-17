@@ -86,8 +86,8 @@ class AlertBudgetNotification extends JobCommand
         /**
          * @var \Budgetcontrol\Library\ValueObject\WorkspaceSetting $wsSettings
          */
-        $wsSettings = WorkspaceSettings::where('workspace_id', $workspace->id)->first('data');
-        $currency = Currency::find($wsSettings->getCurrency());
+        $wsSettings = WorkspaceSettings::where('workspace_id', $workspace->id)->first();
+        $currency = Currency::find($wsSettings->data->getCurrency())->first();
         $currencySymbol = $currency->icon;
         $spentPercentage = (float)str_replace('%', '', $budget['totalSpentPercentage']);
 
@@ -131,7 +131,7 @@ class AlertBudgetNotification extends JobCommand
 
     private function sendCriticalNotification(User $user, array $budget, float $spentPercentage, string $currencySymbol): void
     {
-        $this->setCacheKey("critical_{$budget['budget']['id']}_{$user->uuid}");
+        $this->setCacheKey("critical_{$budget['budget']['uuid']}_{$user->uuid}");
         $this->notify(new NotificationData(
             $user->uuid,
             "Attenzione: il budget {$budget['budget']['name']} ha raggiunto il {$spentPercentage}% ({$currencySymbol}{$budget['totalSpent']})",
