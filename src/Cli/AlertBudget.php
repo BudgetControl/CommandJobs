@@ -119,7 +119,7 @@ class AlertBudget extends JobCommand
                         /** @var \Budgetcontrol\Library\ValueObject\WorkspaceSetting $wsSettings */
                         $wsSettings = $workspace->workspaceSettings->data;
                         $currency = Currency::find($wsSettings->getCurrency());
-                        $currencySymbol = $currency->symbol;
+                        $currencySymbol = $currency->icon;
 
                         Log::debug("Checking budget for user: $email in workspace: $workspace->uuid");
 

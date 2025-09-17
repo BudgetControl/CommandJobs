@@ -71,13 +71,13 @@ abstract class JobCommand extends Command
     {
         $workspace = Workspace::find($workspaceId);
         if (!$workspace) {
-            Log::error("Workspace not found for ID: $workspaceId");
+            Log::warning("Workspace not found for ID: $workspaceId");
             return null;
         }
 
         $user = User::find($workspace->user_id);
         if (!$user) {
-            Log::error("User not found for Workspace ID: $workspaceId");
+            Log::warning("User not found for Workspace ID: $workspaceId");
             return null;
         }
 
