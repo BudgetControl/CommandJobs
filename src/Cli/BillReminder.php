@@ -44,17 +44,25 @@ class BillReminder extends JobCommand
             Log::debug("Found planned entry {$entry->id} for date {$entry->date_time}");
             $user = $this->getUserFromWorkspaceId($entry->workspace_id);
 
+            if(is_null($user)) {
+                Log::warning("No user found for workspace {$entry->workspace_id}, skipping entry {$entry->id}");
+                continue;
+            }
+
             if($this->checkIfNotificationSent($entry->id, $user->uuid) === true) {
                 Log::info("Notification already sent for entry {$entry->id} to user {$user->uuid}, skipping.");
                 continue;
             }
 
             // build message and push a notification
-            $message = "You have a planned entry for {$entry->date_time} with amount {$entry->amount}\n";
+            //FIXME: should be in user language $user->language 
+            $message = $this->message($entry, 'it');
+            $title = $this->title('it');
             try {
                 Notification::sendNotification(new \Budgetcontrol\jobs\Domain\Entities\NotificationData(
                     $user->uuid,
                     $message,
+                    $title,
                 ));
             } catch (\Exception $e) {
                 $this->fail("Failed to send notification for entry {$entry->id}: {$e->getMessage()}");
@@ -117,6 +125,27 @@ class BillReminder extends JobCommand
     {
         $cacheKey = "bill_reminder_{$user_uuid}_{$id}";
         return SysCache::has($cacheKey);
+    }
+
+    private function message(Entry $entry, string $lang): string
+    {
+        $date = Carbon::parse($entry->date_time)->locale($lang);
+        return match ($lang) {
+            'en' => "at {$date->format('Y-m-d H:i:s')} with amount {$entry->amount}\n {$entry->note}",
+            'es' => "a las {$date->format('Y-m-d H:i:s')} con un monto de {$entry->amount}\n {$entry->note}",
+            'it' => "il {$date->format('d/m/Y')} di €{$entry->amount}\n {$entry->note}",
+            default => throw new \InvalidArgumentException("Unsupported language: $lang"),
+        };
+    }
+
+    private function title(string $lang): string
+    {
+        return match ($lang) {
+            'en' => 'Bill Reminder',
+            'es' => 'Recordatorio de factura',
+            'it' => 'Pagamento in scadenza',
+            default => throw new \InvalidArgumentException("Unsupported language: $lang"),
+        };
     }
 
 }
