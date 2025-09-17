@@ -5,6 +5,7 @@ namespace Budgetcontrol\jobs\Cli;
 use Budgetcontrol\Connector\Client\BudgetClient;
 use Budgetcontrol\jobs\Traits\Notify;
 use Budgetcontrol\jobs\Domain\Entities\NotificationData;
+use Budgetcontrol\Library\Model\WorkspaceSettings;
 use Illuminate\Support\Facades\Log;
 use Budgetcontrol\Library\Model\User;
 use Budgetcontrol\Library\Model\Budget;
@@ -82,9 +83,12 @@ class AlertBudgetNotification extends JobCommand
             return;
         }
 
-        $wsSettings = $workspace->workspaceSettings->data;
+        /**
+         * @var \Budgetcontrol\Library\ValueObject\WorkspaceSetting $wsSettings
+         */
+        $wsSettings = WorkspaceSettings::where('workspace_id', $workspace->id)->first('data');
         $currency = Currency::find($wsSettings->getCurrency());
-        $currencySymbol = '€'; //FIXME:
+        $currencySymbol = $currency->icon;
         $spentPercentage = (float)str_replace('%', '', $budget['totalSpentPercentage']);
 
         foreach ($toNotify as $email) {
