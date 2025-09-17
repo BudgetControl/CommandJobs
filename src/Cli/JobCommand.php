@@ -4,6 +4,7 @@ namespace Budgetcontrol\jobs\Cli;
 
 use Budgetcontrol\jobs\Facade\Cache;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Facades\Log;
 use Budgetcontrol\Library\Model\Workspace;
@@ -82,5 +83,27 @@ abstract class JobCommand extends Command
         }
 
         return $user;
+    }
+
+    /**
+     * Retrieves a user based on the provided workspace ID
+     *
+     * @param int $workspaceId The ID of the workspace to search for
+     * @return User|null Returns the User object if found, null otherwise
+     */
+    protected function getUsersFromWorkspaceId(int $workspaceId): ?Collection
+    {
+        $workspace = Workspace::with('users')->find($workspaceId);
+        if (!$workspace) {
+            Log::warning("Workspace not found for ID: $workspaceId");
+            return null;
+        }
+
+        if($workspace->users->isEmpty()) {
+            Log::warning("No users associated with Workspace ID: $workspaceId");
+            return null;
+        }
+
+        return $workspace->users;
     }
 }

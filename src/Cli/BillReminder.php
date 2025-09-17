@@ -39,15 +39,15 @@ class BillReminder extends JobCommand
     {
         $this->output = $output;
         Log::info('Check bill reminders');
-        $days = (int)$input->getOption('days');
+        $days = (int) $input->getOption('days');
 
         $entries = $this->findFuturePlannedEntries($days);
         foreach ($entries as $entry) {
             Log::debug("Found planned entry {$entry->id} for date {$entry->date_time}");
-            
-            $user = $this->getUserFromWorkspaceId($entry->workspace_id);
-            if(is_null($user)) {
-                Log::warning("No user found for workspace {$entry->workspace_id}, skipping entry {$entry->id}");
+
+            $users = $this->getUsersFromWorkspaceId($entry->workspace_id);
+            if (is_null($users)) {
+                Log::warning("No users found for workspace {$entry->workspace_id}, skipping entry {$entry->id}");
                 continue;
             }
 
@@ -56,22 +56,20 @@ class BillReminder extends JobCommand
             $message = $this->message($entry, 'it');
             $title = $this->title('it');
             try {
-                
-                $dataToNotify = new \Budgetcontrol\jobs\Domain\Entities\NotificationData(
-                    $user->uuid,
-                    $message,
-                    $title,
-                );
-                $this->notify($dataToNotify);
+
+                foreach ($users as $user) {
+                    $dataToNotify = new \Budgetcontrol\jobs\Domain\Entities\NotificationData(
+                        $user->uuid,
+                        $message,
+                        $title,
+                    );
+                    $this->notify($dataToNotify);
+                }
 
             } catch (\Exception $e) {
                 $this->fail("Failed to send notification for entry {$entry->id}: {$e->getMessage()}");
                 return Command::FAILURE;
             }
-
-            // If notification sent, save it on cache
-            $this->cacheNotificationFlag($entry->id, $user->uuid, $days);
-
         }
 
         $this->heartbeats(null);
@@ -92,39 +90,12 @@ class BillReminder extends JobCommand
         $dateString = $date->format('Y-m-d H:i:s');
 
         $entries = Entry::where('date_time', '<=', $dateString)
-        ->where('planned', true)
-        ->whereIn('type', self::ENTRY_TYPES)
-        ->get()
-        ->all();
+            ->where('planned', true)
+            ->whereIn('type', self::ENTRY_TYPES)
+            ->get()
+            ->all();
 
         return $entries;
-    }
-
-    /**
-     * Caches the notification flag for a specific bill and user
-     * 
-     * @param int $id The bill identifier
-     * @param string $user_uuid The UUID of the user
-     * @param int $ttl The time to live in days for the cache entry (default is 3 days)
-     * @return void
-     */
-    protected function cacheNotificationFlag(int $id, string $user_uuid, string $cache_key,int $ttl = 3): void
-    {
-        $cacheKey = "{$cache_key}_{$user_uuid}_{$id}";
-        SysCache::put($cacheKey, true, $ttl * 60 * 60 * 24); // Cache for the same days
-    }
-
-    /**
-     * Checks if a notification has already been sent for a specific bill and user.
-     *
-     * @param int $id The bill ID to check
-     * @param string $user_uuid The UUID of the user to check
-     * @return bool Returns true if notification was not sent yet, false otherwise
-     */
-    protected function checkIfNotificationSent(int $id, string $user_uuid, string $cache_key): bool
-    {
-        $cacheKey = "{$cache_key}_{$user_uuid}_{$id}";
-        return SysCache::has($cacheKey);
     }
 
     private function message(Entry $entry, string $lang): string
