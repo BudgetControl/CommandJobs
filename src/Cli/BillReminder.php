@@ -102,9 +102,9 @@ class BillReminder extends JobCommand
     {
         $date = Carbon::parse($entry->date_time)->locale($lang);
         return match ($lang) {
-            'en' => "at {$date->format('Y-m-d H:i:s')} with amount {$entry->amount}\n {$entry->note}",
-            'es' => "a las {$date->format('Y-m-d H:i:s')} con un monto de {$entry->amount}\n {$entry->note}",
-            'it' => "il {$date->format('d/m/Y')} di €{$entry->amount}\n {$entry->note}",
+            'en' => "at {$date->format('Y-m-d H:i:s')} with amount {$entry->amount} {$entry->note}",
+            'es' => "a las {$date->format('Y-m-d H:i:s')} con un monto de {$entry->amount} {$entry->note}",
+            'it' => "il {$date->format('d/m/Y')} di €{$entry->amount} {$entry->note}",
             default => throw new \InvalidArgumentException("Unsupported language: $lang"),
         };
     }
