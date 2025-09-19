@@ -118,7 +118,7 @@ class AlertBudget extends JobCommand
 
                         /** @var \Budgetcontrol\Library\ValueObject\WorkspaceSetting $wsSettings */
                         $wsSettings = $workspace->workspaceSettings->data;
-                        $currency = Currency::find($wsSettings->getCurrency());
+                        $currency = Currency::find($wsSettings->data->getCurrency())->first();
                         $currencySymbol = $currency->icon;
 
                         Log::debug("Checking budget for user: $email in workspace: $workspace->uuid");
@@ -194,14 +194,7 @@ class AlertBudget extends JobCommand
             $this->setCacheKey("warning_{$budget['budget']['uuid']}_{$user->uuid}");
             if (!$this->checkIfNotificationSent()) {
                 Mail::budgetExceeded(
-                    [
-                        $user->email,
-                        $budget['budget']['name'],
-                        $budget['totalSpent'] * -1,
-                        $budget['total'],
-                        $currencySymbol,
-                        $user->name,
-                    ]
+                    $this->buildMailData($budget, $user, $currencySymbol)
                 );
                 $this->cacheNotificationFlag(7); // Cache per 7 giorni
             }
@@ -212,14 +205,7 @@ class AlertBudget extends JobCommand
             $this->setCacheKey("critical_{$budget['budget']['uuid']}_{$user->uuid}");
             if (!$this->checkIfNotificationSent()) {
                 Mail::budgetExceeded(
-                    data: [
-                        $user->email,
-                        $budget['budget']['name'],
-                        $budget['totalSpent'] * -1,
-                        $budget['total'],
-                        $currencySymbol,
-                        $user->name
-                    ],
+                    $this->buildMailData($budget, $user, $currencySymbol)
                 );
                 $this->cacheNotificationFlag(3); // Cache per 3 giorni
             }
@@ -230,17 +216,22 @@ class AlertBudget extends JobCommand
             $this->setCacheKey("exceeded_{$budget['budget']['uuid']}_{$user->uuid}");
             if (!$this->checkIfNotificationSent()) {
                 Mail::budgetExceeded(
-                    [
-                        $user->email,
-                        $budget['budget']['name'],
-                        $budget['totalSpent'] * -1,
-                        $budget['total'],
-                        $currencySymbol,
-                        $user->name
-                    ]
+                    $this->buildMailData($budget, $user, $currencySymbol)
                 );
                 $this->cacheNotificationFlag(1); // Cache per 1 giorno
             }
         }
     }
+
+    private function buildMailData(array $budget, User $user, string $currencySymbol): array
+    {
+        return [
+            'to' => $user->email,
+            'budget_name' => $budget['budget']['name'],
+            'current_amount' => $budget['totalSpent'] * -1,
+            'budget_limit' => $budget['total'],
+            'currency' => $currencySymbol,
+            'username' => $user->name,
+        ];
+    }   
 }
