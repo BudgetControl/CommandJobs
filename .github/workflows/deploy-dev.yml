@@ -3,7 +3,7 @@ name: Deploy application
 on:
   workflow_dispatch:
   push:
-    branches: [ "develop" ]
+    branches: [ "main" ]
 
 permissions:
   contents: read
@@ -12,7 +12,7 @@ permissions:
 jobs:
   deploy_job:
     runs-on: ubuntu-latest
-    environment: dev
+    environment: prod
     name: deploy
     steps:
         - name: Checkout
