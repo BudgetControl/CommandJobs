@@ -15,21 +15,21 @@ class ExtractKeywordFromEntriesTest extends CommandTestCase
 
     public function testCommandIsRegistered(): void
     {
-        $this->assertTrue($this->application->has('entry:extract-keywords'));
+        $this->assertTrue($this->application->has('core:extract-keywords'));
     }
 
     public function testCommandConfiguration(): void
     {
-        $command = $this->application->find('entry:extract-keywords');
+        $command = $this->application->find('core:extract-keywords');
         
-        $this->assertEquals('entry:extract-keywords', $command->getName());
+        $this->assertEquals('core:extract-keywords', $command->getName());
         $this->assertEquals('Extract keywords from entries', $command->getDescription());
         $this->assertNotEmpty($command->getHelp());
     }
 
     public function testCommandExecutesSuccessfully(): void
     {
-        $exitCode = $this->executeCommand('entry:extract-keywords');
+        $exitCode = $this->executeCommand('core:extract-keywords');
         
         $this->assertEquals(Command::SUCCESS, $exitCode);
         $this->assertStringContainsString('Job completed', $this->getDisplay());

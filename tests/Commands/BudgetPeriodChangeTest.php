@@ -15,21 +15,21 @@ class BudgetPeriodChangeTest extends CommandTestCase
 
     public function testCommandIsRegistered(): void
     {
-        $this->assertTrue($this->application->has('budget:period-change'));
+        $this->assertTrue($this->application->has('budget:is-expired'));
     }
 
     public function testCommandConfiguration(): void
     {
-        $command = $this->application->find('budget:period-change');
+        $command = $this->application->find('budget:is-expired');
         
-        $this->assertEquals('budget:period-change', $command->getName());
-        $this->assertEquals('Change budget period', $command->getDescription());
+        $this->assertEquals('budget:is-expired', $command->getName());
+        $this->assertEquals('Change budget period only for recursive budgets', $command->getDescription());
         $this->assertNotEmpty($command->getHelp());
     }
 
     public function testCommandExecutesSuccessfully(): void
     {
-        $exitCode = $this->executeCommand('budget:period-change');
+        $exitCode = $this->executeCommand('budget:is-expired');
         
         $this->assertEquals(Command::SUCCESS, $exitCode);
         $this->assertStringContainsString('Job completed', $this->getDisplay());

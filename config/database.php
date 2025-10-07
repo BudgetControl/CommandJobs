@@ -20,5 +20,10 @@ return [
         'charset'  => 'utf8',
         'collation'=> 'utf8_unicode_ci',
         'prefix'   => '',
+    ],
+    'sqlite' => [
+        'driver'   => 'sqlite',
+        'database' => env('DB_DATABASE', ':memory:'),
+        'prefix'   => '',
     ]
 ];

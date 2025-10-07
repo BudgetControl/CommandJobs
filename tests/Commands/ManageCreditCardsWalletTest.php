@@ -15,21 +15,21 @@ class ManageCreditCardsWalletTest extends CommandTestCase
 
     public function testCommandIsRegistered(): void
     {
-        $this->assertTrue($this->application->has('wallet:manage-credit-cards'));
+        $this->assertTrue($this->application->has('wallet:update-credit-card'));
     }
 
     public function testCommandConfiguration(): void
     {
-        $command = $this->application->find('wallet:manage-credit-cards');
+        $command = $this->application->find('wallet:update-credit-card');
         
-        $this->assertEquals('wallet:manage-credit-cards', $command->getName());
-        $this->assertEquals('Manage credit cards wallet', $command->getDescription());
+        $this->assertEquals('wallet:update-credit-card', $command->getName());
+        $this->assertEquals('Manage credit cards in the wallet', $command->getDescription());
         $this->assertNotEmpty($command->getHelp());
     }
 
     public function testCommandExecutesSuccessfully(): void
     {
-        $exitCode = $this->executeCommand('wallet:manage-credit-cards');
+        $exitCode = $this->executeCommand('wallet:update-credit-card');
         
         $this->assertEquals(Command::SUCCESS, $exitCode);
         $this->assertStringContainsString('Job completed', $this->getDisplay());

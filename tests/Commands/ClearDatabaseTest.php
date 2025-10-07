@@ -15,15 +15,15 @@ class ClearDatabaseTest extends CommandTestCase
 
     public function testCommandIsRegistered(): void
     {
-        $this->assertTrue($this->application->has('database:clear'));
+        $this->assertTrue($this->application->has('core:clear'));
     }
 
     public function testCommandConfiguration(): void
     {
-        $command = $this->application->find('database:clear');
+        $command = $this->application->find('core:clear');
         
-        $this->assertEquals('database:clear', $command->getName());
-        $this->assertEquals('Clear database', $command->getDescription());
+        $this->assertEquals('core:clear', $command->getName());
+        $this->assertEquals('Clear db', $command->getDescription());
         $this->assertNotEmpty($command->getHelp());
     }
 
@@ -31,7 +31,7 @@ class ClearDatabaseTest extends CommandTestCase
     {
         // Note: This test might need to be skipped in CI/CD or use a test database
         // as it clears the database
-        $exitCode = $this->executeCommand('database:clear');
+        $exitCode = $this->executeCommand('core:clear');
         
         $this->assertIsInt($exitCode);
     }

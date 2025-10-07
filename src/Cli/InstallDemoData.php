@@ -128,6 +128,10 @@ class InstallDemoData extends JobCommand
         Log::debug('Create workspace settings');
 
         $currency = Currency::find($currency_id);
+        if (!$currency) {
+            $output->writeln('<error>Currency not found with ID: ' . $currency_id . '</error>');
+            return Command::FAILURE;
+        }
         $settings = WorkspaceSetting::create($currency->toArray(), $payment_type_id);
         WorkspaceSettings::create([
             'workspace_id' => $workspace->id,
