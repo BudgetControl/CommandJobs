@@ -36,7 +36,7 @@ class ExtractKeywordFromEntries extends JobCommand
     public function configure()
     {
         $this->setName($this->command)
-            ->setDescription('Clear db')
+            ->setDescription('Extract keywords from entries')
             ->addArgument('action', InputArgument::OPTIONAL, 'Action to perform', 'clear')
             ->setHelp("This command will remove all data from the database");
     }
@@ -75,6 +75,7 @@ class ExtractKeywordFromEntries extends JobCommand
                 }
             });
 
+        $output->writeln('Job completed');
         Log::info('Keywords extraction completed.');
         return Command::SUCCESS;
 

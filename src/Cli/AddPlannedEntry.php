@@ -35,7 +35,7 @@ class AddPlannedEntry extends JobCommand
     public function configure()
     {
         $this->setName($this->command)
-            ->setDescription('Add a planned entry')
+            ->setDescription('Add planned entry')
             ->setHelp("This command allows you to add a new planned entry");
     }
 

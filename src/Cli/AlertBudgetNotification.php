@@ -97,11 +97,11 @@ class AlertBudgetNotification extends JobCommand
 
             try {
                 if ($spentPercentage >= self::WARNING_THRESHOLD && $spentPercentage < self::CRITICAL_THRESHOLD) {
-                    $this->sendWarningNotification($user, $budget, $spentPercentage, $currencySymbol);
+                    $this->sendWarningNotification($user, $budget, $spentPercentage, $currencySymbol, $workspace);
                 } elseif ($spentPercentage >= self::CRITICAL_THRESHOLD && $spentPercentage < self::EXCEEDED_THRESHOLD) {
-                    $this->sendCriticalNotification($user, $budget, $spentPercentage, $currencySymbol);
+                    $this->sendCriticalNotification($user, $budget, $spentPercentage, $currencySymbol, $workspace);
                 } elseif ($spentPercentage >= self::EXCEEDED_THRESHOLD) {
-                    $this->sendExceededNotification($user, $budget, $spentPercentage, $currencySymbol);
+                    $this->sendExceededNotification($user, $budget, $spentPercentage, $currencySymbol, $workspace);
                 }
             } catch (\Throwable $e) {
                 Log::error("Error sending notification to {$user->email}: " . $e->getMessage());
@@ -109,32 +109,32 @@ class AlertBudgetNotification extends JobCommand
         }
     }
 
-    private function sendWarningNotification(User $user, array $budget, float $spentPercentage, string $currencySymbol): void
+    private function sendWarningNotification(User $user, array $budget, float $spentPercentage, string $currencySymbol, Workspace $workspace): void
     {
         $this->setCacheKey("warning_{$budget['budget']['uuid']}_{$user->uuid}");
         $this->notify(new NotificationData(
             $user->uuid,
-            "Il budget {$budget['budget']['name']} ha raggiunto il {$spentPercentage}% ({$currencySymbol}{$budget['totalSpent']})",
+            "Il budget {$budget['budget']['name']} (workspace: {$workspace->name}) ha raggiunto il {$spentPercentage}% ({$currencySymbol}{$budget['totalSpent']})",
             "Avviso Budget"
         ));
     }
 
-    private function sendExceededNotification(User $user, array $budget, float $spentPercentage, string $currencySymbol): void
+    private function sendExceededNotification(User $user, array $budget, float $spentPercentage, string $currencySymbol, Workspace $workspace): void
     {
         $this->setCacheKey("exceeded_{$budget['budget']['uuid']}_{$user->uuid}");
         $this->notify(new NotificationData(
             $user->uuid,
-            "Il budget {$budget['budget']['name']} è stato superato! ({$currencySymbol}{$budget['totalSpent']})",
+            "Il budget {$budget['budget']['name']} (workspace: {$workspace->name}) è stato superato! ({$currencySymbol}{$budget['totalSpent']})",
             "Budget Superato"
         ), true);
     }
 
-    private function sendCriticalNotification(User $user, array $budget, float $spentPercentage, string $currencySymbol): void
+    private function sendCriticalNotification(User $user, array $budget, float $spentPercentage, string $currencySymbol, Workspace $workspace): void
     {
         $this->setCacheKey("critical_{$budget['budget']['uuid']}_{$user->uuid}");
         $this->notify(new NotificationData(
             $user->uuid,
-            "Attenzione: il budget {$budget['budget']['name']} ha raggiunto il {$spentPercentage}% ({$currencySymbol}{$budget['totalSpent']})",
+            "Attenzione: il budget {$budget['budget']['name']} (workspace: {$workspace->name}) ha raggiunto il {$spentPercentage}% ({$currencySymbol}{$budget['totalSpent']})",
             "Budget Quasi Esaurito"
         ));
     }

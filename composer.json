@@ -12,6 +12,10 @@
             "type":"vcs",
             "url":"https://github.com/BudgetControl/Library.git"
         },
+        "source": {
+            "type": "vcs",
+            "url": "https://github.com/mlabfactory/phpunit-self-api-integration.git"
+        },
         "budgetcontrol/schema-registry-service": {
             "type": "vcs",
             "url": "https://github.com/BudgetControl/Schema-Registry-Service.git"
@@ -24,6 +28,10 @@
         {
             "type":"vcs",
             "url":"https://github.com/BudgetControl/SeedsTestLibs.git"
+        },
+        "budgetcontrol/application-tests": {
+            "type": "vcs",
+            "url": "https://github.com/BudgetControl/ApplicationTests.git"
         }
     },
     "require": {
@@ -59,11 +67,17 @@
     "require-dev": {
         "nikic/php-parser": "^5.0",
         "fakerphp/faker": "^1.23",
-        "phpunit/phpunit": "^10.0"
+        "phpunit/phpunit": "^10.0",
+        "budgetcontrol/application-tests": "~v1-beta.1"
     },
     "autoload": {
         "psr-4": {
             "Budgetcontrol\\jobs\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Budgetcontrol\\jobs\\Tests\\": "tests/"
         }
     },
     "authors": [

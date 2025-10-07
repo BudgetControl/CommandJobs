@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.0/phpunit.xsd"
+         bootstrap="bootstrap/app.php"
+         colors="true"
+         failOnRisky="true"
+         failOnWarning="true"
+         stopOnFailure="false">
+    <testsuites>
+        <testsuite name="Commands">
+            <directory suffix="Test.php">./tests/Commands</directory>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory suffix=".php">./src</directory>
+        </include>
+        <exclude>
+            <directory>./vendor</directory>
+        </exclude>
+    </source>
+    <php>
+        <ini name="display_errors" value="1" />
+        <ini name="error_reporting" value="1" />
+
+        <!-- Add logging configuration -->
+        <ini name="log_errors" value="1" />
+        <ini name="error_log" value="storage/logs/test-error.log" />
+    </php>
+</phpunit>
