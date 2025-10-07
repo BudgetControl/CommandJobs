@@ -51,13 +51,20 @@ class BillReminder extends JobCommand
                 continue;
             }
 
+            // Get workspace name
+            $workspace = \Budgetcontrol\jobs\Domain\Model\Workspace::find($entry->workspace_id);
+            $workspaceName = $workspace ? $workspace->name : 'Unknown';
+
             // build message and push a notification
             //FIXME: should be in user language $user->language 
-            $message = $this->message($entry, 'it');
+            $message = $this->message($entry, 'it', $workspaceName);
             $title = $this->title('it');
             try {
 
                 foreach ($users as $user) {
+                    // Set cache key per user and entry to prevent duplicate notifications
+                    $this->setNotifyKey("bill_reminder_{$entry->id}_{$user->uuid}");
+                    
                     $dataToNotify = new \Budgetcontrol\jobs\Domain\Entities\NotificationData(
                         $user->uuid,
                         $message,
@@ -98,13 +105,13 @@ class BillReminder extends JobCommand
         return $entries;
     }
 
-    private function message(Entry $entry, string $lang): string
+    private function message(Entry $entry, string $lang, string $workspaceName): string
     {
         $date = Carbon::parse($entry->date_time)->locale($lang);
         return match ($lang) {
-            'en' => "at {$date->format('Y-m-d H:i:s')} with amount {$entry->amount} {$entry->note}",
-            'es' => "a las {$date->format('Y-m-d H:i:s')} con un monto de {$entry->amount} {$entry->note}",
-            'it' => "il {$date->format('d/m/Y')} di €{$entry->amount} {$entry->note}",
+            'en' => "at {$date->format('Y-m-d H:i:s')} with amount {$entry->amount} {$entry->note} (workspace: {$workspaceName})",
+            'es' => "a las {$date->format('Y-m-d H:i:s')} con un monto de {$entry->amount} {$entry->note} (workspace: {$workspaceName})",
+            'it' => "il {$date->format('d/m/Y')} di €{$entry->amount} {$entry->note} (workspace: {$workspaceName})",
             default => throw new \InvalidArgumentException("Unsupported language: $lang"),
         };
     }
