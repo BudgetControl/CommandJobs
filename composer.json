@@ -66,6 +66,11 @@
             "Budgetcontrol\\jobs\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Budgetcontrol\\jobs\\Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "Marco De Felice",
