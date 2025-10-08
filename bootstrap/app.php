@@ -49,6 +49,6 @@ Facade::setFacadeApplication([
     'crypt' => $crypt,
     'cache-http' => $cache,
     'notification-http' => $notification,
-    'cache' => $cache,
+    'cache' => $illuminateCache,
 
 ]);
