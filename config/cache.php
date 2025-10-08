@@ -33,4 +33,4 @@ if($cacheDriver === 'dynamodb') {
 }
 
 // Crea un'istanza del Repository del cache utilizzando il file store
-$cache = new Repository($store);
+$illuminateCache = new Repository($store);
