@@ -118,7 +118,15 @@ class AlertBudget extends JobCommand
 
                         /** @var \Budgetcontrol\Library\ValueObject\WorkspaceSetting $wsSettings */
                         $wsSettings = $workspace->workspaceSettings->data;
-                        $currency = Currency::find($wsSettings->data->getCurrency())->first();
+                        $currencyData = $wsSettings->getCurrency();
+                        $currencyId = is_array($currencyData) ? $currencyData['id'] : $currencyData->id;
+                        $currency = Currency::find($currencyId);
+                        
+                        if ($currency === null) {
+                            Log::error("Currency not found with id: $currencyId for workspace: $workspace->uuid");
+                            continue;
+                        }
+                        
                         $currencySymbol = $currency->icon;
 
                         Log::debug("Checking budget for user: $email in workspace: $workspace->uuid");
