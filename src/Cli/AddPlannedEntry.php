@@ -89,7 +89,7 @@ class AddPlannedEntry extends JobCommand
         $totalEntries = [];
         foreach ($entries as $entry) {
             
-            switch ($entry->planning) {
+            switch ($entry->period) {
                 case 'daily':
                     $duplicateItems = $this->buildEntriesDays($entry);
                     break;
@@ -208,9 +208,29 @@ class AddPlannedEntry extends JobCommand
     private function updatePlanningEntry($entries)
     {
         foreach ($entries as $e) {
+            $date = Carbon::createFromFormat('Y-m-d', date('Y-m-d',strtotime($e->date_time)));
+            
+            switch ($e->period) {
+                case 'daily':
+                    $date->addDay();
+                    break;
+                case 'weekly':
+                    $date->addWeek();
+                    break;
+                case 'monthly':
+                    $date->addMonth();
+                    break;
+                case 'yearly':
+                    $date->addYear();
+                    break;
+                default:
+                    $date->addMonth();
+                    break;
+            }
+            
             PlannedEntry::find($e->id)->update(
                 [
-                    'date_time' => Carbon::createFromFormat('Y-m-d', date('Y-m-d',strtotime($e->date_time)))->addMonth()->format(Format::dateTime->value),
+                    'date_time' => $date->format(Format::dateTime->value),
                     'updated_at' => Carbon::now()->format(Format::dateTime->value)
                 ]
             );
