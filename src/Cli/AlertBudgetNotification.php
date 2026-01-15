@@ -67,7 +67,19 @@ class AlertBudgetNotification extends JobCommand
                 }
 
             } catch (\Throwable $e) {
-                Log::error("Error processing workspace {$workspace->uuid}: " . $e->getMessage());
+                // Check if it's a 404 error (not found)
+                $statusCode = null;
+                if (method_exists($e, 'getResponse') && $e->getResponse()) {
+                    $statusCode = $e->getResponse()->getStatusCode();
+                } elseif (method_exists($e, 'getCode')) {
+                    $statusCode = $e->getCode();
+                }
+                
+                if ($statusCode === 404) {
+                    Log::warning("No budgets stats endpoint found for workspace: {$workspace->uuid}");
+                } else {
+                    Log::error("Error processing workspace {$workspace->uuid}: " . $e->getMessage());
+                }
                 continue;
             }
         }
