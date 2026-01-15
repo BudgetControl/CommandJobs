@@ -73,7 +73,19 @@ class AlertBudget extends JobCommand
             try {
                 $budgetStats = $this->budgetClient->getBudgetsStats($workspace->id);
             } catch (\Throwable $e) {
-                Log::error("Error fetching budgets for workspace: $workspace->uuid - " . $e->getMessage());
+                // Check if it's a 404 error (not found)
+                $statusCode = null;
+                if (method_exists($e, 'getResponse') && $e->getResponse()) {
+                    $statusCode = $e->getResponse()->getStatusCode();
+                } elseif (method_exists($e, 'getCode')) {
+                    $statusCode = $e->getCode();
+                }
+                
+                if ($statusCode === 404) {
+                    Log::warning("No budgets stats endpoint found for workspace: $workspace->uuid");
+                } else {
+                    Log::error("Error fetching budgets for workspace: $workspace->uuid - " . $e->getMessage());
+                }
                 continue;
             }
 
@@ -118,7 +130,15 @@ class AlertBudget extends JobCommand
 
                         /** @var \Budgetcontrol\Library\ValueObject\WorkspaceSetting $wsSettings */
                         $wsSettings = $workspace->workspaceSettings->data;
-                        $currency = Currency::find($wsSettings->data->getCurrency())->first();
+                        $currencyData = $wsSettings->getCurrency();
+                        $currencyId = is_array($currencyData) ? $currencyData['id'] : $currencyData->id;
+                        $currency = Currency::find($currencyId);
+                        
+                        if ($currency === null) {
+                            Log::error("Currency not found with id: $currencyId for workspace: $workspace->uuid");
+                            continue;
+                        }
+                        
                         $currencySymbol = $currency->icon;
 
                         Log::debug("Checking budget for user: $email in workspace: $workspace->uuid");
