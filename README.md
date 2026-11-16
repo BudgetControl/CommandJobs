@@ -38,3 +38,15 @@ Contributions are welcome! Please read our [Contribution Guidelines](CONTRIBUTIN
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
+# Scheduled bank synchronization
+
+Set `SYNC_API_BASE_URL` to the internal Sync service URL, `API_SECRET` to Sync's
+`SECRET_KEY`, and `SYNC_JOB_SECRET` to the same independent secret configured
+in Sync. Configure each bank account with a manual sync first, then schedule:
+
+```sh
+php console bank:sync
+```
+
+The command returns a nonzero exit status if any account fails. Keep the service
+endpoint on the private network.
