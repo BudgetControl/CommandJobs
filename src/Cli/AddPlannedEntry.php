@@ -15,6 +15,9 @@ use Throwable;
 use Carbon\Carbon;
 use Budgetcontrol\Library\Model\Entry;
 use Budgetcontrol\Library\Model\PlannedEntry;
+use Budgetcontrol\jobs\Domain\Planning\Recurrence;
+use Illuminate\Database\Capsule\Manager as DB;
+use DateTimeImmutable;
 
 /**
  * Class AddPlannedEntry
@@ -51,16 +54,34 @@ class AddPlannedEntry extends JobCommand
         $this->output = $output;
         try {
 
-            $entries = $this->getPlannedEntry();
-            if ($entries === false) {
-                Log::info('No planned entries found to save');
-                $this->heartbeats(env('HEARTBEAT_PLANNED_ENTRY'));
-                return Command::SUCCESS;
-            }
+            $repository = new PlannedEntryRepository();
+            $entries = $repository->plannedEntryOfTheMonth();
+            if ($entries !== null) {
+                foreach ($entries as $candidate) {
+                    DB::transaction(function () use ($candidate) {
+                        $entry = PlannedEntry::with('labels')->where('id', $candidate->id)
+                            ->whereNull('deleted_at')->lockForUpdate()->first();
+                        if ($entry === null) {
+                            return;
+                        }
 
-            $this->insertEntry(
-                $entries
-            );
+                        $next = new DateTimeImmutable((string) $entry->date_time);
+                        $end = $entry->end_date_time ? new DateTimeImmutable((string) $entry->end_date_time) : null;
+                        [$dates, $next] = Recurrence::occurrences(
+                            $next, $entry->period, new DateTimeImmutable('last day of this month 23:59:59'), $end
+                        );
+                        foreach ($dates as $date) {
+                            $occurrence = clone $entry;
+                            $occurrence->date_time = $date->format(Format::dateTime->value);
+                            $this->insertEntry([$occurrence]);
+                        }
+                        if ($dates !== []) {
+                            $entry->date_time = $next->format(Format::dateTime->value);
+                            $entry->save();
+                        }
+                    });
+                }
+            }
 
             foreach (array_unique($this->workspaceIds) as $workspaceId) {
                 $this->invokeClearCache('entry', $workspaceId);
@@ -76,95 +97,6 @@ class AddPlannedEntry extends JobCommand
         return Command::FAILURE;
     }
 
-    private function getPlannedEntry()
-    {
-        $repository = new PlannedEntryRepository();
-        $entries = $repository->plannedEntryOfTheMonth();
-
-        if (is_null($entries)) {
-            Log::warning('No entries found to save');
-            return false;
-        }
-
-        $totalEntries = [];
-        foreach ($entries as $entry) {
-            
-            switch ($entry->period) {
-                case 'daily':
-                    $duplicateItems = $this->buildEntriesDays($entry);
-                    break;
-                case 'weekly':
-                    $duplicateItems = $this->buildEntriesWeeks($entry);
-                    break;
-                case 'monthly':
-                    $duplicateItems = [$entry];
-                    break;
-                case 'yearly':
-                    $duplicateItems = [$entry];
-                    break;
-                default:
-                    $duplicateItems = [$entry];
-                    break;
-            }
-
-            $totalEntries = array_merge($totalEntries, $duplicateItems);
-        }
-
-        $this->updatePlanningEntry($entries);
-        return $totalEntries;
-    }
-
-    private function buildEntriesDays($entry)
-    {
-        $count = 0;
-        $duplicateItems = date('t'); //count current days of the month
-        
-        $entries = [];
-        // first day of the month
-        $firstDay = Carbon::now()->startOfMonth()->minute(0)->second(0)->hour(0);
-        while($count < $duplicateItems) {
-            $day = 1;
-            if($count == 0) {
-                $day = 0;
-            }
-            $newEntry = clone $entry;
-            $newEntry->uuid = Uuid::uuid4()->toString();
-
-            $newDate = $firstDay->addDays($day);
-            if ($newDate->month > Carbon::now()->month) {
-                unset($newEntry);
-            } else {
-                $newEntry->date_time = $newDate->toAtomString();
-                $entries[] = $newEntry;
-            }
-            $count++;
-        }
-
-        return $entries;
-    }
-
-    private function buildEntriesWeeks($entry)
-    {
-        $count = 0;
-        $duplicateItems = ceil(date('t') / 7); //count weeks in the month
-
-        while($count < $duplicateItems) {
-            $newEntry = clone $entry;
-            $newEntry->uuid = Uuid::uuid4()->toString();
-            $newDate = Carbon::createFromFormat('Y-m-d', date('Y-m-d',strtotime($entry->date_time)))->addWeeks($count);
-            //if date_time is nex month swith
-            if ($newDate->month > Carbon::now()->month) {
-                unset($newEntry);
-            } else {
-                $newEntry->date_time = $newDate->toAtomString();
-                $entries[] = $newEntry;
-            }
-            $count++;
-        }
-
-        return $entries;
-    }
-
     /**
      * Insert entry into the database
      * @param mixed $data
@@ -174,7 +106,7 @@ class AddPlannedEntry extends JobCommand
             /** @var EntryModel $request  */
             foreach ($data as $entry) {
                 $this->workspaceIds[] = $entry->workspace_id;
-                $dateTime = Carbon::createFromFormat('Y-m-d', date('Y-m-d',strtotime($entry->date_time)))->format(Format::dateTime->value);
+                $dateTime = Carbon::parse($entry->date_time)->format(Format::dateTime->value);
 
                 $entryToInsert = new Entry([Entries::workspace_id => $entry->workspace_id]);
                 $entryToInsert->transfer = 0;
@@ -199,42 +131,4 @@ class AddPlannedEntry extends JobCommand
             }
     }
 
-    /**
-     * Updates a planning entry.
-     *
-     * @param array $entries The entries to update.
-     * @return void
-     */
-    private function updatePlanningEntry($entries)
-    {
-        foreach ($entries as $e) {
-            $date = Carbon::createFromFormat('Y-m-d', date('Y-m-d',strtotime($e->date_time)));
-            
-            switch ($e->period) {
-                case 'daily':
-                    $date->addDay();
-                    break;
-                case 'weekly':
-                    $date->addWeek();
-                    break;
-                case 'monthly':
-                    $date->addMonth();
-                    break;
-                case 'yearly':
-                    $date->addYear();
-                    break;
-                default:
-                    $date->addMonth();
-                    break;
-            }
-            
-            PlannedEntry::find($e->id)->update(
-                [
-                    'date_time' => $date->format(Format::dateTime->value),
-                    'updated_at' => Carbon::now()->format(Format::dateTime->value)
-                ]
-            );
-        }
-    }
-    
 }
