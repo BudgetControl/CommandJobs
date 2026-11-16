@@ -32,9 +32,13 @@ class PlannedEntryRepository extends Repository {
      */
     public function plannedEntryOfTheMonth()
     {
-        $now = Carbon::now()->month;
-        $plannedEntry =  ModelPlannedEntry::with('labels')->whereMonth('date_time', $now)
+        $plannedEntry = ModelPlannedEntry::with('labels')
+            ->where('date_time', '<=', Carbon::now()->endOfMonth())
             ->whereNull('deleted_at')
+            ->where(function ($query) {
+                $query->whereNull('end_date_time')
+                    ->orWhereRaw('DATE(date_time) <= DATE(end_date_time)');
+            })
             ->get();
 
         if ($plannedEntry->isEmpty()) {
